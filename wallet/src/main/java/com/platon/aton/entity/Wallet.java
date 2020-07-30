@@ -15,6 +15,31 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      */
     protected String uuid;
     /**
+     * 是否分层钱包：默认false
+     */
+    protected boolean isHD;
+    /**
+     * 钱包路径index：HD的index值，普通钱包和HD母钱包都是0
+     */
+    protected int pathIndex;
+    /**
+     * 默认的排序索引, 和钱包管理顺序相同，从0开始，数据小的排前面
+     */
+    protected int sortIndex;
+    /**
+     * 当前HD钱包选中的索引
+     */
+    protected int selectedIndex;
+    /**
+     * 如果是HD子钱包，为HD父钱包的 uuid字段
+     */
+    protected String parentId;
+    /**
+     * 钱包深度：HD目录和普通钱包为0，HD子钱包为1
+     */
+    protected int depth;
+
+    /**
      * 钱包名称
      */
     protected String name;
@@ -68,13 +93,28 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      * 展示首页提示
      */
     protected boolean backedUpPrompt;
+    /**
+     * 关联母钱包名称
+     */
+    protected String parentWalletName;
+    /**
+     * 是否首页展示
+     */
+    protected boolean isShow;
 
     public Wallet() {
 
     }
 
+
     protected Wallet(Parcel in) {
         uuid = in.readString();
+        isHD = in.readByte() != 0;
+        pathIndex = in.readInt();
+        sortIndex = in.readInt();
+        selectedIndex = in.readInt();
+        parentId = in.readString();
+        depth = in.readInt();
         name = in.readString();
         address = in.readString();
         bech32Address = in.readParcelable(Bech32Address.class.getClassLoader());
@@ -89,10 +129,18 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         accountBalance = in.readParcelable(AccountBalance.class.getClassLoader());
         selected = in.readByte() != 0;
         backedUpPrompt = in.readByte() != 0;
+        parentWalletName = in.readString();
+        isShow = in.readByte() != 0;
     }
 
     public Wallet(Builder builder) {
         this.uuid = builder.uuid;
+        this.isHD = builder.isHD;
+        this.pathIndex = builder.pathIndex;
+        this.sortIndex = builder.sortIndex;
+        this.selectedIndex = builder.selectedIndex;
+        this.parentId = builder.parentId;
+        this.depth = builder.depth;
         this.name = builder.name;
         this.address = builder.address;
         this.bech32Address = builder.bech32Address;
@@ -107,11 +155,19 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         this.accountBalance = builder.accountBalance;
         this.selected = builder.selected;
         this.backedUpPrompt = builder.backedUpPrompt;
+        this.parentWalletName = builder.parentWalletName;
+        this.isShow = builder.isShow;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uuid);
+        dest.writeByte((byte) (isHD ? 1 : 0));
+        dest.writeInt(pathIndex);
+        dest.writeInt(sortIndex);
+        dest.writeInt(selectedIndex);
+        dest.writeString(parentId);
+        dest.writeInt(depth);
         dest.writeString(name);
         dest.writeString(address);
         dest.writeParcelable(bech32Address, flags);
@@ -126,6 +182,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         dest.writeParcelable(accountBalance, flags);
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeByte((byte) (backedUpPrompt ? 1 : 0));
+        dest.writeByte((byte) (isShow ? 1 : 0));
+        dest.writeString(parentWalletName);
     }
 
     @Override
@@ -176,6 +234,54 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
 
     public String getUuid() {
         return uuid;
+    }
+
+    public boolean isHD() {
+        return isHD;
+    }
+
+    public void setHD(boolean HD) {
+        isHD = HD;
+    }
+
+    public int getPathIndex() {
+        return pathIndex;
+    }
+
+    public void setPathIndex(int pathIndex) {
+        this.pathIndex = pathIndex;
+    }
+
+    public int getSortIndex() {
+        return sortIndex;
+    }
+
+    public void setSortIndex(int sortIndex) {
+        this.sortIndex = sortIndex;
+    }
+
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
+
+    public void setSelectedIndex(int selectedIndex) {
+        this.selectedIndex = selectedIndex;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     public String getName() {
@@ -278,6 +384,22 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         this.selected = selected;
     }
 
+    public String getParentWalletName() {
+        return parentWalletName;
+    }
+
+    public void setParentWalletName(String parentWalletName) {
+        this.parentWalletName = parentWalletName;
+    }
+
+    public boolean isShow() {
+        return isShow;
+    }
+
+    public void setShow(boolean show) {
+        isShow = show;
+    }
+
     /**
      * 是否可以备份
      *
@@ -302,7 +424,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      * @return
      */
     public boolean isDeletedEnabled() {
-        return TextUtils.isEmpty(mnemonic) || isBackedUp();
+        return isBackedUp();
     }
 
     public void setBackedUp(boolean backedUp) {
@@ -331,7 +453,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
             if (address.startsWith("0x")) {
                 return address.replaceFirst("0x", "");
             }
-
             return address;
         }
 
@@ -391,6 +512,12 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
     public String toString() {
         return "Wallet{" +
                 "uuid='" + uuid + '\'' +
+                ", isHD=" + isHD +
+                ", pathIndex=" + pathIndex +
+                ", sortIndex=" + sortIndex +
+                ", selectedIndex=" + selectedIndex +
+                ", parentId='" + parentId + '\'' +
+                ", depth=" + depth +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", bech32Address=" + bech32Address +
@@ -405,12 +532,13 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
                 ", accountBalance=" + accountBalance +
                 ", selected=" + selected +
                 ", backedUpPrompt=" + backedUpPrompt +
+                ", parentWalletName='" + parentWalletName + '\'' +
+                ", isShow=" + isShow +
                 '}';
     }
 
     /**
      * 按照更新时间升序
-     *
      * @param o
      * @return
      */
@@ -423,14 +551,21 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         }
     }
 
+
     public WalletEntity buildWalletInfoEntity() {
         return new WalletEntity.Builder()
                 .uuid(getUuid())
+                .isHD(isHD())
+                .pathIndex(getPathIndex())
+                .sortIndex(getSortIndex())
+                .selectedIndex(getSelectedIndex())
+                .parentId(getParentId())
+                .depth(getDepth())
                 .keyJson(getKey())
                 .name(getName())
                 .address(getOriginalAddress())
-                .mainNetAddress(getBech32Address().getMainnet())
-                .testNetAddress(getBech32Address().getTestnet())
+                .mainNetAddress(getBech32Address() != null ? getBech32Address().getMainnet() : "")
+                .testNetAddress(getBech32Address() != null ? getBech32Address().getTestnet() : "")
                 .keystorePath(getKeystorePath())
                 .createTime(getCreateTime())
                 .updateTime(getUpdateTime())
@@ -438,6 +573,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
                 .mnemonic(getMnemonic())
                 .chainId(getChainId())
                 .backedUp(isBackedUp())
+                .isShow(isShow())
                 .build();
     }
 
@@ -468,11 +604,18 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      * @return
      */
     public boolean isObservedWallet() {
-        return TextUtils.isEmpty(key);
+        return TextUtils.isEmpty(key) && depth == 0;
     }
+
 
     public static final class Builder {
         private String uuid;
+        private boolean isHD;
+        private int pathIndex;
+        private int sortIndex;
+        private int selectedIndex;
+        private String parentId;
+        private int depth;
         private String name;
         private String address;
         private Bech32Address bech32Address;
@@ -487,9 +630,41 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         private AccountBalance accountBalance;
         private boolean selected;
         private boolean backedUpPrompt;
+        private boolean isShow;
+        private String parentWalletName;
 
         public Builder uuid(String uuid) {
             this.uuid = uuid;
+            return this;
+        }
+
+        public Builder isHD(boolean val){
+            isHD = val;
+            return this;
+        }
+
+        public Builder pathIndex(int val){
+            pathIndex = val;
+            return this;
+        }
+
+        public Builder sortIndex(int val){
+            sortIndex = val;
+            return this;
+        }
+
+        public Builder selectedIndex(int val){
+            selectedIndex = val;
+            return this;
+        }
+
+        public Builder parentId(String val){
+            parentId = val;
+            return this;
+        }
+
+        public Builder depth(int val){
+            depth = val;
             return this;
         }
 
@@ -562,6 +737,17 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
             this.backedUpPrompt = backedUpPrompt;
             return this;
         }
+
+        public Builder parentWalletName(String parentWalletName) {
+            this.parentWalletName = parentWalletName;
+            return this;
+        }
+
+        public Builder isShow(boolean isShow) {
+            this.isShow = isShow;
+            return this;
+        }
+
 
         public Wallet build() {
             return new Wallet(this);

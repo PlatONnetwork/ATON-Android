@@ -30,7 +30,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:roundIcon">
-        <activity android:name=".component.ui.view.TestActivity"></activity>
         <activity
             android:name=".component.ui.view.SplashActivity"
             android:launchMode="standard"
@@ -87,6 +86,10 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".component.ui.view.WalletManagerHDManagerActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".component.ui.view.ManageWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
@@ -138,7 +141,8 @@
         <activity
             android:name=".component.ui.view.SwitchLanguageActivity"
             android:launchMode="standard"
-            android:screenOrientation="portrait" /> <!-- Aton v0.7.0 -->
+            android:screenOrientation="portrait" />
+        <!-- Aton v0.7.0 -->
         <activity
             android:name=".component.ui.view.DelegateRecordActivity"
             android:launchMode="standard"
@@ -204,7 +208,14 @@
         <activity
             android:name=".component.ui.view.SendTransactionActivity"
             android:launchMode="standard"
-            android:screenOrientation="portrait" /> <!-- facebook -->
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".component.ui.view.SwitchWalletTypeActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <!-- facebook -->
         <activity
             android:name="com.umeng.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

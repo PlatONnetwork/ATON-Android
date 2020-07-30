@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/layout_space_10"
+    android:background="@color/color_ffffff"
+    android:padding="@dimen/layout_space_10">
+
+
+    <TextView
+        android:id="@+id/tv_wallet_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center_vertical|left"
+        style="@style/Text.000000.15"
+        android:layout_marginBottom="@dimen/layout_space_05"
+        android:text="wallet name"/>
+
+    <TextView
+        android:id="@+id/tv_wallet_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|left"
+        style="@style/Text.000000.15"
+        android:text="wallet address"/>
+
+</LinearLayout>
+

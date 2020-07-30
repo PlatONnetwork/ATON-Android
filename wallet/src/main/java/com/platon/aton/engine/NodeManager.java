@@ -3,7 +3,9 @@ package com.platon.aton.engine;
 import android.text.TextUtils;
 
 import com.platon.aton.BuildConfig;
+import com.platon.aton.R;
 import com.platon.aton.entity.Node;
+import com.platon.aton.entity.NodeStatus;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
@@ -212,6 +214,30 @@ public class NodeManager {
                 }
             }
         });
+    }
+
+    /**
+     * 节点状态
+     * @param nodeStatus
+     * @param isConsensus
+     * @return
+     */
+    public int getNodeStatusDescRes(@NodeStatus String nodeStatus, boolean isConsensus) {
+
+        switch (nodeStatus) {
+            case NodeStatus.ACTIVE:
+                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
+            case NodeStatus.CANDIDATE:
+                return R.string.validators_candidate;
+            case NodeStatus.LOCKED:
+                return R.string.validators_locked;
+            case NodeStatus.EXITING:
+                return R.string.validators_state_exiting;
+            case NodeStatus.EXITED:
+                return R.string.validators_state_exited;
+            default:
+                return R.string.unknown;
+        }
     }
 
 }

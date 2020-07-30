@@ -7,10 +7,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -20,18 +25,27 @@ import android.text.style.AbsoluteSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxRadioGroup;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewEditorActionEvent;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.DelegatePopAdapter;
+import com.platon.aton.component.adapter.SidebarWalletListAdapter;
+import com.platon.aton.component.adapter.base.CommonSidebarItemDecoration2;
 import com.platon.aton.component.ui.contract.DelegateContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
@@ -52,6 +66,7 @@ import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
@@ -79,6 +94,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 /**
  * 委托操作页面
@@ -133,6 +150,34 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
     @BindView(R.id.tv_lat_two)
     TextView tv_lat_two;
 
+    //  Sidebar
+    @BindView(R.id.layout_drawer_delegate)
+    DrawerLayout layoutDrawer;
+    @BindView(R.id.btn_all)
+    RadioButton btnAll;
+    @BindView(R.id.btn_hd)
+    RadioButton btnHd;
+    @BindView(R.id.btn_ordinary)
+    RadioButton btnOrdinary;
+    @BindView(R.id.radio_group)
+    RadioGroup radioGroup;
+    @BindView(R.id.iv_search)
+    ImageView ivSearch;
+    @BindView(R.id.layout_tab)
+    LinearLayout layoutTab;
+    @BindView(R.id.et_search)
+    EditText etSearch;
+    @BindView(R.id.iv_hide)
+    TextView ivHide;
+    @BindView(R.id.layout_search)
+    ConstraintLayout layoutSearch;
+    @BindView(R.id.list_wallet)
+    RecyclerView listWallet;
+    @BindView(R.id.tv_no_wallet)
+    TextView tvNoWallet;
+    @BindView(R.id.layout_no_wallet)
+    RelativeLayout layoutNoWallet;
+
     private Unbinder unbinder;
     /**
      * 选择的钱包类型（可用余额/锁仓余额）
@@ -160,8 +205,12 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
      */
     private EstimateGasResult estimateResult;
 
-    @Override
+    private SidebarWalletListAdapter mSidebarWalletListAdapter;
+    private CommonSidebarItemDecoration2 itemDecoration;
+    private @WalletTypeSearch int walletTypeSearch = WalletTypeSearch.WALLET_ALL;
 
+
+    @Override
     public DelegatePresenter createPresenter() {
         return new DelegatePresenter();
     }
@@ -177,6 +226,8 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
         initView();
         getPresenter().init(getDelegateDetailFromIntent());
         getPresenter().showWalletInfo();
+        getPresenter().loadData(WalletTypeSearch.WALLET_ALL,etSearch.getText().toString().trim());
+
     }
 
     @Override
@@ -192,6 +243,7 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
         initClick();
         initGuide();
         SoftHideKeyboardUtils.assistActivity(this);
+        initSidebarView();
     }
 
     private void initShade() {
@@ -211,7 +263,10 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        getPresenter().showSelectWalletDialogFragment();
+
+                        btnAll.setChecked(true);
+                        layoutDrawer.openDrawer(GravityCompat.END);
+                        //getPresenter().showSelectWalletDialogFragment();
                     }
                 });
 
@@ -350,6 +405,102 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
         stakingAmountType = item.getStakingAmountType();
         amountType.setText(stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? getString(R.string.available_balance) : getString(R.string.locked_balance));
         amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
+    }
+
+    /**
+     * 初始化侧滑栏
+     */
+    private void initSidebarView(){
+
+        //加载RecyclerView
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        listWallet.setLayoutManager(linearLayoutManager);
+        mSidebarWalletListAdapter = new SidebarWalletListAdapter(getPresenter().getDataSource(),getContext());
+        mSidebarWalletListAdapter.setFromType(SidebarWalletListAdapter.FROMTYPE_DELEGATE);
+        itemDecoration = new CommonSidebarItemDecoration2(getContext(),getPresenter().getDataSource(),2);
+        listWallet.setAdapter(mSidebarWalletListAdapter);
+        listWallet.addItemDecoration(itemDecoration);
+        mSidebarWalletListAdapter.setOnSelectClickListener(new SidebarWalletListAdapter.OnSelectClickListener(){
+
+            @Override
+            public void onItemClick(int position) {
+
+                Wallet selectedWallet = getPresenter().getDataSource().get(position);
+                getPresenter().updateSelectedWalletnotifyData(selectedWallet);
+                //关闭侧滑栏
+                layoutDrawer.closeDrawer(GravityCompat.END);
+            }
+        });
+
+
+        //搜索
+        RxView
+                .clicks(ivSearch)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        layoutSearch.setVisibility(View.VISIBLE);
+                    }
+                });
+
+        RxView
+                .clicks(ivHide)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        layoutSearch.setVisibility(View.GONE);
+                    }
+                });
+
+        //选择钱包tab切换
+        RxRadioGroup
+                .checkedChanges(radioGroup)
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer tabId) throws Exception {
+                        tabStateChangedLoadData(getTabById(tabId));
+                    }
+                });
+
+        RxTextView
+                .editorActionEvents(etSearch, new Predicate<TextViewEditorActionEvent>() {
+                    @Override
+                    public boolean test(TextViewEditorActionEvent textViewEditorActionEvent) throws Exception {
+                        return textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH;
+                    }
+                })
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<TextViewEditorActionEvent>() {
+                    @Override
+                    public void accept(TextViewEditorActionEvent textViewEditorActionEvent) {
+                        String searchStr =  etSearch.getText().toString().trim();
+                        getPresenter().loadData(walletTypeSearch,(TextUtils.isEmpty(searchStr) ? "NULL" :searchStr));
+                    }
+                });
+    }
+
+
+    public void tabStateChangedLoadData(@WalletTypeSearch int walletTypeSearch){
+
+        this.walletTypeSearch = walletTypeSearch;
+        getPresenter().loadData(walletTypeSearch,etSearch.getText().toString().trim());
+    }
+
+    int getTabById(int id) {
+        switch (id) {
+            case R.id.btn_all:
+                return WalletTypeSearch.WALLET_ALL;
+            case R.id.btn_hd:
+                return WalletTypeSearch.HD_WALLET;
+            default:
+                return WalletTypeSearch.ORDINARY_WALLET;
+        }
     }
 
     /**
@@ -562,6 +713,16 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
     @Override
     public void clearInputDelegateAmount() {
         et_amount.setText("");
+    }
+
+
+
+    @Override
+    public void notifyDataSetChanged() {
+        if(mSidebarWalletListAdapter != null){
+            itemDecoration.setDataSource(getPresenter().getDataSource());
+            mSidebarWalletListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

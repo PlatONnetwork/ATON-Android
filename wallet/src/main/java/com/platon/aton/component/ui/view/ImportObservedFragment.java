@@ -75,7 +75,6 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
 
 
     private void addListener() {
-
         RxView.clicks(sbtn_finish)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))

@@ -22,6 +22,7 @@ import com.platon.aton.component.ui.presenter.ValidatorsDetailPresenter;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.ShadowButton;
+import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.NodeStatus;
 import com.platon.aton.entity.VerifyNodeDetail;
@@ -242,8 +243,7 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
 
             tvDetailNodeName.setText(nodeDetail.getName());
             tvDetailNodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeId()));
-
-            rtvDetailNodeState.setText(getResources().getString(nodeDetail.getNodeStatusDescRes()));
+            rtvDetailNodeState.setText(getResources().getString(NodeManager.getInstance().getNodeStatusDescRes(nodeDetail.getNodeStatus(),nodeDetail.isConsensus())));
 
             tvDelegateYieldAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"))));
             Drawable delegatedRatePATrend = nodeDetail.isShowDelegatedRatePATrend() ? nodeDetail.isDelegatedRatePATrendRose() ? ContextCompat.getDrawable(this, R.drawable.icon_rose) : ContextCompat.getDrawable(this, R.drawable.icon_fell) : null;
@@ -298,12 +298,14 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
 
         //节点是否退出
         boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
+        //节点是否锁定
+        boolean isNodeLocked = TextUtils.equals(NodeStatus.LOCKED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.LOCKED, nodeDetail.getNodeStatus());
         //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
         boolean isInit = nodeDetail.isInit();
         //客户端钱包列表是否为空
         boolean isWalletAddressListEmpty = WalletManager.getInstance().getAddressList().isEmpty();
 
-        return !isNodeExit && !isInit && !isWalletAddressListEmpty;
+        return !isNodeExit && !isInit && !isWalletAddressListEmpty && !isNodeLocked;
     }
 
     private String getDelegateTips(VerifyNodeDetail nodeDetail) {

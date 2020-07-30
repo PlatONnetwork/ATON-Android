@@ -47,9 +47,10 @@
     <string name="btnImportwallet">Import Wallet</string>
     <string name="createIndividualWallet">Create Wallet</string>
     <string name="importIndividualWallet">Import Wallet</string>
-    <string name="name">Wallet Name</string>
+    <string name="hdIndividualWallet">Select Wallet</string>
+    <string name="name">Wallet Name:</string>
 
-    <string name="password">Password</string>
+    <string name="password">Password:</string>
     <string name="password_with_colon">Password：</string>
     <string name="passwordLimit">*At least 6 characters,&#160;recommended to mix uppercase and lowercase alphabets,&#160;numbers and symbols</string>
     <string name="createIndividualWalletTips">Note: Be sure to keep your wallet password in mind, the server will not store your password, you will not be able to retrieve the password if forgetting or losing!</string>
@@ -413,15 +414,15 @@
     <string name="from_wallet">Sender</string>
     <string name="wallet_name_exists">The name already exists on this APP, and can not be repeated.</string>
     <string name="rename_wallet">Rename Wallet</string>
-    <string name="version_update">Update Available</string>
+    <string name="version_update">New version released</string>
     <string name="version_update_tips">New Version is available.Version %1$s，Update now?</string>
-    <string name="not_now">Not Now</string>
-    <string name="update_now">Update</string>
+    <string name="not_now">Later</string>
+    <string name="update_now">Update Now</string>
     <string name="download_tips">New version download...</string>
     <string name="get_version_tips">Getting the latest version...</string>
     <string name="latest_version_tips">This is the latest version!</string>
     <string name="current_version">Version %1$s</string>
-    <string name="latest_version">Latest version%1$s</string>
+    <string name="latest_version">Latest version %1$s</string>
     <string name="backup_exit_tips">Backup has not been completed, sure to quit the operation?</string>
     <string name="voted_list_empty_tips">You haven\'t voted yet</string>
     <string name="pay_info">Type</string>
@@ -529,6 +530,7 @@
     <string name="validators_active">Active</string>
     <string name="validators_verifying">Verifying</string>
     <string name="validators_candidate">Candidate</string>
+    <string name="validators_locked">Locked</string>
     <string name="validators_detail">Validator Details</string>
     <string name="total_staked">Total Staked(LAT)</string>
     <string name="delegations">Delegations(LAT)</string>
@@ -795,8 +797,9 @@
     <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="msg_transaction_node_associated_wallet">Node participates in wallet address, cannot participate in delegation</string>
     <string name="msg_transaction_node_as_inside_candidate">@string/validators_details_tips</string>
+    <string name="msg_transaction_node_freezing_cannot_delegate">Node freezing, cannot delegate</string>
     <string name="delegate_amount_tips">The Amount cannot be less than %1$s LAT</string>
-
+    <string name="msg_wallet_num_over_limit_tips">The number of wallets cannot exceed 200</string>
 
     <!-- common -->
     <string name="common_name">common...</string>
@@ -804,6 +807,15 @@
     <!-- wallet -->
     <string name="wallet_receive">Receive</string>
     <string name="wallet_receive_refresh_network">Please click to refresh or check the network!</string>
+    <string name="wallet_type_error">Wallet type error</string>
+    <string name="wallet_type_choose">Select wallet type</string>
+    <string name="wallet_type_ordinary">Ordinary</string>
+    <string name="wallet_type_hd">HD</string>
+    <string name="wallet_type">Type:</string>
+    <string name="wallet_type_tip">A group of 30 wallets will be created when select HD</string>
+    <string name="wallet_rename">Rename</string>
+    <string name="wallet_hint_search">Search by wallet name/address</string>
+    <string name="wallet_input_search_error">Please enter the wallet name or address</string>
 
     <!-- delegate -->
     <string name="delegate_name">delegate...</string>

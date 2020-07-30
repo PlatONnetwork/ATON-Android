@@ -27,6 +27,7 @@ import com.platon.aton.entity.TransactionAuthorizationBaseData;
 import com.platon.aton.entity.TransactionAuthorizationData;
 import com.platon.aton.entity.TransactionType;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletSelectedIndex;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.BigIntegerUtil;
@@ -44,7 +45,11 @@ import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
@@ -57,6 +62,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private Wallet mWallet;
     private DelegateItemInfo mDelegateDetail;
     private EstimateGasResult mEstimateGasResult;
+
+    private ArrayList<Wallet> sidebarWallets = new ArrayList<>();
+
 
     public EstimateGasResult getmEstimateGasResult() {
         return mEstimateGasResult;
@@ -179,6 +187,104 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         }
 
     }
+
+    //--------------------------------------------------------
+    @Override
+    public void loadData(int walletTypeSearch, String keywords) {
+        String name = "";
+        String address = "";
+        if(!TextUtils.isEmpty(keywords)){
+            if("NULL".equals(keywords)){//关键词搜索且输入内容为空
+                address = keywords;
+            }else if(checkKeywordsAddress(keywords)){//地址关键词搜索
+                address = keywords;
+            }else{//钱包名称关键词搜索
+                name = keywords;
+            }
+        }
+
+        List<Wallet> newWallet = WalletManager.getInstance().getWalletListByAddressAndNameAndType(walletTypeSearch,name,address);
+
+
+        if(getDataSource().size() > 0){
+            getDataSource().clear();
+        }
+        //设置选中钱包
+        Wallet selectedWallet =  WalletManager.getInstance().getSelectedWallet();
+        for (int i = 0; i < newWallet.size(); i++) {
+            if(selectedWallet.getUuid().equals(newWallet.get(i).getUuid())){
+                newWallet.get(i).setSelectedIndex(WalletSelectedIndex.SELECTED);
+                break;
+            }
+        }
+        //排序：先按照普通、HD组排序，内部再按照余额大小倒序
+        Collections.sort(newWallet, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                Boolean value1 = new Boolean(o1.isHD());
+                Boolean value2 = new Boolean(o2.isHD());
+
+                if(1 == value1.compareTo(value2)){
+                    return 1;
+                }else if(-1 == value1.compareTo(value2)){
+                    return -1;
+                }else{
+                     if(!o1.isHD() && !o2.isHD()){//比较普通钱包的金额
+                         return accountBalanceCompareTo(o1,o2);
+                     }else if(o1.isHD() && o2.isHD()){//比较HD钱包的金额
+                         return accountBalanceCompareTo(o1,o2);
+                     }
+                }
+
+                return value1.compareTo(value2);
+            }
+        });
+
+
+        getDataSource().addAll(newWallet);
+        getView().notifyDataSetChanged();
+    }
+
+    private int accountBalanceCompareTo(Wallet o1, Wallet o2) {
+
+        AccountBalance accountBalance1 = o1.getAccountBalance();
+        AccountBalance accountBalance2 = o2.getAccountBalance();
+
+        if (accountBalance1 != null && accountBalance2 != null
+                && (accountBalance1.getFree() != null && !"".equals(accountBalance1.getFree()))
+                && (accountBalance2.getFree() != null && !"".equals(accountBalance2.getFree()))) {
+
+            Long amountHD1 = Long.parseLong(accountBalance1.getFree());
+            Long amountHD2 = Long.parseLong(accountBalance2.getFree());
+            return amountHD1.compareTo(amountHD2);
+        }else{
+            return 0;
+        }
+
+    }
+
+    @Override
+    public ArrayList<Wallet> getDataSource() {
+        return this.sidebarWallets;
+    }
+
+    @Override
+    public void updateSelectedWalletnotifyData(Wallet selectedWallet) {
+
+        getEstimateGas(selectedWallet.getPrefixAddress(), mDelegateDetail.getNodeId());
+    }
+
+
+    public boolean checkKeywordsAddress(String input){
+        if(input.length() > 5){
+            String prefix = input.subSequence(0,4).toString();
+            if((prefix.equalsIgnoreCase("lat1") || prefix.equalsIgnoreCase("lax1"))){
+                return true;
+            }
+        }
+        return false;
+    }
+    //--------------------------------------------------------
 
 
     //点击全部的时候，需要获取一次手续费
@@ -342,6 +448,20 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
+
+    public Wallet getWalletByAddress(String address) {
+        if (TextUtils.isEmpty(address)) {
+            return null;
+        }
+
+        for (Wallet walletEntity : getDataSource()) {
+            if (walletEntity.getPrefixAddress().toLowerCase().contains(address.toLowerCase())) {
+                return walletEntity;
+            }
+        }
+        return Wallet.getNullInstance();
+    }
+
     public void getEstimateGas(String prefixAddress, String nodeId) {
 
         estimateGas(prefixAddress, nodeId)
@@ -355,9 +475,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                             mEstimateGasResult = estimateGasResult;
 
-                            WalletManager.getInstance().updateAccountBalance(new AccountBalance(prefixAddress, estimateGasResult.getFree(), estimateGasResult.getLock()));
 
-                            mWallet = WalletManager.getInstance().getWalletByAddress(prefixAddress);
+                            mWallet = getWalletByAddress(prefixAddress);
+                            mWallet.setAccountBalance(new AccountBalance(prefixAddress, estimateGasResult.getFree(), estimateGasResult.getLock()));
+
+                            //待优化，先注释掉。。。
+                            //WalletManager.getInstance().updateAccountBalance(new AccountBalance(prefixAddress, estimateGasResult.getFree(), estimateGasResult.getLock()));
+                            //mWallet = WalletManager.getInstance().getWalletByAddress(prefixAddress);
 
                             getView().showSelectedWalletInfo(mWallet);
 

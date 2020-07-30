@@ -74,6 +74,7 @@ public class Constants {
         String EXTRA_DELEGATE_INFO = "extra_delegate_info";
         String EXTRA_DELEGATE_DETAIL = "extra_delegate_detail";
         String EXTRA_BOOLEAN = "extra_boolean";
+        String EXTRA_WALLET_TYPE = "extra_wallet_type";
     }
 
     public interface Bundle {
@@ -178,6 +179,12 @@ public class Constants {
         int LIST_SIZE = 10; //请求列表大小
         int NEWEST_DATA = -1; //请求最新的数据
         String REFRESH_DIRECTION = "new";//最新数据的方法
+    }
+
+    public interface WalletConstants {
+       int WALLET_LIMIT = 200; //钱包上限为200个，即普通钱包 + HD子钱包一共的数量
+       int WALLET_ADD_ORDINARY = 1;//新创建一个普通钱包加1
+       int WALLET_ADD_HD = 30;//新创建一组HD钱包加30
     }
 
     public interface DBName {

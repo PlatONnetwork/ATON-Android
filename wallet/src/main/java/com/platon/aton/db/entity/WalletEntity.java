@@ -1,6 +1,8 @@
 package com.platon.aton.db.entity;
 
 
+import com.platon.aton.component.widget.togglebutton.Spring;
+import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;
 
@@ -14,6 +16,31 @@ public class WalletEntity extends RealmObject {
      */
     @PrimaryKey
     private String uuid;
+    /**
+     * 是否分层钱包：默认false
+     */
+    private boolean isHD;
+    /**
+     * 钱包路径index：HD的index值，普通钱包和HD母钱包都是0
+     */
+    private int pathIndex;
+    /**
+     * 默认的排序索引, 和钱包管理顺序相同，从0开始，数据小的排前面
+     */
+    private int sortIndex;
+    /**
+     * 当前HD钱包选中的索引
+     */
+    private int selectedIndex;
+    /**
+     * 如果是HD子钱包，为HD父钱包的 uuid字段
+     */
+    private String parentId;
+    /**
+     * 钱包深度：HD目录和普通钱包为0，HD子钱包为1
+     */
+    private int depth;
+
     /**
      * keystore
      */
@@ -59,6 +86,10 @@ public class WalletEntity extends RealmObject {
      * 是否已备份
      */
     private boolean backedUp;
+    /**
+     * 是否首页展示
+     */
+    private boolean isShow;
 
     public WalletEntity() {
 
@@ -66,6 +97,12 @@ public class WalletEntity extends RealmObject {
 
     private WalletEntity(Builder builder) {
         setUuid(builder.uuid);
+        setHD(builder.isHD);
+        setPathIndex(builder.pathIndex);
+        setSortIndex(builder.sortIndex);
+        setSelectedIndex(builder.selectedIndex);
+        setParentId(builder.parentId);
+        setDepth(builder.depth);
         setKeyJson(builder.keyJson);
         setName(builder.name);
         setAddress(builder.address);
@@ -78,6 +115,7 @@ public class WalletEntity extends RealmObject {
         setMnemonic(builder.mnemonic);
         setChainId(builder.chainId);
         setBackedUp(builder.backedUp);
+        setShow(builder.isShow);
     }
 
     public String getAvatar() {
@@ -184,8 +222,70 @@ public class WalletEntity extends RealmObject {
         this.backedUp = backedUp;
     }
 
+    public boolean isHD() {
+        return isHD;
+    }
+
+    public void setHD(boolean HD) {
+        isHD = HD;
+    }
+
+    public int getPathIndex() {
+        return pathIndex;
+    }
+
+    public void setPathIndex(int pathIndex) {
+        this.pathIndex = pathIndex;
+    }
+
+    public int getSortIndex() {
+        return sortIndex;
+    }
+
+    public void setSortIndex(int sortIndex) {
+        this.sortIndex = sortIndex;
+    }
+
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
+
+    public void setSelectedIndex(int selectedIndex) {
+        this.selectedIndex = selectedIndex;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public boolean isShow() {
+        return isShow;
+    }
+
+    public void setShow(boolean show) {
+        isShow = show;
+    }
+
     public static final class Builder {
         private String uuid;
+        private boolean isHD;
+        private int pathIndex;
+        private int sortIndex;
+        private int selectedIndex;
+        private String parentId;
+        private int depth;
         private String keyJson;
         private String name;
         private String address;
@@ -198,12 +298,43 @@ public class WalletEntity extends RealmObject {
         private String mnemonic;
         private String chainId;
         private boolean backedUp;
+        private boolean isShow;
 
         public Builder() {
         }
 
         public Builder uuid(String val) {
             uuid = val;
+            return this;
+        }
+
+        public Builder isHD(boolean val){
+            isHD = val;
+            return this;
+        }
+
+        public Builder pathIndex(int val){
+            pathIndex = val;
+            return this;
+        }
+
+        public Builder sortIndex(int val){
+            sortIndex = val;
+            return this;
+        }
+
+        public Builder selectedIndex(int val){
+            selectedIndex = val;
+            return this;
+        }
+
+        public Builder parentId(String val){
+            parentId = val;
+            return this;
+        }
+
+        public Builder depth(int val){
+            depth = val;
             return this;
         }
 
@@ -267,6 +398,11 @@ public class WalletEntity extends RealmObject {
             return this;
         }
 
+        public Builder isShow(boolean val) {
+            isShow = val;
+            return this;
+        }
+
         public WalletEntity build() {
             return new WalletEntity(this);
         }
@@ -277,6 +413,12 @@ public class WalletEntity extends RealmObject {
         Bech32Address bech32Address = new Bech32Address(mainNetAddress,testNetAddress);
         return new Wallet.Builder()
                 .uuid(uuid)
+                .isHD(isHD)
+                .pathIndex(pathIndex)
+                .sortIndex(sortIndex)
+                .selectedIndex(selectedIndex)
+                .parentId(parentId)
+                .depth(depth)
                 .key(keyJson)
                 .name(name)
                 .address(address)
@@ -284,11 +426,14 @@ public class WalletEntity extends RealmObject {
                 .keystorePath(keystorePath)
                 .createTime(createTime)
                 .updateTime(updateTime)
+                .parentWalletName("")
+                .accountBalance(new AccountBalance())
                 .avatar(avatar)
                 .mnemonic(mnemonic)
                 .chainId(chainId)
                 .backedUp(backedUp)
                 .backedUpPrompt(true)
+                .isShow(isShow)
                 .build();
     }
 
@@ -296,6 +441,12 @@ public class WalletEntity extends RealmObject {
     public String toString() {
         return "WalletEntity{" +
                 "uuid='" + uuid + '\'' +
+                ", isHD=" + isHD +
+                ", pathIndex=" + pathIndex +
+                ", sortIndex=" + sortIndex +
+                ", selectedIndex=" + selectedIndex +
+                ", parentId='" + parentId + '\'' +
+                ", depth=" + depth +
                 ", keyJson='" + keyJson + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
@@ -308,6 +459,7 @@ public class WalletEntity extends RealmObject {
                 ", mnemonic='" + mnemonic + '\'' +
                 ", chainId='" + chainId + '\'' +
                 ", backedUp=" + backedUp +
+                ", isShow=" + isShow +
                 '}';
     }
 }

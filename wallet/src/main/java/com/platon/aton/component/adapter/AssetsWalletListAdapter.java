@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletSelectedIndex;
 
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class AssetsWalletListAdapter extends RecyclerView.Adapter<BaseViewHolder
                 @Override
                 public void onItemClick(Wallet wallet) {
 
-                    if (wallet.isSelected()) {
+                    if (wallet.getSelectedIndex() == WalletSelectedIndex.SELECTED) {
                         return;
                     }
                     //当前选中的置为false
@@ -113,6 +114,15 @@ public class AssetsWalletListAdapter extends RecyclerView.Adapter<BaseViewHolder
 
                     if (mItemClickListener != null) {
                         mItemClickListener.onCommonWalletItemClick(wallet, position);
+                    }
+                }
+            });
+            //HD钱包组被点击
+            listViewHolder.setSubWallTagItemClickListener(new WalletListViewHolder.OnSubWallTagItemClickListener() {
+                @Override
+                public void onItemClick() {
+                    if (mItemClickListener != null) {
+                        mItemClickListener.onSubWallTagItemClickListener(wallet, position);
                     }
                 }
             });
@@ -158,7 +168,11 @@ public class AssetsWalletListAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
 
         Wallet wallet = mWalletList.get(position);
-        wallet.setSelected(selected);
+        if(selected){
+            wallet.setSelectedIndex(WalletSelectedIndex.SELECTED);
+        }else{
+            wallet.setSelectedIndex(WalletSelectedIndex.UNSELECTED);
+        }
 
         Bundle bundle = new Bundle();
         bundle.putBoolean(WalletListDiffCallback.KEY_WALLET_SELECTED, selected);
@@ -194,7 +208,7 @@ public class AssetsWalletListAdapter extends RecyclerView.Adapter<BaseViewHolder
                 .filter(new Predicate<Integer>() {
                     @Override
                     public boolean test(Integer position) throws Exception {
-                        return mWalletList.get(position).isSelected();
+                        return mWalletList.get(position).getSelectedIndex() == WalletSelectedIndex.SELECTED;
                     }
                 })
                 .firstElement()
@@ -236,5 +250,10 @@ public class AssetsWalletListAdapter extends RecyclerView.Adapter<BaseViewHolder
          * 导入钱包被点击
          */
         void onImportWalletItemClick();
+
+        /**
+         * HD钱包组被点击
+         */
+        void onSubWallTagItemClickListener(Wallet wallet, int position);
     }
 }

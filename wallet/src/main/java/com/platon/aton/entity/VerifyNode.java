@@ -37,6 +37,7 @@ public class VerifyNode implements Parcelable {
      * 竞选状态
      * Active —— 活跃中
      * Candidate —— 候选中
+     * Locked —— 锁定中
      */
     private @NodeStatus
     String nodeStatus;

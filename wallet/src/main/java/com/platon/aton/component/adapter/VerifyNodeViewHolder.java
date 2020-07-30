@@ -14,6 +14,7 @@ import com.platon.aton.component.adapter.base.BaseViewHolder;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.ShadowDrawable;
+import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.NodeStatus;
 import com.platon.aton.entity.VerifyNode;
 import com.platon.aton.utils.AmountUtil;
@@ -67,7 +68,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
         GlideUtils.loadRound(mContext, data.getUrl(), mNodeAvatarCiv);
         mNodeNameTv.setText(data.getName());
         mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLatWithFractionDigits(data.getDelegateSum(), 2)), StringUtil.formatBalance(data.getDelegate(), 0, 0)));
-        mNodeStateRtv.setText(mContext.getString(getNodeStatusDescRes(data.getNodeStatus(), data.isConsensus())));
+        mNodeStateRtv.setText(mContext.getString(NodeManager.getInstance().getNodeStatusDescRes(data.getNodeStatus(), data.isConsensus())));
         mNodeStateRtv.setTextColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));
         mNodeStateRtv.setRoundedBorderColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));
         mNodeRankTv.setText(String.valueOf(data.getRanking()));
@@ -110,7 +111,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
                     HashMap<String, Object> hashMap = (HashMap<String, Object>) bundle.getSerializable(key);
                     String nodeStatus = MapUtils.getString(hashMap, VerifyNodeDiffCallback.KEY_NODE_STATUS);
                     boolean isConsensus = MapUtils.getBoolean(hashMap, VerifyNodeDiffCallback.KEY_CONSENSUS);
-                    mNodeStateRtv.setText(getNodeStatusDescRes(nodeStatus, isConsensus));
+                    mNodeStateRtv.setText(NodeManager.getInstance().getNodeStatusDescRes(nodeStatus, isConsensus));
                     mNodeStateRtv.setTextColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(nodeStatus, isConsensus)));
                     mNodeStateRtv.setRoundedBorderColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(nodeStatus, isConsensus)));
                     break;
@@ -156,19 +157,4 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
     }
 
 
-    private int getNodeStatusDescRes(@NodeStatus String nodeStatus, boolean isConsensus) {
-
-        switch (nodeStatus) {
-            case NodeStatus.ACTIVE:
-                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
-            case NodeStatus.CANDIDATE:
-                return R.string.validators_candidate;
-            case NodeStatus.EXITING:
-                return R.string.validators_state_exiting;
-            case NodeStatus.EXITED:
-                return R.string.validators_state_exited;
-            default:
-                return R.string.unknown;
-        }
-    }
 }

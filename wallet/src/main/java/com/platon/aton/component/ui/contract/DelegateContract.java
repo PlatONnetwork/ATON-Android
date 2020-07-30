@@ -5,10 +5,14 @@ import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.framework.base.BaseViewImp;
 import com.platon.framework.base.IPresenter;
 
 import org.web3j.platon.StakingAmountType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DelegateContract {
 
@@ -56,6 +60,8 @@ public class DelegateContract {
          * 清除输入的委托金额
          */
         void clearInputDelegateAmount();
+
+        void notifyDataSetChanged();
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -73,6 +79,13 @@ public class DelegateContract {
         void submitDelegate(StakingAmountType type);
 
         void getGasProvider(StakingAmountType stakingAmountType);
+
+        //Sidebar
+        void loadData(@WalletTypeSearch int walletTypeSearch, String keywords);
+
+        ArrayList<Wallet> getDataSource();
+
+        void updateSelectedWalletnotifyData(Wallet selectedWallet);
 
     }
 }

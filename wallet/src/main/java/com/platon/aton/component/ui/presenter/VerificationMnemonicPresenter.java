@@ -113,7 +113,7 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
             if (mMnemonic.equals(builder.toString())) {
                 //备份成功
                 view.showDisclaimerDialog();
-                WalletManager.getInstance().updateBackedUpWithUuid(mWalletEntity.getUuid(), true);
+                WalletManager.getInstance().updateBackedUpWithUuid(mWalletEntity, true);
                 EventPublisher.getInstance().sendBackedUpWalletSuccessedEvent(mWalletEntity.getUuid());
             } else {
                 //备份失败
