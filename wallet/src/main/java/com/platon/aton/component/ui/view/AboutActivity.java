@@ -77,6 +77,7 @@ public class AboutActivity extends BaseActivity {
         return null;
     }
 
+
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
