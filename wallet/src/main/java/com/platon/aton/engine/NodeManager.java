@@ -157,7 +157,7 @@ public class NodeManager {
 
         List<Node> nodeInfoEntityList = new ArrayList<>();
 
-        if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {//公网测试环境 + 开发环境
+        if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {//内网测试环境 + 开发环境
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_OUTER_INNERTEST_NET)
@@ -181,13 +181,21 @@ public class NodeManager {
                     .isChecked(true)
                     .chainId(BuildConfig.ID_TEST_NET)
                     .build());
-        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试环境
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试环境 + 开发环境
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_OUTER_INNERTEST_NET)
                     .isDefaultNode(true)
                     .isChecked(true)
                     .chainId(BuildConfig.ID_INNERTEST_NET)
+                    .build());
+
+            nodeInfoEntityList.add(new Node.Builder()
+                    .id(UUID.randomUUID().hashCode())
+                    .nodeAddress(BuildConfig.URL_DEVELOP_NET)
+                    .isDefaultNode(false)
+                    .isChecked(false)
+                    .chainId(BuildConfig.ID_DEVELOP_NET)
                     .build());
         } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {//平行网
             nodeInfoEntityList.add(new Node.Builder()
