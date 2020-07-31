@@ -60,7 +60,6 @@ public class AboutActivity extends BaseActivity {
     ImageView ivLogo;
     @BindView(R.id.tv_service_agreement)
     TextView tvServiceAgreement;
-
     private Unbinder unbinder;
 
     @Override
