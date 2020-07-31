@@ -4,6 +4,7 @@ import android.Manifest;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.platon.aton.BuildConfig;
@@ -16,8 +17,14 @@ import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.engine.VersionUpdate;
+import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.VersionInfo;
+import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletSelectedIndex;
+import com.platon.aton.entity.WalletTypeSearch;
+import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.DateUtil;
+import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BasePresenter;
@@ -28,7 +35,12 @@ import com.platon.framework.utils.PreferenceTool;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
+
+    private ArrayList<Wallet> wallets = new ArrayList<>();
 
     @Override
     public void checkVersion() {
@@ -62,6 +74,62 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 });
     }
 
+    @Override
+    public void loadData(int walletTypeSearch, String keywords) {
+        String name = "";
+        String address = "";
+        if(!TextUtils.isEmpty(keywords)){
+            if("NULL".equals(keywords)){//关键词搜索且输入内容为空
+                address = keywords;
+            }else if(checkKeywordsAddress(keywords)){//地址关键词搜索
+                address = keywords;
+            }else{//钱包名称关键词搜索
+                name = keywords;
+            }
+        }
+
+        List<Wallet> newWallet = WalletManager.getInstance().getWalletListByAddressAndNameAndType(walletTypeSearch,name,address);
+        if(getDataSource().size() > 0){
+            getDataSource().clear();
+        }
+        //设置选中钱包
+       Wallet selectedWallet =  WalletManager.getInstance().getSelectedWallet();
+        for (int i = 0; i < newWallet.size(); i++) {
+             if(selectedWallet.getUuid().equals(newWallet.get(i).getUuid())){
+                 newWallet.get(i).setSelectedIndex(WalletSelectedIndex.SELECTED);
+                 break;
+             }
+        }
+        getDataSource().addAll(newWallet);
+        getView().notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateSelectedWalletnotifyData(Wallet selectedWallet) {
+
+
+        WalletManager.getInstance().addAndSelectedWalletStatusNotice(selectedWallet);
+
+
+    }
+
+
+    public boolean checkKeywordsAddress(String input){
+        if(input.length() > 5){
+            String prefix = input.subSequence(0,4).toString();
+            if((prefix.equalsIgnoreCase("lat1") || prefix.equalsIgnoreCase("lax1"))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public ArrayList<Wallet> getDataSource() {
+        return this.wallets;
+    }
+
+
     private boolean shouldUpdate(VersionInfo versionInfo) {
         long lastUpdateTime = PreferenceTool.getLong(Constants.Preference.KEY_UPDATE_VERSION_TIME, 0L);
         boolean shouldShowUpdateDialog = !(lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime));
@@ -71,7 +139,9 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     private void showUpdateVersionDialog(VersionInfo versionInfo) {
         CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                 string(R.string.version_update),
-                string(R.string.version_update_tips, versionInfo.getNewVersion()),
+                versionInfo.getNewVersion(),
+                //string(R.string.version_update_tips, versionInfo.getNewVersion()),
+                versionInfo.getDesc(),
                 string(R.string.update_now), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -103,7 +173,8 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                             fragment.dismiss();
                         }
                     }
-                }, !versionInfo.isForce()).show(currentActivity().getSupportFragmentManager(), "showTips");
+                }, !versionInfo.isForce())
+                .show(currentActivity().getSupportFragmentManager(), "showTips");
     }
 
     public void requestPermission(VersionInfo versionInfo) {

@@ -5,12 +5,12 @@
     android:id="@+id/rl_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="16dp">
+    android:layout_marginTop="@dimen/layout_space_05">
 
     <FrameLayout
         android:id="@+id/fl_avatar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_centerVertical="true"
         android:layout_marginRight="12dp">
 
@@ -18,6 +18,7 @@
             android:id="@+id/iv_wallet_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/avatar_15" />
     </FrameLayout>
 
@@ -30,77 +31,90 @@
         android:src="@drawable/icon_right_arrow" />
 
     <LinearLayout
-        android:id="@+id/ll_item"
+        android:layout_marginTop="@dimen/layout_space_05"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_toLeftOf="@id/iv_arrow"
         android:layout_toRightOf="@id/fl_avatar"
+        android:layout_height="50dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/tv_wallet_name"
-            style="@style/Text.000000.14"
-            android:ellipsize="end"
-            android:gravity="left|center_vertical"
-            android:maxWidth="140dp"
-            android:singleLine="true"
-            android:textStyle="bold"
-            tools:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈" />
-
-        <com.platon.aton.component.widget.RoundedTextView
-            android:id="@+id/tv_wallet_logo"
-            style="@style/Text.4a90e2.11"
-            android:layout_width="wrap_content"
-            android:layout_height="16dp"
-            android:layout_marginLeft="6dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:visibility="gone"
-            app:rtv_background_color="@color/color_ffffff"
-            app:rtv_border_color="@color/color_4a90e2"
-            app:rtv_border_width="1dp"
-            app:rtv_corner_radius="3dp"
-            tools:text="observed"
-            tools:visibility="visible" />
-
-        <Space
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/ll_item"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_marginRight="16dp"
+            android:layout_toLeftOf="@id/iv_arrow"
+            android:layout_toRightOf="@id/fl_avatar"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_wallet_name"
+                style="@style/Text.000000.14"
+                android:ellipsize="end"
+                android:gravity="left|center_vertical"
+                android:maxWidth="140dp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                tools:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈" />
+
+            <com.platon.aton.component.widget.RoundedTextView
+                android:id="@+id/tv_wallet_logo"
+                style="@style/Text.4a90e2.11"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_marginLeft="6dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:visibility="gone"
+                app:rtv_background_color="@color/color_ffffff"
+                app:rtv_border_color="@color/color_4a90e2"
+                app:rtv_border_width="1dp"
+                app:rtv_corner_radius="3dp"
+                tools:text="observed"
+                tools:visibility="visible" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_wallet_backup"
+                style="@style/Text.105cfe.13"
+                android:layout_alignParentRight="true"
+                android:drawableLeft="@drawable/icon_backup"
+                android:drawablePadding="5dp"
+                android:includeFontPadding="false"
+                android:text="@string/msg_backup_wallet" />
+
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_wallet_backup"
-            style="@style/Text.105cfe.13"
-            android:layout_alignParentRight="true"
-            android:drawableLeft="@drawable/icon_backup"
-            android:drawablePadding="5dp"
-            android:includeFontPadding="false"
-            android:text="@string/msg_backup_wallet" />
+            android:id="@+id/tv_wallet_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_item"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@id/iv_arrow"
+            android:layout_toRightOf="@id/fl_avatar"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:textColor="@color/color_898c9e"
+            android:textSize="13sp"
+            tools:text="ox2ce48152fF49B2b3d3" />
 
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_wallet_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll_item"
-        android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@id/iv_arrow"
-        android:layout_toRightOf="@id/fl_avatar"
-        android:ellipsize="middle"
-        android:singleLine="true"
-        android:textColor="@color/color_898c9e"
-        android:textSize="13sp"
-        tools:text="ox2ce48152fF49B2b3d3" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/tv_wallet_address"
+        android:layout_below="@id/fl_avatar"
         android:layout_marginTop="16dp"
         android:background="@color/color_e4e7f3" />
 </RelativeLayout>

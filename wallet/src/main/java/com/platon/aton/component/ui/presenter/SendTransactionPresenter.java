@@ -34,6 +34,7 @@ import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.AddressMatchingResultType;
 import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GasProvider;
+import com.platon.aton.entity.MainTab;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -646,7 +647,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
                             getView().resetView(feeAmount);
-                            MainActivity.actionStart(getContext(), MainActivity.MainTab.TAB_ASSETS);
+                            MainActivity.actionStart(getContext(), MainTab.TAB_ASSETS);
                         }
                     }
                 });

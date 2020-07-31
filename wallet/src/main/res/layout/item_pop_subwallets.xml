@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_subwallet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/layout_space_10"
+    android:paddingBottom="@dimen/layout_space_10">
+
+    <ImageView
+        android:id="@+id/iv_subwallet_defalut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_all_wallets"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_subwallet_avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_all_wallets"
+        app:layout_constraintLeft_toRightOf="@+id/iv_subwallet_defalut"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_subselected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_hook_m"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_subwallet_name"
+        style="@style/Text.898c9e.16"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:singleLine="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_subwallet_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="AII walletswalle" />
+
+    <ImageView
+        android:id="@+id/iv_subwallet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_space_05"
+        android:layout_marginLeft="8dp"
+        android:visibility="invisible"
+        android:src="@drawable/icon_arrow_down"
+        app:layout_constraintTop_toTopOf="@id/tv_subwallet_name"
+        app:layout_constraintLeft_toRightOf="@id/tv_subwallet_name" />
+
+
+</android.support.constraint.ConstraintLayout>

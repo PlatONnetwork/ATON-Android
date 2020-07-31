@@ -18,6 +18,7 @@ import com.platon.aton.app.LoadingTransformer;
 import com.platon.aton.component.widget.CustomUnderlineEditText;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
+import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.DensityUtil;
@@ -105,6 +106,14 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
         Wallet wallet = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
 
+        //子钱包(查询子钱包对应的HD母钱包信息组装到子钱包)
+        if(wallet.isHD() && wallet.getDepth() == 1){
+            Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
+            wallet.setMnemonic(rootWallet.getMnemonic());
+            wallet.setKey(rootWallet.getKey());
+        }
+
+
         ShadowDrawable.setShadowDrawable(layoutContent,
                 ContextCompat.getColor(context, R.color.color_ffffff),
                 DensityUtil.dp2px(context, 6f),
@@ -151,6 +160,13 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                             public Credentials call() throws Exception {
 
                                 CommonUtil.getMaxMemoryInfo(context);
+                               /* //处理HD子钱包
+                                if((wallet.isHD() && wallet.getDepth() == 1) && (wallet.getMnemonic() != null && !"".equals(wallet.getMnemonic())) && (wallet.getKey() != null && !"".equals(wallet.getKey()))){
+
+                                    String mMnemonic = JZWalletUtil.decryptMnenonic(wallet.getKey(), wallet.getMnemonic(), getPassword());
+                                    Wallet subWallet = WalletManager.getInstance().importMnemonicGenerateWallet(mMnemonic,wallet.getName(),getPassword(),wallet.getPathIndex()).blockingGet();
+                                    return JZWalletUtil.getCredentials(getPassword(), subWallet.getKey());
+                                }*/
                                 return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
                             }
                         })
@@ -170,7 +186,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                                             }
                                             if (mCorrectListener != null) {
                                                 dismiss();
-                                                mCorrectListener.onCorrect(credentials, getPassword());
+                                                mCorrectListener.onCorrect(credentials, getPassword(), wallet);
                                             }
                                         } else {
                                             tvPasswordError.setVisibility(View.VISIBLE);
@@ -215,7 +231,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
     public interface OnWalletCorrectListener {
 
-        void onCorrect(Credentials credentials, String password);
+        void onCorrect(Credentials credentials, String password, Wallet wallet);
     }
 
     public interface OnWalletPasswordCorrectListener {

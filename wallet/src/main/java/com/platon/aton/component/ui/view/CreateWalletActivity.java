@@ -3,6 +3,8 @@ package com.platon.aton.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,8 +22,11 @@ import com.platon.aton.component.ui.contract.CreateWalletContract;
 import com.platon.aton.component.ui.presenter.CreateWalletPresenter;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.WalletType;
 import com.platon.aton.utils.CheckStrength;
+import com.platon.aton.utils.DefParserStrUtil;
 import com.platon.aton.utils.SoftHideKeyboardUtils;
+import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
 
 import butterknife.BindView;
@@ -47,6 +52,8 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
     TextView mTvPasswordDesc;
     @BindView(R.id.tv_password_error)
     TextView mTvPasswordError;
+    @BindView(R.id.tv_wallet_type)
+    TextView mTvWalletType;
     @BindView(R.id.sbtn_create)
     ShadowButton mSbtnCreate;
     @BindView(R.id.tv_strength)
@@ -61,9 +68,17 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
     View mVLine4;
     @BindView(R.id.layout_password_strength)
     LinearLayout mPasswordStrengthLayout;
+    @BindView(R.id.wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
+    public static final int REQ_WALLET_TYPE_QR_CODE = 0x101;
+    @WalletType
+    int walletType = WalletType.ORDINARY_WALLET;//默认普通钱包类型
+    private int walletNum = 0;
+    private boolean isEnableCreate = false;
+
 
     public static void actionStart(Context context) {
         context.startActivity(new Intent(context, CreateWalletActivity.class));
@@ -82,6 +97,7 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
+        getPresenter().loadDBWalletNumber();
         initView();
         showPassword();
         showRepeatPassword();
@@ -97,6 +113,19 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         return true;
     }
 
+    @Override
+    public void showWalletNumber(int walletNum) {
+        this.walletNum = walletNum;
+
+        //检查钱包上限
+        isEnableCreate = checkWalletNumLimit(walletNum,walletType);
+        if(isEnableCreate){
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void initView() {
 
         mSbtnCreate.setOnClickListener(this);
@@ -107,6 +136,7 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         mEtRepeatPassword.setTypeface(Typeface.DEFAULT);
         mIvPasswordEyes.setOnClickListener(this);
         mIvRepeatPasswordEyes.setOnClickListener(this);
+        mTvWalletType.setOnClickListener(this);
         mEtName.setOnFocusChangeListener(this);
         mEtPassword.setOnFocusChangeListener(this);
         mEtRepeatPassword.setOnFocusChangeListener(this);
@@ -164,19 +194,25 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sbtn_create:
                 getPresenter().createWallet(mEtName.getText().toString().trim(),
                         mEtPassword.getText().toString().trim(),
-                        mEtRepeatPassword.getText().toString().trim());
+                        mEtRepeatPassword.getText().toString().trim(), walletType);
                 break;
             case R.id.iv_password_eyes:
                 showPassword();
                 break;
             case R.id.iv_repeat_password_eyes:
                 showRepeatPassword();
+                break;
+            case R.id.tv_wallet_type:
+                String walletType = mTvWalletType.getText().toString();
+                int type = DefParserStrUtil.transforInverseWalletType(walletType, this);
+                SwitchWalletTypeActivity.actionStartForResult(this, type, CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE);
                 break;
             default:
                 break;
@@ -238,8 +274,41 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         String name = mEtName.getText().toString().trim();
         String password = mEtPassword.getText().toString().trim();
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-        enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 20);
+        enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 20 && isEnableCreate);
         checkPwdStrength(password);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE && resultCode == RESULT_OK) {
+            walletType = data.getIntExtra(Constants.Extra.EXTRA_WALLET_TYPE, 0);
+            mTvWalletType.setText(DefParserStrUtil.transformWalletType(walletType, this));
+            //检查钱包上限
+            isEnableCreate = checkWalletNumLimit(walletNum,walletType);
+            if(isEnableCreate){
+                tvWalletNumOverLimit.setVisibility(View.GONE);
+            }else{
+                tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+
+    private boolean checkWalletNumLimit(int currentWalletNum,@WalletType int walletType){
+        //控制钱包数量上限
+        int sumWalletNum = 0;
+        if (walletType == WalletType.ORDINARY_WALLET) {
+            sumWalletNum = currentWalletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        } else {
+            sumWalletNum = currentWalletNum + Constants.WalletConstants.WALLET_ADD_HD;
+        }
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private void checkPwdStrength(String password) {
@@ -291,5 +360,12 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

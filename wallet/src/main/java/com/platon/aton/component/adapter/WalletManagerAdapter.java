@@ -59,9 +59,16 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         viewHolder.ivWalletAvatar.setImageResource(resId);
         viewHolder.tvwalletName.setText(item.getName());
         viewHolder.tvWalletAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
-        viewHolder.tvWalletBackup.setVisibility(item.isBackedUpNeeded() ? View.VISIBLE : View.GONE);
+        if(item.isHD()){
+            viewHolder.tvWalletAddress.setVisibility(View.GONE);
+        }
+        if(item.getDepth() == 1){
+            viewHolder.tvWalletBackup.setVisibility(View.GONE);
+        }else{
+            viewHolder.tvWalletBackup.setVisibility(!item.isBackedUp() ? View.VISIBLE : View.GONE);
+        }
 
-        if (TextUtils.isEmpty(item.getKey())) {//观察钱包
+        if (TextUtils.isEmpty(item.getKey()) && item.getDepth() == 0) {//观察钱包
             viewHolder.tv_wallet_logo.setVisibility(View.VISIBLE);
             viewHolder.tv_wallet_logo.setText(mContext.getString(R.string.observed_wallet));
         } else {

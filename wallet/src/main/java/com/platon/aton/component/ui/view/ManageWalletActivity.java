@@ -25,6 +25,7 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.ui.presenter.ManageWalletPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
+import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.framework.app.Constants;
@@ -74,10 +75,8 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
-
         getPresenter().init(getWalletEntityFromIntent());
     }
-
 
     @Override
     public int getLayoutId() {
@@ -102,10 +101,10 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
                 showModifyNameDialog("");
                 break;
             case R.id.rl_private_key:
-                showPasswordDialog(TYPE_EXPORT_PRIVATE_KEY, getWalletEntityFromIntent());
+                showPasswordDialog(TYPE_EXPORT_PRIVATE_KEY, getPresenter().getWalletData());
                 break;
             case R.id.rl_keystore:
-                showPasswordDialog(TYPE_EXPORT_KEYSTORE, getWalletEntityFromIntent());
+                showPasswordDialog(TYPE_EXPORT_KEYSTORE, getPresenter().getWalletData());
                 break;
             case R.id.rl_backup:
                 getPresenter().backup();
@@ -139,14 +138,23 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
         commonTitleBar.setTitle(wallet.getName());
         tvReName.setText(wallet.getName());
         tvAddress.setText(wallet.getPrefixAddress());
-        if (TextUtils.isEmpty(wallet.getKey())) {
-            llPrivateKey.setVisibility(View.GONE);
-            llKeystore.setVisibility(View.GONE);
-        }
-        tvDelete.setVisibility(wallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
-        //是否可以备份  都可以备份
-        llBackup.setVisibility(wallet.isBackedUpEnabled() ? View.VISIBLE : View.GONE);
 
+        if(wallet.isHD()){
+            llPrivateKey.setVisibility(View.VISIBLE);
+            llKeystore.setVisibility(View.VISIBLE);
+            Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
+            tvDelete.setVisibility(rootWallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
+            //是否可以备份
+            llBackup.setVisibility(View.GONE);
+        }else{
+            if (TextUtils.isEmpty(wallet.getKey())) {
+                llPrivateKey.setVisibility(View.GONE);
+                llKeystore.setVisibility(View.GONE);
+            }
+            tvDelete.setVisibility(wallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
+            //是否可以备份
+            llBackup.setVisibility(!wallet.isBackedUp() ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override
@@ -167,7 +175,13 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
                     if (getPresenter().isExists(text)) {
                         showLongToast(string(R.string.wallet_name_exists));
                     } else {
-                        getPresenter().modifyName(text);
+                        Wallet wallet = getPresenter().getWalletData();
+                        if(wallet.isHD()){
+                            getPresenter().modifyHDName(text);
+                        }else{
+                            getPresenter().modifyName(text);
+                        }
+
                     }
                 }
             }

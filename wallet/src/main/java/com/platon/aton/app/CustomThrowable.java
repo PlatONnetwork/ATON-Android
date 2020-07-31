@@ -39,6 +39,7 @@ public class CustomThrowable extends Throwable {
     public static final int CODE_TX_NODE_ASSOCIATED_WALLET = 3007;//节点关联的钱包地址,不能委托
     public static final int CODE_TX_NODE_AS_INSIDE_CANDIDATE = 3008;//节点为初始化时内置的候选人，不能委托
     public static final int CODE_TX_AUTHORIZED_NUMBER_LOW = 3009;//低于节点委托或赎回的最小阀值
+    public static final int CODE_TX_NODE_FREEZING_CANNOT_DELEGATE = 3011;//节点冻结中，不能委托
 
 
 
@@ -154,6 +155,8 @@ public class CustomThrowable extends Throwable {
             case CODE_TX_AUTHORIZED_NUMBER_LOW:
                 detailMsgRes = R.string.delegate_amount_tips;
                 break;
+            case CODE_TX_NODE_FREEZING_CANNOT_DELEGATE:
+                detailMsgRes = R.string.msg_transaction_node_freezing_cannot_delegate;
             default:
                 break;
         }

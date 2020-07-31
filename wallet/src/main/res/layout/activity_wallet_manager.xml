@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
-            app:ctb_title="@string/wallet_manage" />
+            app:ctb_title="@string/manage"
+            app:ctb_right_text="@string/wallet_rename"
+            app:ctb_right_text_color="@color/color_105cfe"/>
     </LinearLayout>
 
     <LinearLayout

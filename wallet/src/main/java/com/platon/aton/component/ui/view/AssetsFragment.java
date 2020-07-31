@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,6 +43,8 @@ import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.EmptyRecyclerView;
 import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
+import com.platon.aton.db.entity.WalletEntity;
+import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.entity.QrCodeType;
@@ -47,6 +52,8 @@ import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationData;
 import com.platon.aton.entity.TransactionSignatureData;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletSelectedIndex;
+import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AmountUtil;
@@ -140,6 +147,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @BindView(R.id.layout_wallet_amount)
     LinearLayout layoutWalletAmount;
 
+
     Unbinder unbinder;
 
     AppCompatTextView tvWalletAmount;
@@ -173,8 +181,6 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         getPresenter().loadData();
         //展示选中的钱包信息
         showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
-
-
     }
 
     @Override
@@ -239,6 +245,8 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
 
         showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
+        //刷新侧滑栏数据
+        //EventPublisher.getInstance().sendOpenRightSidebarEvent(null,WalletTypeSearch.WALLET_ALL);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -376,8 +384,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         mWalletListAdapter.setOnItemClickListener(new AssetsWalletListAdapter.OnItemClickListener() {
             @Override
             public void onCommonWalletItemClick(Wallet wallet, int position) {
+                //更新选中钱包
+                WalletManager.getInstance().addAndSelectedWalletStatusNotice(wallet);
                 WalletManager.getInstance().setWalletList(mWalletListAdapter.getDatas());
-                showSelectedWalletInfo(wallet);
+                //showSelectedWalletInfo(wallet);
                 getPresenter().loadData();
             }
 
@@ -389,6 +399,13 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
             @Override
             public void onImportWalletItemClick() {
                 ImportWalletActivity.actionStart(Objects.requireNonNull(getActivity()));
+            }
+
+            @Override
+            public void onSubWallTagItemClickListener(Wallet wallet, int position) {
+                //更新选中钱包
+                WalletManager.getInstance().addAndSelectedWalletStatusNotice(wallet);
+                EventPublisher.getInstance().sendOpenRightSidebarEvent(wallet, WalletTypeSearch.HD_WALLET);
             }
         });
 
@@ -409,6 +426,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 getPresenter().fetchWalletBalance();
+                getPresenter().loadData();
             }
         });
 
@@ -441,6 +459,11 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                             @Override
                             public void onImportWalletClick() {
                                 ImportWalletActivity.actionStart(getContext());
+                            }
+
+                            @Override
+                            public void onHDWalletClick() {
+                                EventPublisher.getInstance().sendOpenRightSidebarEvent(null,WalletTypeSearch.WALLET_ALL);
                             }
                         }).show(getChildFragmentManager(), "showAssetsMore");
                     }
@@ -479,7 +502,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                         layoutSecurityReminders.setVisibility(View.GONE);
                         Wallet selectedWallet = WalletManager.getInstance().getSelectedWallet();
                         if (selectedWallet != null) {
-                            WalletManager.getInstance().updateWalletBackedUpPromptWithUUID(selectedWallet.getUuid(), false);
+                            WalletManager.getInstance().updateWalletBackedUpPromptWithUUID(selectedWallet.getUuid(), true);
                             notifyWalletList();
                         }
                     }
@@ -527,8 +550,8 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                         Wallet walletEntity = WalletManager.getInstance().getSelectedWallet();
                         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
                             @Override
-                            public void onCorrect(Credentials credentials, String password) {
-                                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
+                            public void onCorrect(Credentials credentials, String password, Wallet wallet) {
+                                BackupMnemonicPhraseActivity.actionStart(getContext(), password, wallet, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
                             }
                         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
                     }
@@ -644,9 +667,15 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
             rtvSendTransaction.setTextColor(NetConnectivity.getConnectivityManager().isConnected() ? ContextCompat.getColor(getActivity(), R.color.color_105cfe) : ContextCompat.getColor(getActivity(), R.color.color_ffffff));
         }
 
-        layoutSecurityReminders.setVisibility(selectedWallet.showBackedUpPrompt() ? View.VISIBLE : View.GONE);
-        layoutDeviceOfflinePrompt.setVisibility((showOfflinePrompt && !NetConnectivity.getConnectivityManager().isConnected()) ? View.VISIBLE : View.GONE);
+        //设置钱包备份状态(子钱包通过查询HD母钱包备份情况进行判断)
+        if(!selectedWallet.isHD()){
+            layoutSecurityReminders.setVisibility(!selectedWallet.isBackedUp()? View.VISIBLE : View.GONE);
+        }else{
+            Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(selectedWallet.getParentId());
+            layoutSecurityReminders.setVisibility(!rootWallet.isBackedUp()? View.VISIBLE : View.GONE);
+        }
 
+        layoutDeviceOfflinePrompt.setVisibility((showOfflinePrompt && !NetConnectivity.getConnectivityManager().isConnected()) ? View.VISIBLE : View.GONE);
     }
 
     private void showAssetsInfo() {

@@ -31,6 +31,8 @@ public class ManageWalletContract {
 
         void init(Wallet wallet);
 
+        Wallet getWalletData();
+
         void showWalletInfo();
 
         void validPassword(int type, Credentials credentials);
@@ -38,6 +40,8 @@ public class ManageWalletContract {
         void deleteWallet();
 
         void modifyName(String name);
+
+        void modifyHDName(String name);
 
         void backup();
 

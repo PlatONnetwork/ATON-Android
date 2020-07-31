@@ -10,7 +10,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,7 +24,9 @@ import com.platon.aton.R;
 import com.platon.aton.component.ui.contract.ImportMnemonicPhraseContract;
 import com.platon.aton.component.ui.presenter.ImportMnemonicPhrasePresenter;
 import com.platon.aton.component.widget.ShadowButton;
+import com.platon.aton.entity.WalletType;
 import com.platon.aton.utils.CheckStrength;
+import com.platon.aton.utils.DefParserStrUtil;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseLazyFragment;
 
@@ -94,9 +98,20 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
     TextView mTvPasswordError;
     @BindView(R.id.layout_password_strength)
     LinearLayout mPasswordStrengthLayout;
+    @BindView(R.id.tv_wallet_type)
+    TextView mTvWalletType;
+    @BindView(R.id.tv_wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
+    Unbinder unbinder1;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
+    @WalletType
+    int walletType = WalletType.ORDINARY_WALLET;//默认普通钱包类型
+    private int walletNum = 0;
+    private boolean isEnableCreate = false;
+
+
 
     @Override
     public int getLayoutId() {
@@ -121,12 +136,24 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
         initDatas();
     }
 
+    @Override
+    public void showWalletNumber(int walletNum) {
+        this.walletNum = walletNum;
+    }
+
     private void addListeners() {
 
         mEtPassword.setTypeface(Typeface.DEFAULT);
         mEtRepeatPassword.setTypeface(Typeface.DEFAULT);
 
-
+        RxView.clicks(mTvWalletType).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                String walletType = mTvWalletType.getText().toString();
+                int type = DefParserStrUtil.transforInverseWalletType(walletType, getActivity());
+                SwitchWalletTypeActivity.actionStartForResult(getActivity(), type, CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE);
+            }
+        });
         RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object object) throws Exception {
@@ -182,7 +209,8 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
                 getPresenter().importMnemonic(builder.toString(),
                         mEtWalletName.getText().toString(),
                         mEtPassword.getText().toString(),
-                        mEtRepeatPassword.getText().toString());
+                        mEtRepeatPassword.getText().toString(),
+                        walletType);
             }
         });
 
@@ -210,7 +238,7 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
 
             @Override
             public Boolean apply(Boolean aBoolean, Boolean aBoolean2) throws Exception {
-                return aBoolean && aBoolean2;
+                return aBoolean && aBoolean2 && isEnableCreate;
             }
         }).subscribe(new Consumer<Boolean>() {
             @Override
@@ -325,6 +353,7 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
         showNameError("", false);
         showPasswordError("", false);
         getPresenter().init();
+        getPresenter().loadDBWalletNumber();
     }
 
     @Override
@@ -337,6 +366,26 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
             getPresenter().parseQRCode(scanResult);
+        } else if (requestCode == CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE) {
+            walletType = data.getIntExtra(Constants.Extra.EXTRA_WALLET_TYPE, 0);
+            mTvWalletType.setText(DefParserStrUtil.transformWalletType(walletType, getActivity()));
+
+            //控制钱包数量上限
+            int sumWalletNum = 0;
+            if (walletType == WalletType.ORDINARY_WALLET) {
+                sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+            } else {
+                sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_HD;
+            }
+            if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+                tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+                isEnableCreate = false;
+            }else{
+                tvWalletNumOverLimit.setVisibility(View.GONE);
+                isEnableCreate = true;
+            }
+
+
         }
     }
 
@@ -469,5 +518,20 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder1 = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder1.unbind();
     }
 }

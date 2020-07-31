@@ -11,6 +11,7 @@ import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletType;
 import com.platon.aton.event.EventPublisher;
 import com.platon.framework.base.BasePresenter;
 
@@ -47,7 +48,7 @@ public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicP
     }
 
     @Override
-    public void importMnemonic(String phrase, String name, String password, String repeatPassword) {
+    public void importMnemonic(String phrase, String name, String password, String repeatPassword, @WalletType int walletType) {
 
         if (isExists(name)) {
             return;
@@ -57,12 +58,13 @@ public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicP
             return;
         }
 
+
+
         showLoadingDialog();
         new Thread() {
             @Override
             public void run() {
-                Wallet walletEntity = new Wallet.Builder().chainId(NodeManager.getInstance().getChainId()).build();
-                int code = WalletManager.getInstance().importMnemonic(walletEntity, phrase, name, password);
+                int code = WalletManager.getInstance().importMnemonic(phrase, name, password,walletType);
                 switch (code) {
                     case WalletManager.CODE_OK:
                         mHandler.sendEmptyMessage(MSG_OK);
@@ -91,6 +93,11 @@ public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicP
     @Override
     public boolean isExists(String walletName) {
         return WalletManager.getInstance().isWalletNameExists(walletName);
+    }
+
+    @Override
+    public void loadDBWalletNumber() {
+        getView().showWalletNumber(WalletManager.getInstance().getWalletInfoListByOrdinaryAndSubWalletNum());
     }
 
     private static final int MSG_OK = 1;

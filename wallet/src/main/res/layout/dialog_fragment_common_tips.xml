@@ -28,11 +28,23 @@
             tools:text="Backup failed" />
 
         <TextView
+            android:id="@+id/text_sub_title"
+            style="@style/Text.105cfe.17"
+            android:visibility="visible"
+            android:layout_marginTop="8dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:textStyle="bold"
+            tools:text="Backup failed" />
+
+        <TextView
             android:id="@+id/text_content"
             style="@style/Text.000000.14"
             android:layout_marginTop="8dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
+            android:gravity="left"
+            android:layout_gravity="left"
             tools:text="Please be sure to keep the mnemonic phrase in a safe place. ATON is not responsible for any loss of assets caused by forgeting, losting or theft." />
 
         <com.platon.aton.component.widget.ShadowButton

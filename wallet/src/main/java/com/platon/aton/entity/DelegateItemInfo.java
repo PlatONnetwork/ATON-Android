@@ -30,6 +30,7 @@ public class DelegateItemInfo implements Parcelable {
      * Candidate —— 候选中
      * Exiting —— 退出中
      * Exited —— 已退出
+     * Locked —— 锁定中
      */
     private @NodeStatus
     String nodeStatus;
@@ -197,17 +198,5 @@ public class DelegateItemInfo implements Parcelable {
     }
 
 
-    public int getNodeStatusDescRes() {
 
-        switch (nodeStatus) {
-            case NodeStatus.CANDIDATE:
-                return R.string.validators_candidate;
-            case NodeStatus.EXITING:
-                return R.string.validators_state_exiting;
-            case NodeStatus.EXITED:
-                return R.string.validators_state_exited;
-            default:
-                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
-        }
-    }
 }

@@ -3,6 +3,7 @@ package com.platon.aton.event;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.framework.network.NetState;
 
 public class Event {
@@ -174,7 +175,16 @@ public class Event {
         public BackedUpWalletSuccessedEvent(String uuid) {
             this.uuid = uuid;
         }
+    }
 
+    public static class OpenRightSidebarEvent {
 
+        public Wallet wallet;
+        public @WalletTypeSearch int walletTypeSearch;
+
+        public OpenRightSidebarEvent(Wallet wallet,int walletTypeSearch) {
+            this.wallet = wallet;
+            this.walletTypeSearch = walletTypeSearch;
+        }
     }
 }

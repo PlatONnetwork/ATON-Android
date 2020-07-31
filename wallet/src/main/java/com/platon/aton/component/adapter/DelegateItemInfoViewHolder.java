@@ -19,6 +19,7 @@ import com.platon.aton.component.ui.view.DelegateActivity;
 import com.platon.aton.component.ui.view.WithDrawActivity;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.ShadowDrawable;
+import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.NodeStatus;
 import com.platon.aton.entity.WebType;
@@ -83,7 +84,8 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
                 DensityUtil.dp2px(mContext, 2));
 
         GlideUtils.loadImage(mContext, data.getUrl(), mWalletAvatarCiv);
-        mNodeStatusTv.setText(data.getNodeStatusDescRes());
+
+        mNodeStatusTv.setText(NodeManager.getInstance().getNodeStatusDescRes(data.getNodeStatus(),data.isConsensus()));
         mNodeStatusTv.setTextColor(getNodeStatusTextColor(data.getNodeStatus(), data.isConsensus()));
         mNodeNameTv.setText(data.getNodeName());
         mNodeAddressTv.setText(AddressFormatUtil.formatAddress(data.getNodeId()));
@@ -156,7 +158,7 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
                     HashMap<String, Object> map = (HashMap<String, Object>) bundle.getSerializable(key);
                     String nodeStatus = MapUtils.getString(map, DelegateItemInfoDiffCallback.KEY_NODE_STATUS);
                     boolean isConsensus = MapUtils.getBoolean(map, DelegateItemInfoDiffCallback.KEY_CONSENSUS);
-                    mNodeStatusTv.setText(getNodeStatusDescRes(nodeStatus, isConsensus));
+                    mNodeStatusTv.setText(NodeManager.getInstance().getNodeStatusDescRes(nodeStatus, isConsensus));
                     mNodeStatusTv.setTextColor(getNodeStatusTextColor(nodeStatus, isConsensus));
                     break;
                 case DelegateItemInfoDiffCallback.KEY_NODE_STATUS_AND_INIT:
@@ -193,21 +195,10 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         }
     }
 
-    public int getNodeStatusDescRes(@NodeStatus String nodeStatus, boolean isConsensus) {
-
-        switch (nodeStatus) {
-            case NodeStatus.CANDIDATE:
-                return R.string.validators_candidate;
-            case NodeStatus.EXITING:
-                return R.string.validators_state_exiting;
-            case NodeStatus.EXITED:
-                return R.string.validators_state_exited;
-            default:
-                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
-        }
-    }
 
     private boolean isDelegateBtnEnabled(@NodeStatus String nodeStatus, boolean isInit) {
-        return !(TextUtils.equals(nodeStatus, NodeStatus.EXITED) || TextUtils.equals(nodeStatus, NodeStatus.EXITING) || isInit);
+        boolean isExited =  !(TextUtils.equals(nodeStatus, NodeStatus.EXITED) || TextUtils.equals(nodeStatus, NodeStatus.EXITING) || isInit);
+        boolean isLocked =  !(TextUtils.equals(nodeStatus, NodeStatus.LOCKED) || TextUtils.equals(nodeStatus, NodeStatus.LOCKED) || isInit);
+        return isExited && isLocked;
     }
 }

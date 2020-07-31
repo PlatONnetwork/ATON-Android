@@ -1,6 +1,7 @@
 package com.platon.aton.component.adapter;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletSelectedIndex;
 
 /**
  * @author ziv
@@ -19,6 +21,9 @@ public class WalletListViewHolder extends BaseViewHolder<Wallet> {
     private LinearLayout mWalletLayout;
     private TextView mWalletNameTv;
     private ImageView mWalletTagIv;
+    private ImageView mSubWalletTagIv;
+    private OnSubWallTagItemClickListener onSubWallTagItemClickListener;
+
 
     public WalletListViewHolder(int viewId, ViewGroup parent) {
         super(viewId, parent);
@@ -26,15 +31,36 @@ public class WalletListViewHolder extends BaseViewHolder<Wallet> {
         mWalletLayout = itemView.findViewById(R.id.layout_wallet);
         mWalletNameTv = itemView.findViewById(R.id.tv_wallet_name);
         mWalletTagIv = itemView.findViewById(R.id.iv_wallet_tag);
+        mSubWalletTagIv = itemView.findViewById(R.id.iv_subwallet_tag);
+        mSubWalletTagIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onSubWallTagItemClickListener != null){
+                    onSubWallTagItemClickListener.onItemClick();
+                }
+            }
+        });
     }
 
     @Override
     public void refreshData(Wallet wallet, int position) {
         super.refreshData(wallet, position);
 
-        setWalletSelected(wallet.isSelected());
+        if(wallet.getSelectedIndex() == WalletSelectedIndex.SELECTED){
+            setWalletSelected(true);
+        }else{
+            setWalletSelected(false);
+        }
+
         mWalletNameTv.setText(wallet.getName());
+        if(wallet.isHD()){
+            mSubWalletTagIv.setVisibility(View.VISIBLE);
+        }else{
+            mSubWalletTagIv.setVisibility(View.INVISIBLE);
+        }
     }
+
+
 
     @Override
     public void updateItem(Bundle bundle) {
@@ -59,5 +85,15 @@ public class WalletListViewHolder extends BaseViewHolder<Wallet> {
         mWalletLayout.setSelected(selected);
         mWalletTagIv.setSelected(selected);
         mWalletNameTv.setSelected(selected);
+        mSubWalletTagIv.setSelected(selected);
+    }
+
+    public interface OnSubWallTagItemClickListener<T> {
+
+        void onItemClick();
+    }
+    public void setSubWallTagItemClickListener(OnSubWallTagItemClickListener onSubWallTagItemClickListener){
+
+        this.onSubWallTagItemClickListener = onSubWallTagItemClickListener;
     }
 }
