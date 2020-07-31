@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
-import android.support.annotation.IntDef;
-import android.support.annotation.StringDef;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -14,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,18 +35,13 @@ import com.jakewharton.rxbinding2.widget.TextViewEditorActionEvent;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.SidebarWalletListAdapter;
-import com.platon.aton.component.adapter.base.CommonHorizontalItemDecoration;
-import com.platon.aton.component.adapter.base.CommonSidebarItemDecoration;
 import com.platon.aton.component.adapter.base.CommonSidebarItemDecoration2;
-import com.platon.aton.component.adapter.base.CommonVerticalItemDecoration;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.presenter.MainPresenter;
 import com.platon.aton.component.widget.FragmentTabHost;
-import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.MainTab;
 import com.platon.aton.entity.MainTabTag;
 import com.platon.aton.entity.Wallet;
-import com.platon.aton.entity.WalletType;
 import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
@@ -273,7 +265,7 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
                     @Override
                     public void accept(TextViewEditorActionEvent textViewEditorActionEvent) {
                         String searchStr =  etSearch.getText().toString().trim();
-                        getPresenter().loadData(walletTypeSearch,(TextUtils.isEmpty(searchStr) ? "NULL" :searchStr));
+                        getPresenter().loadData(walletTypeSearch,(TextUtils.isEmpty(searchStr) ? "NULL" : searchStr));
                     }
                 });
 

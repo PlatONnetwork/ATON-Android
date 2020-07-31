@@ -24,7 +24,6 @@ import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.crypto.bech32.Bech32;
 import org.web3j.utils.Numeric;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -179,7 +178,7 @@ class WalletServiceImpl implements WalletService {
                 DeterministicKey child = dh.deriveChild(parentPath, true, true, new ChildNumber(i));
                 //7.通过Keystore生成公Keystore对
                 ECKeyPair ecKeyPair = ECKeyPair.create(child.getPrivKeyBytes());
-                Wallet subWallet =  generateWallet(ecKeyPair,rootEcKeyPair, name + (i + 1), password,WalletType.HD_SUB_WALLET,i);
+                Wallet subWallet =  generateWallet(ecKeyPair,rootEcKeyPair, name + "_" + (i + 1), password,WalletType.HD_SUB_WALLET,i);
                 walletList.add(subWallet);
             }
 
