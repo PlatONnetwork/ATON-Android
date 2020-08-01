@@ -6,15 +6,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,8 +40,6 @@ import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.EmptyRecyclerView;
 import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
-import com.platon.aton.db.entity.WalletEntity;
-import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.entity.QrCodeType;
@@ -52,7 +47,6 @@ import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationData;
 import com.platon.aton.entity.TransactionSignatureData;
 import com.platon.aton.entity.Wallet;
-import com.platon.aton.entity.WalletSelectedIndex;
 import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
@@ -676,6 +670,14 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         }
 
         layoutDeviceOfflinePrompt.setVisibility((showOfflinePrompt && !NetConnectivity.getConnectivityManager().isConnected()) ? View.VISIBLE : View.GONE);
+        //设置recycleview滚动选中
+        List<Wallet> walletList = mWalletListAdapter.getDatas();
+        for (int i = 0; i < walletList.size(); i++) {
+              if(selectedWallet.getUuid().equals(walletList.get(i).getUuid())){
+                  rvAssetsWalletList.smoothScrollToPosition(i);
+                  break;
+              }
+        }
     }
 
     private void showAssetsInfo() {

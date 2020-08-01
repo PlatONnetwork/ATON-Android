@@ -1,7 +1,6 @@
 package com.platon.aton.db.entity;
 
 
-import com.platon.aton.component.widget.togglebutton.Spring;
 import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;

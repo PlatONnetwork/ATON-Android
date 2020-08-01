@@ -1,7 +1,5 @@
 package com.platon.aton.db.sqlite;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -17,7 +15,6 @@ import org.web3j.crypto.bech32.AddressManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -273,12 +270,14 @@ public class WalletDao {
                           .or()
                           .equalTo("isHD",true)
                           .and()
-                          .equalTo("depth",1);
+                          .equalTo("depth",1)
+                          .and();
             }else if(walletType == WalletTypeSearch.HD_WALLET){
 
                 realmQuery.equalTo("isHD",true)
                           .and()
-                          .equalTo("depth",1);
+                          .equalTo("depth",1)
+                          .and();
             }else if(walletType == WalletTypeSearch.ORDINARY_WALLET){
 
                 realmQuery.equalTo("isHD",false)
@@ -291,7 +290,12 @@ public class WalletDao {
                 realmQuery.contains("name",walletName);
             }
             if(!TextUtils.isEmpty(walletAddress)){
-                realmQuery.equalTo("address",walletAddress);
+
+                if(WalletManager.getInstance().isMainNetWalletAddress()){
+                    realmQuery.equalTo("mainNetAddress",walletAddress);
+                }else{
+                    realmQuery.equalTo("testNetAddress",walletAddress);
+                }
             }
             results = realmQuery.findAll();
 
@@ -502,8 +506,72 @@ public class WalletDao {
     }
 
 
+    /**
+     * 修改单个钱包排序根据uuid
+     * @param uuid
+     * @param sortIndex
+     * @return
+     */
+    public static boolean updateWalletSortIndexWithUuid(String uuid, int sortIndex) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("uuid", uuid)
+                    .and()
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .endGroup()
+                    .findFirst()
+                    .setSortIndex(sortIndex);
+
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
 
 
+
+    /**
+     * 批量修改子钱包钱包排序根据parentId
+     * @param parentId
+     * @param sortIndex
+     * @return
+     */
+    public static boolean updateBatchWalletSortIndexWithParentId(String parentId, int sortIndex) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("parentId", parentId)
+                    .endGroup()
+                    .findAll()
+                    .setInt("sortIndex",sortIndex);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
 
 
     public static boolean updateNameWithUuid(String uuid, String name) {
