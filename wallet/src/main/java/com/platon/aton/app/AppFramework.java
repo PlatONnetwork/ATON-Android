@@ -376,8 +376,28 @@ public class AppFramework {
                         });
 
                 oldVersion++;
-            }
+            }else if(oldVersion == 113){
 
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                                LogUtils.d("------------clear NodeEntity Realm success");
+                            }
+                        });
+
+                schema.get("WalletEntity")
+                        .addField("isHD", Boolean.class).setRequired("isHD",true)
+                        .addField("pathIndex", Integer.class).setRequired("pathIndex",true)
+                        .addField("sortIndex", Integer.class).setRequired("sortIndex",true)
+                        .addField("selectedIndex", Integer.class).setRequired("selectedIndex",true)
+                        .addField("parentId", String.class)
+                        .addField("depth", Integer.class).setRequired("depth",true)
+                        .addField("isShow", Boolean.class).setRequired("isShow",true);
+
+                oldVersion++;
+            }
         }
 
     }

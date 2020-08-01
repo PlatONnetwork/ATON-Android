@@ -195,7 +195,9 @@ public class Constants {
         //分支版本0.11.1.0(版本号：0.12.0)
         //int VERSION = 112;
         //分支版本0.13.0(版本号：0.13.0)
-        int VERSION = 113;
+        //int VERSION = 113;
+        //分支版本0.13.1(版本号：0.13.1)--分层钱包
+        int VERSION = 114;
     }
 
     public interface DelegateRecordType {

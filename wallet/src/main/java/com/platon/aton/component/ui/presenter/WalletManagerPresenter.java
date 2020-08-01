@@ -5,7 +5,6 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.ManageWalletActivity;
 import com.platon.aton.component.ui.view.WalletManagerHDManagerActivity;
-import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
@@ -60,12 +59,27 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
             Observable.fromCallable(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    long updateTime = System.currentTimeMillis();
+
+                    List<Wallet> assetsWalletList = WalletManager.getInstance().getWalletList();
                     for (int i = 0; i < mWalletList.size(); i++) {
                         Wallet walletEntity = mWalletList.get(i);
-                        updateTime += 10;
-                        walletEntity.setUpdateTime(System.currentTimeMillis());
-                        WalletDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
+                        int sortIndex = mWalletList.size() - i;
+                        walletEntity.setSelectedIndex(sortIndex);
+
+                        //更新DB
+                        WalletManager.getInstance().updateDBWalletSortIndexByUuid(walletEntity,sortIndex);
+
+                        //更新缓存,首页钱包排序排序索引(sortIndex)
+                        for (int j = 0; j < assetsWalletList.size() ; j++) {
+                             Wallet assetWallet =  assetsWalletList.get(j);
+                             if(!walletEntity.isHD() && walletEntity.getUuid().equals(assetWallet.getUuid())){//普通钱包
+                                 WalletManager.getInstance().getWalletList().get(j).setSortIndex(sortIndex);
+                                 break;
+                             }else if(walletEntity.isHD() && walletEntity.getUuid().equals(assetWallet.getParentId())){//HD分组钱包，则对应更新旗下子钱包
+                                 WalletManager.getInstance().getWalletList().get(j).setSortIndex(sortIndex);
+                                 break;
+                             }
+                        }
                     }
                     return true;
                 }

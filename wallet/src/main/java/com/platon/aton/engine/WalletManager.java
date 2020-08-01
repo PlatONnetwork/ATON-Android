@@ -332,37 +332,6 @@ public class WalletManager {
 
 
     /**
-     * 更新DB选中钱包，根据uuid
-     * @param uuid
-     * @return
-     */
-
-    public Boolean updateDBSelectedWalletByUuid(String uuid) {
-
-        return Flowable
-                .fromCallable(new Callable<Boolean>() {
-
-                    @Override
-                    public Boolean call() throws Exception {
-                        return WalletDao.resetAllWalletSelectedIndex();
-                    }
-                }).filter(new Predicate<Boolean>(){
-
-                    @Override
-                    public boolean test(Boolean aBoolean) throws Exception {
-                        return aBoolean;
-                    }
-                }).map(new Function<Boolean, Boolean>() {
-                    @Override
-                    public Boolean apply(Boolean aBoolean) throws Exception {
-
-                        return WalletDao.updateSubWalletSelectedIndexByUuid(uuid, WalletSelectedIndex.SELECTED);
-                    }
-                }).blockingFirst();
-    }
-
-
-    /**
      * 查询交易钱包数据
      * @return
      */
@@ -600,6 +569,77 @@ public class WalletManager {
                     })
                     .blockingFirst();
     }
+
+    /**
+     * 更新DB选中钱包，根据uuid
+     * @param uuid
+     * @return
+     */
+    public Boolean updateDBSelectedWalletByUuid(String uuid) {
+
+        return Flowable
+                .fromCallable(new Callable<Boolean>() {
+
+                    @Override
+                    public Boolean call() throws Exception {
+                        return WalletDao.resetAllWalletSelectedIndex();
+                    }
+                }).filter(new Predicate<Boolean>(){
+
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).map(new Function<Boolean, Boolean>() {
+                    @Override
+                    public Boolean apply(Boolean aBoolean) throws Exception {
+
+                        return WalletDao.updateSubWalletSelectedIndexByUuid(uuid, WalletSelectedIndex.SELECTED);
+                    }
+                }).blockingFirst();
+    }
+
+
+    /**
+     * 更新钱包排序顺序，根据uuid
+     * @param wallet
+     * @param sortIndex
+     * @return
+     */
+    public Boolean updateDBWalletSortIndexByUuid(Wallet wallet, int sortIndex) {
+
+
+        WalletDao.updateWalletSortIndexWithUuid(wallet.getUuid(),sortIndex);
+        if(wallet.isHD() && wallet.getDepth() == 0){
+            WalletDao.updateBatchWalletSortIndexWithParentId(wallet.getUuid(),sortIndex);
+        }
+        return true;
+
+      /*  return Flowable
+                .fromCallable(new Callable<Boolean>() {
+
+                    @Override
+                    public Boolean call() throws Exception {
+                        return WalletDao.updateWalletSortIndexWithUuid(wallet.getUuid(),sortIndex);
+                    }
+                }).filter(new Predicate<Boolean>(){
+
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return wallet.isHD() && wallet.getDepth() == 0;//判断是否是HD分组钱包母钱包，如果是同步更新旗下子钱包一样的sortIndex
+                    }
+                }).map(new Function<Boolean, Boolean>() {
+                    @Override
+                    public Boolean apply(Boolean aBoolean) throws Exception {
+
+                        return WalletDao.updateBatchWalletSortIndexWithParentId(wallet.getUuid(),sortIndex);
+                    }
+                }).blockingFirst();*/
+    }
+
+
+
+
 
     /**
      * 根据钱包地址获取钱包账户信息

@@ -474,15 +474,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
             }else{
                 return getBech32Address().getTestnet();
             }
-
-
-          /*  if (TextUtils.isEmpty(address)) {
-                return "";
-            }
-            if (address.toLowerCase().startsWith("0x")) {
-                return address;
-            }
-            return "0x" + address;*/
         } catch (Exception exp) {
             LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return "";
@@ -544,11 +535,10 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      */
     @Override
     public int compareTo(Wallet o) {
-        if (updateTime != 0) {
-            return Long.compare(updateTime, o.getUpdateTime());
-        } else {
-            return Long.compare(createTime, o.getCreateTime());
-        }
+
+        if(this.sortIndex > o.getSortIndex()) return -1;
+        else if(this.sortIndex < o.getSortIndex()) return 1;
+        else return 0;
     }
 
 
