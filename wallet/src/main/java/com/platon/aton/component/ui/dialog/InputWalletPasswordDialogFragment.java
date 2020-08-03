@@ -160,14 +160,18 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                             public Credentials call() throws Exception {
 
                                 CommonUtil.getMaxMemoryInfo(context);
-                               /* //处理HD子钱包
+                                //处理HD子钱包
                                 if((wallet.isHD() && wallet.getDepth() == 1) && (wallet.getMnemonic() != null && !"".equals(wallet.getMnemonic())) && (wallet.getKey() != null && !"".equals(wallet.getKey()))){
 
                                     String mMnemonic = JZWalletUtil.decryptMnenonic(wallet.getKey(), wallet.getMnemonic(), getPassword());
                                     Wallet subWallet = WalletManager.getInstance().importMnemonicGenerateWallet(mMnemonic,wallet.getName(),getPassword(),wallet.getPathIndex()).blockingGet();
+                                    //设置子钱包keyStore
+                                    wallet.setKey(subWallet.getKey());
                                     return JZWalletUtil.getCredentials(getPassword(), subWallet.getKey());
-                                }*/
-                                return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+                                }else{
+                                    return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+                                }
+
                             }
                         })
                                 .compose(bindToLifecycle())

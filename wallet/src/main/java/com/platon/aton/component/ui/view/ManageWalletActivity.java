@@ -216,6 +216,12 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
         InputWalletPasswordDialogFragment.newInstance(walletEntity, type == TYPE_DELETE_WALLET ? string(R.string.msg_delete_wallet) : null).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
+                //getPresenter().validPassword(type, credentials);
+            }
+        }).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+            @Override
+            public void onCorrect(Credentials credentials, String password, Wallet wallet) {
+                getPresenter().init(wallet);
                 getPresenter().validPassword(type, credentials);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");

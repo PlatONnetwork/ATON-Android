@@ -386,7 +386,7 @@ public class AppFramework {
                                 LogUtils.d("------------clear NodeEntity Realm success");
                             }
                         });
-
+                 //https://www.codetd.com/article/4137544
                 schema.get("WalletEntity")
                         .addField("isHD", Boolean.class).setRequired("isHD",true)
                         .addField("pathIndex", Integer.class).setRequired("pathIndex",true)
