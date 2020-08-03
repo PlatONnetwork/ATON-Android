@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- ly -->
     <uses-permission android:name="android.permission.READ_LOGS" />
 
+<!--    tools:replace="android:roundIcon"-->
     <application
         android:name=".App"
         android:allowBackup="false"
@@ -28,8 +29,7 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        tools:replace="android:roundIcon">
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".component.ui.view.SplashActivity"
             android:launchMode="standard"

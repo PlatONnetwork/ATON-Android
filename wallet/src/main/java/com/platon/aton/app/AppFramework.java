@@ -349,6 +349,13 @@ public class AppFramework {
                 schema.get("WalletEntity")
                         .addField("mainNetAddress", String.class)
                         .addField("testNetAddress", String.class)
+                        .addField("isHD", Boolean.class).setRequired("isHD",true)
+                        .addField("pathIndex", Integer.class).setRequired("pathIndex",true)
+                        .addField("sortIndex", Integer.class).setRequired("sortIndex",true)
+                        .addField("selectedIndex", Integer.class).setRequired("selectedIndex",true)
+                        .addField("parentId", String.class)
+                        .addField("depth", Integer.class).setRequired("depth",true)
+                        .addField("isShow", Boolean.class).setRequired("isShow",true)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
