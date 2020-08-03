@@ -9,18 +9,14 @@ import com.platon.aton.component.ui.view.ExportKeystoreActivity;
 import com.platon.aton.component.ui.view.ExportPrivateKeyActivity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
-import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
-import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.SchedulersTransformer;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Keys;
-import org.web3j.crypto.bech32.AddressBech32;
-import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.utils.Numeric;
 
 import java.util.List;

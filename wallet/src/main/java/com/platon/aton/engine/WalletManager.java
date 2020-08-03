@@ -1014,7 +1014,8 @@ public class WalletManager {
             @Override
             public void subscribe(SingleEmitter<Wallet> emitter) throws Exception {
                 Wallet walletEntity = WalletServiceImpl.getInstance().importMnemonic(mnemonic, name, password,index);
-                if (walletEntity == null || isWalletAddressExists(walletEntity.getPrefixAddress().toLowerCase())) {
+                //if (walletEntity == null || isWalletAddressExists(walletEntity.getPrefixAddress().toLowerCase())) {
+                if (walletEntity == null) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
                 } else {
                     walletEntity.setMnemonic(JZWalletUtil.encryptMnemonic(walletEntity.getKey(), mnemonic, password));
