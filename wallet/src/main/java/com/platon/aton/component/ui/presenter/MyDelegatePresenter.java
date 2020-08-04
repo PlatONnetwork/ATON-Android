@@ -22,6 +22,7 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ClaimRewardInfo;
 import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.EstimateGasResult;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -169,7 +170,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 if (delegateInfo.isObservedWallet()) {
                     showTransactionAuthorizationDialogFragment(delegateInfo.getWithdrawReward(), delegateInfo.getWalletAddress(), gasProvider, position);
                 } else {
-                    InputWalletPasswordDialogFragment.newInstance(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress())).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                    InputWalletPasswordDialogFragment.newInstance(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()), InputWalletPasswordFromType.TRANSACTION).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                         @Override
                         public void onWalletPasswordCorrect(Credentials credentials) {
                             DelegateManager.getInstance()

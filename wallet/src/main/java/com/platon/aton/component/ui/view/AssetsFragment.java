@@ -42,6 +42,7 @@ import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.GuideType;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.QrCodeType;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationData;
@@ -542,7 +543,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     @Override
                     public void accept(Object o) {
                         Wallet walletEntity = WalletManager.getInstance().getSelectedWallet();
-                        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+                        InputWalletPasswordDialogFragment.newInstance(walletEntity, InputWalletPasswordFromType.BACKUPS).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
                             @Override
                             public void onCorrect(Credentials credentials, String password, Wallet wallet) {
                                 BackupMnemonicPhraseActivity.actionStart(getContext(), password, wallet, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);

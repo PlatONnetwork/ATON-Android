@@ -21,6 +21,7 @@ import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.TransactionAuthorizationData;
 import com.platon.aton.entity.TransactionAuthorizationDetail;
 import com.platon.aton.entity.Wallet;
@@ -158,7 +159,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                         if (TextUtils.isEmpty(wallet.getKey())) {
                             showLongToast(R.string.msg_keystore_nor_exist);
                         } else {
-                            InputWalletPasswordDialogFragment.newInstance(wallet).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                            InputWalletPasswordDialogFragment.newInstance(wallet, InputWalletPasswordFromType.TRANSACTION).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                                 @Override
                                 public void onWalletPasswordCorrect(Credentials credentials) {
                                     AuthorizationSignatureDialogFragment.newInstance(transactionAuthorizationData.toTransactionSignatureData(credentials).toJSONString()).show(getSupportFragmentManager(), "showAuthorizationSignatureDialog");

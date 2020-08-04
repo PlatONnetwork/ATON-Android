@@ -26,6 +26,7 @@ import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.ui.presenter.ManageWalletPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.framework.app.Constants;
@@ -213,7 +214,7 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
 
     @Override
     public void showPasswordDialog(int type, Wallet walletEntity) {
-        InputWalletPasswordDialogFragment.newInstance(walletEntity, type == TYPE_DELETE_WALLET ? string(R.string.msg_delete_wallet) : null).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity, InputWalletPasswordFromType.TRANSACTION, type == TYPE_DELETE_WALLET ? string(R.string.msg_delete_wallet) : null).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
                 //getPresenter().validPassword(type, credentials);

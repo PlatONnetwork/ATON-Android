@@ -21,6 +21,7 @@ import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GasProvider;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -511,7 +512,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     private void showInputPasswordDialogFragment(String inputAmount, String nodeAddress, String nodeName, StakingAmountType stakingAmountType, GasProvider gasProvider, String nonce) {
         InputWalletPasswordDialogFragment
-                .newInstance(mWallet)
+                .newInstance(mWallet, InputWalletPasswordFromType.TRANSACTION)
                 .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                     @Override
                     public void onWalletPasswordCorrect(Credentials credentials) {

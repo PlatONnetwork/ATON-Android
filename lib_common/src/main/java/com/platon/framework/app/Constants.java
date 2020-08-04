@@ -80,6 +80,7 @@ public class Constants {
     public interface Bundle {
 
         String BUNDLE_WALLET = "bundle_wallet";
+        String BUNDLE_WALLET_FROM_TYPE = "bundle_wallet_from_type";
         String BUNDLE_TRANSFER_AMOUNT = "bundle_transfer_amount";
         String BUNDLE_TO_ADDRESS = "bundle_to_address";
         String BUNDLE_FEE_AMOUNT = "bundle_fee_amount";
