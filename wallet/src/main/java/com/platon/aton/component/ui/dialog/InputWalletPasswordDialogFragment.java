@@ -19,6 +19,7 @@ import com.platon.aton.component.widget.CustomUnderlineEditText;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.DensityUtil;
@@ -63,18 +64,20 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
     private OnWalletPasswordCorrectListener mListener;
 
 
-    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet) {
+    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet, @InputWalletPasswordFromType int fromType) {
         InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putInt(Constants.Bundle.BUNDLE_WALLET_FROM_TYPE,fromType);
         bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, wallet);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
 
-    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet, String title) {
+    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet, @InputWalletPasswordFromType int fromType, String title) {
         InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, wallet);
+        bundle.putInt(Constants.Bundle.BUNDLE_WALLET_FROM_TYPE,fromType);
         bundle.putString(Constants.Bundle.BUNDLE_TEXT, title);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
@@ -104,6 +107,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
     private void initViews() {
 
         Wallet wallet = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
+        @InputWalletPasswordFromType int fromType = getArguments().getInt(Constants.Bundle.BUNDLE_WALLET_FROM_TYPE,0);
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
 
         //子钱包(查询子钱包对应的HD母钱包信息组装到子钱包)
@@ -160,17 +164,30 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                             public Credentials call() throws Exception {
 
                                 CommonUtil.getMaxMemoryInfo(context);
-                                //处理HD子钱包
-                                if((wallet.isHD() && wallet.getDepth() == 1) && (wallet.getMnemonic() != null && !"".equals(wallet.getMnemonic())) && (wallet.getKey() != null && !"".equals(wallet.getKey()))){
+                                if(fromType == InputWalletPasswordFromType.BACKUPS){//备份
 
-                                    String mMnemonic = JZWalletUtil.decryptMnenonic(wallet.getKey(), wallet.getMnemonic(), getPassword());
-                                    Wallet subWallet = WalletManager.getInstance().importMnemonicGenerateWallet(mMnemonic,wallet.getName(),getPassword(),wallet.getPathIndex()).blockingGet();
-                                    //设置子钱包keyStore
-                                    wallet.setKey(subWallet.getKey());
-                                    return JZWalletUtil.getCredentials(getPassword(), subWallet.getKey());
-                                }else{
                                     return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+
+                                }else if(fromType == InputWalletPasswordFromType.TRANSACTION
+                                         && (wallet.isHD() && wallet.getDepth() == 1)
+                                         && (wallet.getMnemonic() != null && !"".equals(wallet.getMnemonic()))
+                                         && (wallet.getKey() != null && !"".equals(wallet.getKey())) ){//子钱包交易
+
+                                            //验证密码正确性
+                                            Credentials credentials =  JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+                                            if(credentials == null)
+                                                 return null;
+                                            String mMnemonic = JZWalletUtil.decryptMnenonic(wallet.getKey(), wallet.getMnemonic(), getPassword());
+                                            Wallet subWallet = WalletManager.getInstance().importMnemonicGenerateWallet(mMnemonic,wallet.getName(),getPassword(),wallet.getPathIndex()).blockingGet();
+                                            //设置子钱包keyStore
+                                            wallet.setKey(subWallet.getKey());
+                                            return JZWalletUtil.getCredentials(getPassword(), subWallet.getKey());
+                                }else if(fromType == InputWalletPasswordFromType.TRANSACTION
+                                         && !wallet.isHD()){//普通钱包交易
+
+                                       return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
                                 }
+                                return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
 
                             }
                         })

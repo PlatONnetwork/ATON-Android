@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 import com.platon.aton.R;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
@@ -62,7 +63,7 @@ public class BackupWalletActivity extends BaseActivity implements View.OnClickLi
     }
 
     public void showPasswordDialog(Wallet walletEntity) {
-        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity, InputWalletPasswordFromType.BACKUPS).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password,Wallet wallet) {
                 BackupMnemonicPhraseActivity.actionStart(getContext(), password, wallet, BackupMnemonicPhraseActivity.BackupMnemonicExport.BACKUP_WALLET_ACTIVITY);

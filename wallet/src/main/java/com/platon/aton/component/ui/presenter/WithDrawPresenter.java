@@ -23,6 +23,7 @@ import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegationValue;
 import com.platon.aton.entity.GasProvider;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -295,7 +296,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 showTransactionAuthorizationDialogFragment(gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), toAddress, mDelegationValue.getNonce());
             } else {
                 InputWalletPasswordDialogFragment
-                        .newInstance(mWallet)
+                        .newInstance(mWallet, InputWalletPasswordFromType.TRANSACTION)
                         .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                             @Override
                             public void onWalletPasswordCorrect(Credentials credentials) {

@@ -6,6 +6,7 @@ import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.ManageWalletActivity;
 import com.platon.aton.component.ui.view.WalletManagerHDManagerActivity;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.framework.app.Constants;
@@ -96,7 +97,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
     @Override
     public void backupWallet(int position) {
         Wallet walletEntity = mWalletList.get(position);
-        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity, InputWalletPasswordFromType.BACKUPS).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password, Wallet wallet) {
                 BackupMnemonicPhraseActivity.actionStart(getContext(), password, wallet, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);

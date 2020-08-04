@@ -266,12 +266,28 @@ public class WalletDao {
 
             if(walletType == WalletTypeSearch.WALLET_ALL){
 
+                //条件检索普通钱包
                 realmQuery.equalTo("isHD",false)
-                          .or()
-                          .equalTo("isHD",true)
-                          .and()
-                          .equalTo("depth",1)
                           .and();
+                //关键字搜索
+                if(!TextUtils.isEmpty(walletName)){
+                    //realmQuery.like("name",walletName);
+                    realmQuery.contains("name",walletName);
+                }
+                if(!TextUtils.isEmpty(walletAddress)){
+
+                    if(WalletManager.getInstance().isMainNetWalletAddress()){
+                        realmQuery.equalTo("mainNetAddress",walletAddress);
+                    }else{
+                        realmQuery.equalTo("testNetAddress",walletAddress);
+                    }
+                }
+                //条件检索HD钱包
+                realmQuery.or()
+                  .equalTo("isHD",true)
+                  .and()
+                  .equalTo("depth",1)
+                  .and();
             }else if(walletType == WalletTypeSearch.HD_WALLET){
 
                 realmQuery.equalTo("isHD",true)
