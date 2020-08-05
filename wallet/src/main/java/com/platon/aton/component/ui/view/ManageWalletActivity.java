@@ -112,7 +112,7 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
                 break;
             //删除钱包按钮
             case R.id.tv_delete:
-                if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey())) {
+                if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey()) && getWalletEntityFromIntent().getDepth() == 0) {
                     getPresenter().deleteObservedWallet();
                 } else {
                     showPasswordDialog(TYPE_DELETE_WALLET, getWalletEntityFromIntent());

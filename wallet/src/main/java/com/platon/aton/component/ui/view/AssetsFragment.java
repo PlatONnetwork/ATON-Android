@@ -381,7 +381,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
             public void onCommonWalletItemClick(Wallet wallet, int position) {
                 //更新选中钱包
                 WalletManager.getInstance().addAndSelectedWalletStatusNotice(wallet);
-                WalletManager.getInstance().setWalletList(mWalletListAdapter.getDatas());
+                //WalletManager.getInstance().setWalletList(mWalletListAdapter.getDatas());
                 //showSelectedWalletInfo(wallet);
                 getPresenter().loadData();
             }
@@ -666,6 +666,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         if(!selectedWallet.isHD()){
             layoutSecurityReminders.setVisibility(!selectedWallet.isBackedUp()? View.VISIBLE : View.GONE);
         }else{
+
             Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(selectedWallet.getParentId());
             layoutSecurityReminders.setVisibility(!rootWallet.isBackedUp()? View.VISIBLE : View.GONE);
         }

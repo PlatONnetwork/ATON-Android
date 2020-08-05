@@ -109,10 +109,10 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
         Wallet wallet = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
         @InputWalletPasswordFromType int fromType = getArguments().getInt(Constants.Bundle.BUNDLE_WALLET_FROM_TYPE,0);
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
-
+        Wallet rootWallet = null;
         //子钱包(查询子钱包对应的HD母钱包信息组装到子钱包)
         if(wallet.isHD() && wallet.getDepth() == 1){
-            Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
+            rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
             wallet.setMnemonic(rootWallet.getMnemonic());
             wallet.setKey(rootWallet.getKey());
         }
@@ -126,7 +126,11 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                 0,
                 DensityUtil.dp2px(context, 2f));
 
-        if (wallet != null) {
+        //设置钱包名称
+        if (wallet != null && (wallet.isHD() && wallet.getDepth() == 1)
+            && fromType == InputWalletPasswordFromType.BACKUPS) {
+            textWalletName.setText(rootWallet.getName());
+        }else{
             textWalletName.setText(wallet.getName());
         }
 
