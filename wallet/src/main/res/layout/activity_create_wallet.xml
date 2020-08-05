@@ -113,6 +113,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
                 android:text="Name can't be empty !"
+                android:visibility="gone"
                 android:textColor="@color/color_f5302c"
                 android:textSize="12sp" />
 
@@ -253,6 +254,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
+                android:visibility="gone"
                 android:text="@string/passwordTips"
                 android:textColor="@color/color_f5302c"
                 android:textSize="12sp" />

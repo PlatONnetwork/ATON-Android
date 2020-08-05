@@ -537,6 +537,7 @@ public class WalletManager {
             return;
         }
 
+        //更新缓存钱包金额
         mWalletList.get(position).setAccountBalance(accountBalance);
         /*  Wallet wallet = mWalletList.get(position);
             wallet.setAccountBalance(accountBalance);*/
@@ -1179,7 +1180,15 @@ public class WalletManager {
                 .doOnSuccess(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer integer) throws Exception {
+                        Wallet wallet = mWalletList.get(integer);
                         mWalletList.get(integer).setBackedUp(isBackedUp);
+                       /* if(!wallet.isHD()){
+                            mWalletList.get(integer).setBackedUp(isBackedUp);
+                        }else{
+                           //???
+                        }*/
+
+
                     }
                 })
                 .subscribe();
@@ -1283,7 +1292,11 @@ public class WalletManager {
     }
 
     public boolean isWalletNameExists(String walletName) {
-        if (mWalletList == null || mWalletList.isEmpty()) {
+
+        return isWalletNameExistsFromDB(walletName);
+
+
+     /* if (mWalletList == null || mWalletList.isEmpty()) {
             return false;
         }
         return Flowable
@@ -1291,7 +1304,7 @@ public class WalletManager {
                 .map(new Function<Wallet, Boolean>() {
                     @Override
                     public Boolean apply(Wallet walletEntity) throws Exception {
-                        return walletEntity.getName().toLowerCase().equals(walletName);
+                        return walletEntity.getName().equals(walletName);
                     }
                 })
                 .filter(new Predicate<Boolean>() {
@@ -1302,7 +1315,7 @@ public class WalletManager {
                 })
                 .firstElement()
                 .defaultIfEmpty(false)
-                .blockingGet();
+                .blockingGet();*/
     }
 
     public boolean isWalletAddressExists(String prefixAddress) {

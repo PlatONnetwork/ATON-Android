@@ -617,6 +617,12 @@ public class WalletDao {
         return false;
     }
 
+    /**
+     * 更新钱包备份状态【根据uuid】
+     * @param uuid
+     * @param backedUp
+     * @return
+     */
     public static boolean updateBackedUpWithUuid(String uuid, boolean backedUp) {
         Realm realm = null;
         try {

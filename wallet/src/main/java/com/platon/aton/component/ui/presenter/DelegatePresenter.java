@@ -38,6 +38,7 @@ import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
+import com.platon.framework.utils.LogUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.FunctionType;
@@ -204,7 +205,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             }
         }
 
-        List<Wallet> newWallet = WalletManager.getInstance().getWalletListByAddressAndNameAndType(walletTypeSearch,name,address);
+        List<Wallet> newWalletList = WalletManager.getInstance().getWalletListByAddressAndNameAndType(walletTypeSearch,name,address);
 
 
         if(getDataSource().size() > 0){
@@ -212,14 +213,27 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         }
         //设置选中钱包
         Wallet selectedWallet =  WalletManager.getInstance().getSelectedWallet();
-        for (int i = 0; i < newWallet.size(); i++) {
-            if(selectedWallet.getUuid().equals(newWallet.get(i).getUuid())){
-                newWallet.get(i).setSelectedIndex(WalletSelectedIndex.SELECTED);
+        for (int i = 0; i < newWalletList.size(); i++) {
+            if(selectedWallet.getUuid().equals(newWalletList.get(i).getUuid())){
+                newWalletList.get(i).setSelectedIndex(WalletSelectedIndex.SELECTED);
                 break;
             }
         }
-        //排序：先按照普通、HD组排序，内部再按照余额大小倒序
-        Collections.sort(newWallet, new Comparator<Wallet>() {
+        //设置钱包金额
+        List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+        for (int i = 0; i < newWalletList.size(); i++) {
+             String uuid= newWalletList.get(i).getUuid();
+             for (Wallet wallet : walletList) {
+                  if(uuid.equals(wallet.getUuid())){
+                      newWalletList.get(i).setAccountBalance(wallet.getAccountBalance());
+                      break;
+                  }
+             }
+        }
+
+
+        //排序：普通在前，HD组在后排序；普通钱包按余额从高到低；HD按照索引从小到大
+        Collections.sort(newWalletList, new Comparator<Wallet>() {
             @Override
             public int compare(Wallet o1, Wallet o2) {
                 Boolean value1 = new Boolean(o1.isHD());
@@ -232,8 +246,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 }else{
                      if(!o1.isHD() && !o2.isHD()){//比较普通钱包的金额
                          return accountBalanceCompareTo(o1,o2);
-                     }else if(o1.isHD() && o2.isHD()){//比较HD钱包的金额
-                         return accountBalanceCompareTo(o1,o2);
+                     }else if(o1.isHD() && o2.isHD()){//比较HD钱包的索引
+                         Integer pathIndex1 = new Integer(o1.getPathIndex());
+                         Integer pathIndex2 = new Integer(o2.getPathIndex());
+                         return pathIndex1.compareTo(pathIndex2);
                      }
                 }
 
@@ -242,7 +258,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         });
 
 
-        getDataSource().addAll(newWallet);
+        getDataSource().addAll(newWalletList);
         getView().notifyDataSetChanged();
     }
 
@@ -252,12 +268,20 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         AccountBalance accountBalance2 = o2.getAccountBalance();
 
         if (accountBalance1 != null && accountBalance2 != null
-                && (accountBalance1.getFree() != null && !"".equals(accountBalance1.getFree()))
-                && (accountBalance2.getFree() != null && !"".equals(accountBalance2.getFree()))) {
+            && (accountBalance1.getFree() != null && !"".equals(accountBalance1.getFree()))
+            && (accountBalance2.getFree() != null && !"".equals(accountBalance2.getFree()))) {
 
-            Long amountHD1 = Long.parseLong(accountBalance1.getFree());
-            Long amountHD2 = Long.parseLong(accountBalance2.getFree());
-            return amountHD1.compareTo(amountHD2);
+            BigDecimal amountHD1 = new BigDecimal(accountBalance1.getFree());
+            BigDecimal amountHD2 = new BigDecimal(accountBalance2.getFree());
+            LogUtils.e("--amountHD1:" + amountHD1.toString());
+            LogUtils.e("--amountHD2:" + amountHD2.toString());
+            if(1 == amountHD1.compareTo(amountHD2)){
+               return -1;
+            }else if(-1 == amountHD1.compareTo(amountHD2)){
+               return 1;
+            }else{
+                return 0;
+            }
         }else{
             return 0;
         }
