@@ -239,10 +239,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
             app:enabled="false"
             app:text="@string/startImporting"
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />
+
+        <TextView
+            android:id="@+id/tv_wallet_num_over_limit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/msg_wallet_num_over_limit_tips"
+            android:visibility="gone"
+            android:textColor="@color/color_f5302c"
+            android:textSize="12sp" />
+
     </LinearLayout>
 </ScrollView>

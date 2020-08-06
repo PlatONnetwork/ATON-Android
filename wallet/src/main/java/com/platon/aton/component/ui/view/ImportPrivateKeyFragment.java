@@ -72,12 +72,16 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
     Button mBtnPaste;
     @BindView(R.id.layout_password_strength)
     LinearLayout mPasswordStrengthLayout;
+    @BindView(R.id.tv_wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
     private boolean isEnablePrivateKey = true;
     private boolean isEnableName = true;
     private boolean isEnablePassword = true;
+    private boolean isEnableCreate = false;
+
 
     @Override
     public int getLayoutId() {
@@ -155,60 +159,70 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
                 });
 
 
-
         mEtPrivateKey.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String privateKey = mEtPrivateKey.getText().toString().trim();
-                    if (TextUtils.isEmpty(privateKey)) {
-                        showPrivateKeyError(string(R.string.validPrivateKeyEmptyTips), true);
-                    } else {
-                        showPrivateKeyError("", false);
-                    }
+                if (TextUtils.isEmpty(privateKey)) {
+                    showPrivateKeyError(string(R.string.validPrivateKeyEmptyTips), true);
+                } else {
+                    showPrivateKeyError("", false);
+                }
             }
+
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         mEtWalletName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String name = mEtWalletName.getText().toString().trim();
-                    if (TextUtils.isEmpty(name)) {
-                        showNameError(string(R.string.validWalletNameEmptyTips), true);
-                    } else if (name.length() > 20) {
-                        showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (getPresenter().isExists(name)) {
-                        showNameError(string(R.string.wallet_name_exists), true);
-                    } else {
-                        showNameError("", false);
-                    }
+                if (TextUtils.isEmpty(name)) {
+                    showNameError(string(R.string.validWalletNameEmptyTips), true);
+                } else if (name.length() > 20) {
+                    showNameError(string(R.string.validWalletNameTips), true);
+                } else if (getPresenter().isExists(name)) {
+                    showNameError(string(R.string.wallet_name_exists), true);
+                } else {
+                    showNameError("", false);
+                }
             }
+
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         mEtPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String password = mEtPassword.getText().toString().trim();
                 String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                    if (TextUtils.isEmpty(password)) {
-                        showPasswordError(string(R.string.validPasswordEmptyTips), true);
-                    } else if (password.length() < 6) {
-                        showPasswordError(string(R.string.validPasswordTips), true);
-                    } else {
-                        if (password.equals(repeatPassword)) {
-                            showPasswordError("", false);
-                        }
+                if (TextUtils.isEmpty(password)) {
+                    showPasswordError(string(R.string.validPasswordEmptyTips), true);
+                } else if (password.length() < 6) {
+                    showPasswordError(string(R.string.validPasswordTips), true);
+                } else {
+                    if (password.equals(repeatPassword)) {
+                        showPasswordError("", false);
                     }
+                }
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 String password = mEtPassword.getText().toString().trim();
@@ -219,23 +233,27 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
 
         mEtRepeatPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String password = mEtPassword.getText().toString().trim();
                 String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                    if (TextUtils.isEmpty(repeatPassword)) {
-                        showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
-                    } else if (!repeatPassword.equals(password)) {
-                        showPasswordError(string(R.string.passwordTips), true);
-                    } else {
-                        if (repeatPassword.equals(password) && password.length() >= 6) {
-                            showPasswordError("", false);
-                        }
+                if (TextUtils.isEmpty(repeatPassword)) {
+                    showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
+                } else if (!repeatPassword.equals(password)) {
+                    showPasswordError(string(R.string.passwordTips), true);
+                } else {
+                    if (repeatPassword.equals(password) && password.length() >= 6) {
+                        showPasswordError("", false);
                     }
+                }
             }
+
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
 
@@ -335,6 +353,20 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         showPasswordError("", false);*/
         enableImport(false);
         getPresenter().init();
+        getPresenter().loadDBWalletNumber();
+    }
+
+
+    @Override
+    public void showWalletNumber(int walletNum) {
+        int sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+            isEnableCreate = false;
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+            isEnableCreate = true;
+        }
     }
 
     @Override
@@ -345,7 +377,7 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         }
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
             String unzip = GZipUtil.unCompress(scanResult);
             getPresenter().parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
         }
@@ -355,7 +387,7 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
     public String getKeystoreFromIntent() {
         Bundle bundle = getArguments();
         if (bundle != null && !bundle.isEmpty()) {
-            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
         }
         return "";
     }
@@ -456,14 +488,12 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
     }
 
 
-
-
     @Override
     public void showPrivateKeyError(String text, boolean isVisible) {
         mTvPrivateKeyError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPrivateKeyError.setText(text);
         this.isEnablePrivateKey = isVisible;
-        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword);
+        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword &&isEnableCreate);
     }
 
     @Override
@@ -471,7 +501,7 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         mTvNameError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvNameError.setText(text);
         this.isEnableName = isVisible;
-        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword);
+        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword &&isEnableCreate);
     }
 
     @Override
@@ -480,7 +510,7 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         mTvPasswordError.setText(text);
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
         this.isEnablePassword = isVisible;
-        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword);
+        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword &&isEnableCreate);
     }
 
     @Override
@@ -488,4 +518,5 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         mBtnPaste.setEnabled(enabled);
         mBtnPaste.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_105cfe : R.color.color_d8d8d8));
     }
+
 }

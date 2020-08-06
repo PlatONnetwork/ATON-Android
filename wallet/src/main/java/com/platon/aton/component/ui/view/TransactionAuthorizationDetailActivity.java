@@ -113,7 +113,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         tvSenderTitle.setText(getSenderTitleRes(transactionAuthorizationDetail.getFunctionType()));
         tvRecipientTitle.setText(getRecipientInfoRes(transactionAuthorizationDetail.getFunctionType()));
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
-        String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 12));
+        String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 8));
         tvAmount.setText(amountText);
         CommonTextUtils.richText(tvAmount, amountText, "LAT", new AbsoluteSizeSpan(DensityUtil.dp2px(this, 24)) {
             @Override
@@ -254,7 +254,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         if (FunctionType.TRANSFER == transactionAuthorizationDetail.getFunctionType()) {
             return getTransferFormatName(transactionAuthorizationDetail.getReceiver());
         } else if (FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE == transactionAuthorizationDetail.getFunctionType()) {
-            return AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 12);
+            return AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 8);
         } else {
             return String.format("%s(%s)", transactionAuthorizationDetail.getNodeName(), transactionAuthorizationDetail.getNodeId());
         }

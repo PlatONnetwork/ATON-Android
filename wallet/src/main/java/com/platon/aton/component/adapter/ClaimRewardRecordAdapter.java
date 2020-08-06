@@ -75,7 +75,7 @@ public class ClaimRewardRecordAdapter extends BaseExpandableRecyclerViewAdapter<
                 DensityUtil.dp2px(mContext, 2));
 
         holder.mWalletAvatarCiv.setImageResource(RUtils.drawable(claimRewardRecord.getWalletAvatar()));
-        holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getTotalReward(), 12))));
+        holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getTotalReward(), 8))));
         holder.mWalletNameTv.setText(claimRewardRecord.getWalletName());
         holder.mWalletAddressTv.setText(AddressFormatUtil.formatClaimRewardRecordAddress(claimRewardRecord.getAddress()));
         holder.mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(claimRewardRecord.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)));
@@ -91,7 +91,7 @@ public class ClaimRewardRecordAdapter extends BaseExpandableRecyclerViewAdapter<
     @Override
     public void onBindChildViewHolder(ChildVH holder, ClaimRewardRecord groupBean, ClaimReward claimReward) {
         holder.mNodeNameTv.setText(claimReward.getNodeName());
-        holder.mClaimAmountTv.setText(String.format("%s%s", "+", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimReward.getReward(), 12))));
+        holder.mClaimAmountTv.setText(String.format("%s%s", "+", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimReward.getReward(), 8))));
     }
 
     static class GroupVH extends BaseExpandableRecyclerViewAdapter.BaseGroupViewHolder {

@@ -65,7 +65,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                     for (int i = 0; i < mWalletList.size(); i++) {
                         Wallet walletEntity = mWalletList.get(i);
                         int sortIndex = mWalletList.size() - i;
-                        walletEntity.setSelectedIndex(sortIndex);
+                        walletEntity.setSortIndex(sortIndex);
 
                         //更新DB
                         WalletManager.getInstance().updateDBWalletSortIndexByUuid(walletEntity,sortIndex);

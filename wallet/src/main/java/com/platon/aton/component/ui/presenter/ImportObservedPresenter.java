@@ -35,8 +35,8 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
     }
 
     @Override
-    public void IsImportObservedWallet(String content) {
-        if (!TextUtils.isEmpty(content)) {
+    public void IsImportObservedWallet(String content, boolean isEnableCreate) {
+        if (!TextUtils.isEmpty(content) && isEnableCreate) {
             getView().enableImportObservedWallet(true);
         } else {
             getView().enableImportObservedWallet(false);
@@ -49,6 +49,11 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
         if (isViewAttached()) {
             getView().enablePaste(!TextUtils.isEmpty(text));
         }
+    }
+
+    @Override
+    public void loadDBWalletNumber() {
+        getView().showWalletNumber(WalletManager.getInstance().getWalletInfoListByOrdinaryAndSubWalletNum());
     }
 
     //验证钱包地址是否合法，完成导入

@@ -21,10 +21,7 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.VersionInfo;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.entity.WalletSelectedIndex;
-import com.platon.aton.entity.WalletTypeSearch;
-import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.DateUtil;
-import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BasePresenter;
@@ -36,6 +33,8 @@ import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
@@ -88,19 +87,79 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
             }
         }
 
-        List<Wallet> newWallet = WalletManager.getInstance().getWalletListByAddressAndNameAndType(walletTypeSearch,name,address);
+        List<Wallet> newWallets = WalletManager.getInstance().getWalletListByAddressAndNameAndType(walletTypeSearch,name,address);
         if(getDataSource().size() > 0){
             getDataSource().clear();
         }
         //设置选中钱包
        Wallet selectedWallet =  WalletManager.getInstance().getSelectedWallet();
-        for (int i = 0; i < newWallet.size(); i++) {
-             if(selectedWallet.getUuid().equals(newWallet.get(i).getUuid())){
-                 newWallet.get(i).setSelectedIndex(WalletSelectedIndex.SELECTED);
+        for (int i = 0; i < newWallets.size(); i++) {
+             if(selectedWallet.getUuid().equals(newWallets.get(i).getUuid())){
+                 newWallets.get(i).setSelectedIndex(WalletSelectedIndex.SELECTED);
                  break;
              }
         }
-        getDataSource().addAll(newWallet);
+
+        //排序规则：
+        // 1)、普通在前，HD组在后排序；
+        // 2)、普通钱包和HD钱包组默认按照创建顺序；HD钱包组内默认按照索引从小到大
+        // 3)、普通钱包和HD钱包组如果被拖动，按照拖动顺序
+        Collections.sort(newWallets, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                Boolean value1 = new Boolean(o1.isHD());
+                Boolean value2 = new Boolean(o2.isHD());
+
+                if(1 == value1.compareTo(value2)){
+                    return 1;
+                }else if(-1 == value1.compareTo(value2)){
+                    return -1;
+                }else{
+
+                    if(!o1.isHD() && !o2.isHD()){//比较普通钱包
+                        if(o1.getSortIndex() == 0 && o2.getSortIndex() == 0){//普通钱包未进行拖动，按创建时间排序
+
+                            return Long.compare(o1.getCreateTime(), o2.getCreateTime());
+                        }else{//普通钱包拖动,按sortIndex从大到小
+                            Integer sortIndex1 = new Integer(o1.getSortIndex());
+                            Integer sortIndex2 = new Integer(o2.getSortIndex());
+                            if(sortIndex1 > sortIndex2){
+                                return -1;
+                            }else if(sortIndex1 < sortIndex2){
+                                return 1;
+                            }else{
+                                return 0;
+                            }
+                        }
+
+                    }else if((o1.isHD() && o2.isHD())){//比较HD钱包的索引
+
+                         if(o1.getParentId().equals(o2.getParentId())){//同一组HD钱包，由于sortIndex相同，故只比较索引
+                             Integer pathIndex1 = new Integer(o1.getPathIndex());
+                             Integer pathIndex2 = new Integer(o2.getPathIndex());
+                             return pathIndex1.compareTo(pathIndex2);
+                         }else{//非同一组HD钱包,按sortIndex从大到小
+                             Integer sortIndex1 = new Integer(o1.getSortIndex());
+                             Integer sortIndex2 = new Integer(o2.getSortIndex());
+                             if(sortIndex1 > sortIndex2){
+                                 return -1;
+                             }else if(sortIndex1 < sortIndex2){
+                                 return 1;
+                             }else{
+                                 return 0;
+                             }
+                         }
+                    }
+                }
+
+                return value1.compareTo(value2);
+            }
+        });
+
+
+
+
+        getDataSource().addAll(newWallets);
         getView().notifyDataSetChanged();
     }
 

@@ -1,6 +1,5 @@
 package com.platon.aton.component.ui.contract;
 
-import com.platon.aton.component.ui.IContext;
 import com.platon.framework.base.BaseViewImp;
 import com.platon.framework.base.IPresenter;
 
@@ -13,6 +12,7 @@ public class ImportPrivateKeyContract {
         void showNameError(String text, boolean isVisible);
         void showPasswordError(String text, boolean isVisible);
         void enablePaste(boolean enabled);
+        void showWalletNumber(int walletNum);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -21,5 +21,6 @@ public class ImportPrivateKeyContract {
         void importPrivateKey(String privateKey, String name, String password, String repeatPassword);
         void checkPaste();
         boolean isExists(String walletName);
+        void loadDBWalletNumber();
     }
 }

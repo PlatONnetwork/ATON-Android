@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.platon.aton.entity.WalletDepth;
 import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.entity.Wallet;
@@ -59,7 +60,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         viewHolder.ivWalletAvatar.setImageResource(resId);
         viewHolder.tvwalletName.setText(item.getName());
         viewHolder.tvWalletAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
-        if(item.isHD()){
+        if(item.isHD() && item.getDepth() == WalletDepth.DEPTH_ZERO){
             viewHolder.tvWalletAddress.setVisibility(View.GONE);
         }
         if(item.getDepth() == 1){
