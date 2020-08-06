@@ -611,7 +611,7 @@ public class WalletManager {
 
 
         WalletDao.updateWalletSortIndexWithUuid(wallet.getUuid(),sortIndex);
-        if(wallet.isHD() && wallet.getDepth() == 0){
+        if(wallet.isHD() && wallet.getDepth() == 0){//此钱包为母钱包，同步更新旗下子钱包sortIndex
             WalletDao.updateBatchWalletSortIndexWithParentId(wallet.getUuid(),sortIndex);
         }
         return true;

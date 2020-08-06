@@ -144,7 +144,7 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenRightSidebarEvent(Event.OpenRightSidebarEvent event) {
-        Wallet wallet = event.wallet;
+        Wallet selectedWallet = event.wallet;
         int toWalletTypeSearch = event.walletTypeSearch;
 
         if(toWalletTypeSearch == WalletTypeSearch.WALLET_ALL){
@@ -157,9 +157,25 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
             btnHd.setChecked(true);
             layoutDrawer.openDrawer(GravityCompat.END);
             getPresenter().loadData(toWalletTypeSearch,etSearch.getText().toString().trim());
+
+            //滚动到指定钱包index
+            for (int i = 0; i < getPresenter().getDataSource().size(); i++) {
+                if(selectedWallet.getUuid().equals(getPresenter().getDataSource().get(i).getUuid())){
+                    listWallet.smoothScrollToPosition(i);
+                    break;
+                }
+            }
+
         }else{
             getPresenter().loadData(walletTypeSearch,etSearch.getText().toString().trim());
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWalletListOrderChangedEvent(Event.WalletListOrderChangedEvent event) {
+        btnAll.setChecked(true);
+        getPresenter().loadData(WalletTypeSearch.WALLET_ALL,etSearch.getText().toString().trim());
     }
 
 
@@ -418,7 +434,6 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
         if(mSidebarWalletListAdapter != null){
             itemDecoration.setDataSource(getPresenter().getDataSource());
             mSidebarWalletListAdapter.notifyDataSetChanged();
-
         }
     }
 

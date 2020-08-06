@@ -10,9 +10,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -98,7 +96,6 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
     TextView mTvWalletType;
     @BindView(R.id.tv_wallet_num_over_limit)
     TextView tvWalletNumOverLimit;
-    Unbinder unbinder1;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
@@ -109,7 +106,6 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
     private boolean isEnableName = true;
     private boolean isEnablePassword = true;
     private boolean isMnemonicPhrase = true;
-
 
 
     @Override
@@ -634,18 +630,4 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
         enableImport(!isEnableName && !isEnablePassword && !isMnemonicPhrase  && isEnableCreate);
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder1 = ButterKnife.bind(this, rootView);
-        return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder1.unbind();
-    }
 }

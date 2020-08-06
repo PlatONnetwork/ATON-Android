@@ -22,6 +22,20 @@
             android:src="@drawable/avatar_15" />
     </FrameLayout>
 
+
+    <TextView
+        android:id="@+id/tv_wallet_backup"
+        style="@style/Text.105cfe.13"
+        android:layout_alignParentRight="true"
+        android:drawableLeft="@drawable/icon_backup"
+        android:layout_centerVertical="true"
+        android:drawablePadding="5dp"
+        android:includeFontPadding="false"
+        android:layout_marginRight="@dimen/layout_space_25"
+        android:layout_marginLeft="@dimen/layout_space_25"
+        android:text="@string/msg_backup_wallet" />
+
+
     <ImageView
         android:id="@+id/iv_arrow"
         android:layout_width="wrap_content"
@@ -82,9 +96,9 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/tv_wallet_backup"
                 style="@style/Text.105cfe.13"
                 android:layout_alignParentRight="true"
+                android:visibility="invisible"
                 android:drawableLeft="@drawable/icon_backup"
                 android:drawablePadding="5dp"
                 android:includeFontPadding="false"

@@ -246,7 +246,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 }else{
                      if(!o1.isHD() && !o2.isHD()){//比较普通钱包的金额
                          return accountBalanceCompareTo(o1,o2);
-                     }else if(o1.isHD() && o2.isHD()){//比较HD钱包的索引
+                     }else if((o1.isHD() && o2.isHD()) && (o1.getParentId().equals(o2.getParentId()))){//比较HD钱包的索引
                          Integer pathIndex1 = new Integer(o1.getPathIndex());
                          Integer pathIndex2 = new Integer(o2.getPathIndex());
                          return pathIndex1.compareTo(pathIndex2);

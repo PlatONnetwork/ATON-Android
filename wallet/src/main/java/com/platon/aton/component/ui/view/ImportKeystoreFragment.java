@@ -53,11 +53,15 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
     TextView mTvPasswordError;
     @BindView(R.id.btn_paste)
     Button mBtnPaste;
+    @BindView(R.id.tv_wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
 
     private boolean mShowPassword;
     private boolean isEnableName = true;
     private boolean isEnablePassword = true;
     private boolean isEnableKeystore = true;
+    private boolean isEnableCreate = false;
+
 
     @Override
     public int getLayoutId() {
@@ -87,6 +91,18 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
         getPresenter().checkPaste();
     }
 
+    @Override
+    public void showWalletNumber(int walletNum) {
+        int sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+            isEnableCreate = false;
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+            isEnableCreate = true;
+        }
+    }
+
     private void initDatas() {
         showPassword();
        /* showKeystoreError("", false);
@@ -94,6 +110,7 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
         showPasswordError("", false);*/
         enableImport(false);
         getPresenter().init();
+        getPresenter().loadDBWalletNumber();
         SoftHideKeyboardUtils.assistActivity(getActivity());
     }
 
@@ -160,56 +177,68 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
 
         mEtWalletName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String walletName = mEtWalletName.getText().toString().trim();
-                    if (TextUtils.isEmpty(walletName)) {
-                        showNameError(string(R.string.validWalletNameEmptyTips), true);
-                    } else if (walletName.length() > 12) {
-                        showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (getPresenter().isExists(walletName)) {
-                        showNameError(string(R.string.wallet_name_exists), true);
-                    } else {
-                        showNameError("", false);
-                    }
+                if (TextUtils.isEmpty(walletName)) {
+                    showNameError(string(R.string.validWalletNameEmptyTips), true);
+                } else if (walletName.length() > 12) {
+                    showNameError(string(R.string.validWalletNameTips), true);
+                } else if (getPresenter().isExists(walletName)) {
+                    showNameError(string(R.string.wallet_name_exists), true);
+                } else {
+                    showNameError("", false);
+                }
             }
+
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         mEtKeystore.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String keystore = mEtKeystore.getText().toString().trim();
-                    if (TextUtils.isEmpty(keystore)) {
-                        showKeystoreError(string(R.string.validKeystoreEmptyTips), true);
-                    } else {
-                        showKeystoreError("", false);
-                    }
+                if (TextUtils.isEmpty(keystore)) {
+                    showKeystoreError(string(R.string.validKeystoreEmptyTips), true);
+                } else {
+                    showKeystoreError("", false);
+                }
             }
+
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         mEtPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String password = mEtPassword.getText().toString().trim();
-                    if (TextUtils.isEmpty(password)) {
-                        showPasswordError(string(R.string.validPasswordEmptyTips), true);
-                    } else if (password.length() < 6) {
-                        showPasswordError(string(R.string.validPasswordTips), true);
-                    } else {
-                        showPasswordError("", false);
-                    }
+                if (TextUtils.isEmpty(password)) {
+                    showPasswordError(string(R.string.validPasswordEmptyTips), true);
+                } else if (password.length() < 6) {
+                    showPasswordError(string(R.string.validPasswordTips), true);
+                } else {
+                    showPasswordError("", false);
+                }
             }
+
             @Override
-            public void afterTextChanged(Editable s) { }
+            public void afterTextChanged(Editable s) {
+            }
         });
 
 
@@ -326,7 +355,7 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
         mTvKeystoreError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvKeystoreError.setText(text);
         this.isEnableKeystore = isVisible;
-        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword);
+        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword && isEnableCreate);
     }
 
     @Override
@@ -334,7 +363,7 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
         mTvNameError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvNameError.setText(text);
         this.isEnableName = isVisible;
-        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword);
+        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword && isEnableCreate);
     }
 
     @Override
@@ -342,7 +371,7 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
         this.isEnablePassword = isVisible;
-        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword);
+        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword && isEnableCreate);
     }
 
     @Override
