@@ -12,6 +12,7 @@ import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.TransactionWallet;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletDepth;
 import com.platon.aton.entity.WalletSelectedIndex;
 import com.platon.aton.entity.WalletType;
 import com.platon.aton.entity.WalletTypeSearch;
@@ -1201,6 +1202,13 @@ public class WalletManager {
 
         for (Wallet walletEntity : mWalletList) {
             if (walletEntity.getPrefixAddress().toLowerCase().contains(address.toLowerCase())) {
+
+                if(walletEntity.isHD() && walletEntity.getDepth() == WalletDepth.DEPTH_ONE){
+                    Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(walletEntity.getParentId());
+                    walletEntity.setMnemonic(rootWallet.getMnemonic());
+                    walletEntity.setKey(rootWallet.getKey());
+                }
+
                 return walletEntity;
             }
         }

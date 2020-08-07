@@ -21,6 +21,7 @@ import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletDepth;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
@@ -111,7 +112,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
         Wallet rootWallet = null;
         //子钱包(查询子钱包对应的HD母钱包信息组装到子钱包)
-        if(wallet.isHD() && wallet.getDepth() == 1){
+        if(wallet.isHD() && wallet.getDepth() == WalletDepth.DEPTH_ONE){
             rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
             wallet.setMnemonic(rootWallet.getMnemonic());
             wallet.setKey(rootWallet.getKey());
