@@ -3,28 +3,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="20dp"
-    android:paddingTop="8dp"
-    android:paddingRight="20dp"
-    android:paddingBottom="10dp">
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="10dp"
+    android:background="@drawable/divider_item_claim_child_record"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_node_name"
-        style="@style/Text.000.14"
-        android:layout_weight="1"
-        android:gravity="left|center_vertical"
-        android:lines="1"
-        android:ellipsize="end"
-        tools:text="Nodename" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/color_dfeafc"/>
 
-    <Space
-        android:layout_width="8dp"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_claim_amount"
-        style="@style/Text.000.12"
-        android:lines="1"
-        tools:text="+5,323,53555,323,53555,353555,353555" />
+        <TextView
+            android:id="@+id/tv_node_name"
+            style="@style/Text.000.14"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:lines="1"
+            android:ellipsize="end"
+            tools:text="Nodename" />
+
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_claim_amount"
+            style="@style/Text.000.12"
+            android:lines="1"
+            tools:text="+5,323,53555,323,53555,353555,353555" />
+
+    </LinearLayout>
+
+
 
 </LinearLayout>
