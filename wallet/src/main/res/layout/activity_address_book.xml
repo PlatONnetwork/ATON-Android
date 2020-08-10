@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
-            app:ctb_right_drawable="@drawable/icon_add"
+            app:ctb_right_drawable="@drawable/icon_add_address"
             app:ctb_title="@string/address_book" />
     </LinearLayout>
 

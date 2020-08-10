@@ -5,7 +5,7 @@
     android:id="@+id/layout_item_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_mydelegate_item"
+    android:background="@drawable/bg_claim_record_item"
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingTop="8dp"
@@ -77,13 +77,15 @@
 
     </android.support.constraint.ConstraintLayout>
 
+
+<!--            android:dividerPadding="10dp"
+        android:divider="@drawable/divider_item_claim_record"
+android:showDividers="middle"
+-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@drawable/divider_item_claim_record"
-        android:dividerPadding="10dp"
-        android:orientation="vertical"
-        android:showDividers="middle">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,5 +115,10 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <include
+        android:id="@+id/item_claim_child_record_detail"
+        layout="@layout/item_claim_record_detail"
+        android:visibility="gone"/>
 
 </LinearLayout>

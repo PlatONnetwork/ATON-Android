@@ -60,8 +60,9 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
     @Override
     public void loadMyDelegateData() {
 
+        //WalletManager.getInstance().getAddressList()
         mDisposable = ServerUtils.getCommonApi().getMyDelegateList(ApiRequestBody.newBuilder().
-                put("walletAddrs", WalletManager.getInstance().getAddressList())
+                put("walletAddrs", WalletManager.getInstance().getAddressListFromDB())
                 .build())
                 .map(new Function<Response<ApiResponse<List<DelegateInfo>>>, Optional<List<DelegateInfo>>>() {
                     @Override
@@ -127,6 +128,8 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 });
 
     }
+
+
 
     @Override
     public void withdrawDelegateReward(DelegateInfo delegateInfo, int position) {

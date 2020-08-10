@@ -711,21 +711,7 @@ public class WalletManager {
                 }).blockingGet();
     }
 
-    /**
-     * 根据钱包地址获取钱包名称(从缓存中获取)
-     * @param walletAddress
-     * @return
-     */
-    public String getWalletNameByWalletAddress(String walletAddress) {
-        if (!mWalletList.isEmpty()) {
-            for (Wallet walletEntity : mWalletList) {
-                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
-                    return walletEntity.getName();
-                }
-            }
-        }
-        return "";
-    }
+
 
     /**
      * 根据钱包地址获取钱包名称(先查缓存，再查DB)
@@ -789,16 +775,44 @@ public class WalletManager {
     }
 
     /**
-     * 获取钱包头像
+     * 根据钱包地址获取钱包名称(从缓存中获取)
+     * @param walletAddress
+     * @return
      */
-    public String getWalletIconByWalletAddress(String walletAddress) {
+    public String getWalletNameByWalletAddress(String walletAddress) {
+        boolean isCacheExists = false;
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {
                 if (!TextUtils.isEmpty(walletAddress) && walletAddress.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
+                    isCacheExists = true;
+                    return walletEntity.getName();
+                }
+            }
+        }
+
+        if(!isCacheExists){
+            return WalletDao.getWalletNameByAddress(walletAddress);
+        }
+        return "";
+    }
+
+    /**
+     * 获取钱包头像
+     */
+    public String getWalletIconByWalletAddress(String walletAddress) {
+
+        boolean isCacheExists = false;
+        if (!mWalletList.isEmpty()) {
+            for (Wallet walletEntity : mWalletList) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
+                    isCacheExists = true;
                     return walletEntity.getAvatar();
                 }
-
             }
+        }
+
+        if(!isCacheExists){
+           return WalletDao.getWalletAvatarByAddress(walletAddress);
         }
         return null;
     }
