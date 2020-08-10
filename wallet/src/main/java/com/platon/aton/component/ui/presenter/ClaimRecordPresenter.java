@@ -37,7 +37,7 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
         mDisposable = ServerUtils
                 .getCommonApi()
                 .getRewardTransactions(ApiRequestBody.newBuilder()
-                        .put("walletAddrs", WalletManager.getInstance().getAddressList())
+                        .put("walletAddrs", WalletManager.getInstance().getAddressListFromDB())
                         .put("beginSequence", getBeginSequence(direction))
                         .put("listSize", 10)
                         .put("direction", direction)
