@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.expandablerecycleradapter.BaseExpandableRecyclerViewAdapter;
 import com.platon.aton.component.widget.CircleImageView;
@@ -21,6 +20,7 @@ import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.DateUtil;
 import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.utils.RUtils;
 
 import java.util.List;
 
