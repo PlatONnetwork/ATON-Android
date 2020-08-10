@@ -447,8 +447,8 @@ public class TransactionManager {
                             tempTransaction.setTxReceiptStatus(transactionReceipt.getStatus());
                             tempTransaction.setTotalReward(transactionReceipt.getTotalReward());
                             tempTransaction.setBlockNumber(transactionReceipt.getBlockNumber());
-                            tempTransaction.setTimestamp(transactionReceipt.getTimestamp());
-                            tempTransaction.setActualTxCost(transactionReceipt.getActualTxCost());
+                            tempTransaction.setTimestamp(transactionReceipt.getTimestamp() == null ? 0 : transactionReceipt.getTimestamp());
+                            tempTransaction.setActualTxCost(TextUtils.isEmpty(transactionReceipt.getActualTxCost()) ? "0" : transactionReceipt.getActualTxCost());
                             if (tempTransaction.getTxType() == TransactionType.UNDELEGATE) {
                                 tempTransaction.setValue(BigDecimalUtil.add(transaction.getUnDelegation(), transactionReceipt.getTotalReward()).toPlainString());
                             }
