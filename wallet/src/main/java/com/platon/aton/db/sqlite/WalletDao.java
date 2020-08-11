@@ -391,6 +391,36 @@ public class WalletDao {
         return walletAvatar;
     }
 
+    public static WalletEntity getWalletInfoByAddress(String prefixAddress) {
+
+        String fieldName = "";
+        if(WalletManager.getInstance().isMainNetWalletAddress()){
+            fieldName = "mainNetAddress";
+        }else{
+            fieldName = "testNetAddress";
+        }
+
+        WalletEntity walletEntity = new WalletEntity();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            WalletEntity result = realm.where(WalletEntity.class)
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .equalTo(fieldName, prefixAddress, Case.INSENSITIVE)
+                    .findFirst();
+            if(result != null){
+                  walletEntity = realm.copyFromRealm(result);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return walletEntity;
+    }
+
 
 
     public static boolean insertWalletInfo(WalletEntity entity) {
