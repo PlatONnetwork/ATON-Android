@@ -332,6 +332,22 @@ public class WalletManager {
     }
 
 
+    public Wallet getWalletInfoByAddress(String address){
+        return Flowable.fromCallable(new Callable<WalletEntity>(){
+            @Override
+            public WalletEntity call() throws Exception {
+                return WalletDao.getWalletInfoByAddress(address);
+            }
+        }).map(new Function<WalletEntity, Wallet>() {
+
+            @Override
+            public Wallet apply(WalletEntity walletEntity) throws Exception {
+                return walletEntity.buildWallet();
+            }
+        }).blockingFirst();
+    }
+
+
     /**
      * 查询交易钱包数据
      * @return
@@ -1210,6 +1226,8 @@ public class WalletManager {
     }
 
     public Wallet getWalletByAddress(String address) {
+
+        boolean isCacheExists = false;
         if (TextUtils.isEmpty(address)) {
             return null;
         }
@@ -1221,10 +1239,21 @@ public class WalletManager {
                     Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(walletEntity.getParentId());
                     walletEntity.setMnemonic(rootWallet.getMnemonic());
                     walletEntity.setKey(rootWallet.getKey());
+                    isCacheExists = true;
                 }
-
                 return walletEntity;
             }
+        }
+
+        if(!isCacheExists){
+
+            Wallet wallet = WalletManager.getInstance().getWalletInfoByAddress(address);
+            if(wallet.isHD() && wallet.getDepth() == WalletDepth.DEPTH_ONE){
+                Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
+                wallet.setMnemonic(rootWallet.getMnemonic());
+                wallet.setKey(rootWallet.getKey());
+            }
+            return wallet;
         }
         return Wallet.getNullInstance();
     }

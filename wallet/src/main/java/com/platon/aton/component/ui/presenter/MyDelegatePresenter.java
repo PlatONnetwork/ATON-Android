@@ -145,7 +145,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     @Override
                     public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
-                            showClaimRewardsDialogFragment(delegateInfo, estimateGasResult.getGasProvider().toSdkGasProvider(), position, estimateGasResult.getNonce());
+                            showClaimRewardsDialogFragment(delegateInfo, estimateGasResult, position);
                         }
                     }
 
@@ -159,13 +159,17 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 });
     }
 
-    public void showClaimRewardsDialogFragment(DelegateInfo delegateInfo, org.web3j.tx.gas.GasProvider gasProvider, int position, String nonce) {
+    public void showClaimRewardsDialogFragment(DelegateInfo delegateInfo, EstimateGasResult estimateGasResult,int position) {
+
+        org.web3j.tx.gas.GasProvider gasProvider = estimateGasResult.getGasProvider().toSdkGasProvider();
+        String nonce = estimateGasResult.getNonce();
         ClaimRewardInfo claimRewardInfo = new ClaimRewardInfo.Builder()
                 .setFeeAmount(BigDecimalUtil.mul(gasProvider.getGasPrice().toString(10), gasProvider.getGasLimit().toString(10)).toPlainString())
                 .setClaimRewardAmount(delegateInfo.getWithdrawReward())
                 .setFromWalletName(delegateInfo.getWalletName())
                 .setFromWalletAddress(delegateInfo.getWalletAddress())
-                .setAvaliableBalanceAmount(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()).getFreeBalance())
+                //.setAvaliableBalanceAmount(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()).getFreeBalance())
+                .setAvaliableBalanceAmount(estimateGasResult.getFree())
                 .build();
         ClaimRewardsDialogFragment.newInstance(claimRewardInfo).setOnConfirmBtnClickListener(new ClaimRewardsDialogFragment.OnConfirmBtnClickListener() {
             @Override
