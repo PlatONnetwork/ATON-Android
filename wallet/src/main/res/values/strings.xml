@@ -830,8 +830,9 @@
     <string name="wallet_type">钱包类型:</string>
     <string name="wallet_type_tip">选择HD将默认创建一组30个钱包</string>
     <string name="wallet_rename">修改名称</string>
-    <string name="wallet_hint_search">钱包名称或地址搜索</string>
+    <string name="wallet_hint_search">请输入钱包名称或地址搜索</string>
     <string name="wallet_input_search_error">请输入钱包名称或地址</string>
+    <string name="wallet_delete_hd">删除HD钱包</string>
 
 
     <!-- 委托 -->

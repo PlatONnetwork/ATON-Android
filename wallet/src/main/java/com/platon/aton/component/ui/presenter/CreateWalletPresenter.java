@@ -13,7 +13,6 @@ import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.entity.WalletType;
-import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BasePresenter;

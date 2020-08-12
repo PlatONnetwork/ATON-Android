@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list_reminder_threshold_amount"
-    style="@style/List_common_style"
-    android:background="@drawable/bg_common_dialog_fragment"
-    android:divider="@drawable/bg_transation_list_divider"
-    android:dividerHeight="1dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:choiceMode="singleChoice"
-    tools:listitem="@layout/item_reminder_threshold_amount" />
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_send_transaction_dialog_fragment">
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:paddingRight="@dimen/layout_space_30"
+        android:paddingTop="@dimen/layout_space_15"
+        android:paddingBottom="@dimen/layout_space_15"
+        android:src="@drawable/icon_shut_down" />
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/color_e4e7f3" />
+
+
+    <ListView
+        android:id="@+id/list_reminder_threshold_amount"
+        style="@style/List_common_style"
+        android:divider="@drawable/bg_transation_list_divider"
+        android:dividerHeight="1dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:choiceMode="singleChoice"
+        tools:listitem="@layout/item_reminder_threshold_amount" />
+
+</LinearLayout>

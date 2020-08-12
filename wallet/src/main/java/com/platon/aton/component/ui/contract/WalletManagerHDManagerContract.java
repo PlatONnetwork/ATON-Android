@@ -22,6 +22,10 @@ public class WalletManagerHDManagerContract {
         void showModifyNameDialog(String name);
 
         void showWalletName(String name);
+
+        void showWalletMnemonicsBackup(Wallet wallet);
+
+        void showWalletDelete(Wallet wallet);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -38,6 +42,8 @@ public class WalletManagerHDManagerContract {
         void modifyName(String name,String uuid);
 
         boolean isExists(String walletName,String uuid);
+
+        void deleteHDWallet(Wallet wallet);
     }
 
 }
