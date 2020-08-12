@@ -9,9 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.TypedValue;
 import android.view.View;
-import android.widget.TextView;
 
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.WalletManagerAdapter;
@@ -124,8 +122,7 @@ public class WalletManagerActivity extends BaseActivity<WalletManagerContract.Vi
 
     private void initView() {
 
-        TextView tvRignt = commonTitleBar.findViewById(R.id.tv_right);
-        tvRignt.setVisibility(View.GONE);
+        commonTitleBar.findViewById(R.id.iv_right).setVisibility(View.GONE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvWallet.setLayoutManager(linearLayoutManager);

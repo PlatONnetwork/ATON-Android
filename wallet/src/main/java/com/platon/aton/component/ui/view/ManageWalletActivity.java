@@ -28,6 +28,7 @@ import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletDepth;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
@@ -112,7 +113,7 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
                 break;
             //删除钱包按钮
             case R.id.tv_delete:
-                if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey()) && getWalletEntityFromIntent().getDepth() == 0) {
+                if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey()) && getWalletEntityFromIntent().getDepth() == WalletDepth.DEPTH_ZERO) {
                     getPresenter().deleteObservedWallet();
                 } else {
                     showPasswordDialog(TYPE_DELETE_WALLET, getWalletEntityFromIntent());
@@ -154,7 +155,12 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
             }
             tvDelete.setVisibility(wallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
             //是否可以备份
-            llBackup.setVisibility(!wallet.isBackedUp() ? View.VISIBLE : View.GONE);
+            if(wallet.getMnemonic() != null && !wallet.getMnemonic().equals("")){//钱包通过APP创建的
+                llBackup.setVisibility(View.VISIBLE);
+            }else{
+                llBackup.setVisibility(!wallet.isBackedUp() ? View.VISIBLE : View.GONE);
+            }
+
         }
     }
 

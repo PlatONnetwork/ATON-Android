@@ -210,40 +210,6 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
             }
         });
 
-       /* Observable<CharSequence> walletNamePhraseObservable = RxTextView.textChanges(mEtWalletName).skipInitialValue();
-        Observable<CharSequence> passwordPhraseObservable = RxTextView.textChanges(mEtPassword).skipInitialValue();
-        Observable<CharSequence> repeatPasswordPhraseObservable = RxTextView.textChanges(mEtRepeatPassword).skipInitialValue();
-
-        Observable<Boolean> observable1 = walletNamePhraseObservable.map(new Function<CharSequence, Boolean>() {
-            @Override
-            public Boolean apply(CharSequence charSequence) throws Exception {
-                String walletName = charSequence.toString().trim();
-                return !TextUtils.isEmpty(walletName) && walletName.length() <= 20;
-            }
-        });
-
-        Observable<Boolean> observable2 = Observable.combineLatest(passwordPhraseObservable, repeatPasswordPhraseObservable, new BiFunction<CharSequence, CharSequence, Boolean>() {
-            @Override
-            public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                checkPwdStreng(charSequence.toString());
-                return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2) && charSequence.length() >= 6;
-            }
-        });
-
-        Observable.combineLatest(observable1, observable2, new BiFunction<Boolean, Boolean, Boolean>() {
-
-            @Override
-            public Boolean apply(Boolean aBoolean, Boolean aBoolean2) throws Exception {
-                return aBoolean && aBoolean2 && isEnableCreate;
-            }
-        }).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                enableImport(aBoolean);
-            }
-        });*/
-
-
         mEtWalletName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }

@@ -959,10 +959,8 @@ public class WalletManager {
             if (entity == null) {
                 return CODE_ERROR_PASSWORD;
             }
-            for (Wallet param : mWalletList) {
-                if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(entity.getPrefixAddress().toLowerCase())) {
-                    return CODE_ERROR_WALLET_EXISTS;
-                }
+            if(isWalletAddressExists(entity.getPrefixAddress().toLowerCase())){
+                return CODE_ERROR_WALLET_EXISTS;
             }
             entity.setBackedUp(true);
             entity.setMnemonic("");
@@ -993,11 +991,15 @@ public class WalletManager {
         mWallet.setUuid(UUID.randomUUID().toString());
         mWallet.setAvatar(WalletServiceImpl.getInstance().getWalletAvatar(WalletType.ORDINARY_WALLET));
 
-        for (Wallet param : mWalletList) {
+        if(isWalletAddressExists(mWallet.getPrefixAddress().toLowerCase())){
+            return CODE_ERROR_WALLET_EXISTS;
+        }
+
+       /* for (Wallet param : mWalletList) {
             if (param.getOriginalAddress().toLowerCase().equalsIgnoreCase(mWallet.getOriginalAddress().toLowerCase())) {
                 return CODE_ERROR_WALLET_EXISTS;
             }
-        }
+        }*/
         mWallet.setBackedUp(true);
         mWallet.setChainId(NodeManager.getInstance().getChainId());
         mWallet.setCreateTime(System.currentTimeMillis());
@@ -1023,10 +1025,8 @@ public class WalletManager {
             if (entity == null) {
                 return CODE_ERROR_PASSWORD;
             }
-            for (Wallet param : mWalletList) {
-                if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(entity.getPrefixAddress().toLowerCase())) {
-                    return CODE_ERROR_WALLET_EXISTS;
-                }
+            if(isWalletAddressExists(entity.getPrefixAddress().toLowerCase())){
+                return CODE_ERROR_WALLET_EXISTS;
             }
             entity.setBackedUp(true);
             entity.setMnemonic("");
@@ -1046,7 +1046,6 @@ public class WalletManager {
             @Override
             public void subscribe(SingleEmitter<Wallet> emitter) throws Exception {
                 Wallet walletEntity = WalletServiceImpl.getInstance().importMnemonic(mnemonic, name, password,index);
-                //if (walletEntity == null || isWalletAddressExists(walletEntity.getPrefixAddress().toLowerCase())) {
                 if (walletEntity == null) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
                 } else {
@@ -1063,6 +1062,7 @@ public class WalletManager {
         return Single.create(new SingleOnSubscribe<Wallet>() {
             @Override
             public void subscribe(SingleEmitter<Wallet> emitter) throws Exception {
+
                 Wallet walletEntity = WalletServiceImpl.getInstance().importMnemonic(mnemonic, name, password);
                 if (walletEntity == null || isWalletAddressExists(walletEntity.getPrefixAddress().toLowerCase())) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
@@ -1080,8 +1080,7 @@ public class WalletManager {
              @Override
              public void subscribe(SingleEmitter<List<Wallet>> emitter) throws Exception {
                  List<Wallet> walletEntitys = WalletServiceImpl.getInstance().importMnemonicWalletList(mnemonic, name, password);
-                 //if (walletEntitys == null || isWalletAddressExists(walletEntity.getPrefixAddress().toLowerCase())) {
-                 if (walletEntitys == null) {
+                 if (walletEntitys == null || isWalletAddressExists(walletEntitys.get(0).getPrefixAddress().toLowerCase())) {
                      emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
                  } else {
                      for (int i = 0; i < walletEntitys.size(); i++) {
@@ -1114,13 +1113,11 @@ public class WalletManager {
                 if (entity == null) {
                     return CODE_ERROR_PASSWORD;
                 }
-                for (Wallet param : mWalletList) {
-                    if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(entity.getPrefixAddress().toLowerCase())) {
-                        return CODE_ERROR_WALLET_EXISTS;
-                    }
+                if(isWalletAddressExists(entity.getPrefixAddress().toLowerCase())){
+                    return CODE_ERROR_WALLET_EXISTS;
                 }
                 entity.setBackedUp(true);
-                entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));
+                //entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));//导入助记词，不需要保存助记词
                 entity.setChainId(NodeManager.getInstance().getChainId());
                 addAndSelectedWalletStatusNotice(entity);
                 WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
@@ -1130,12 +1127,9 @@ public class WalletManager {
                 if (entityList == null) {
                     return CODE_ERROR_PASSWORD;
                 }
-                for (Wallet param : mWalletList) {
-                    if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(entityList.get(0).getPrefixAddress().toLowerCase())) {
-                        return CODE_ERROR_WALLET_EXISTS;
-                    }
+                if(isWalletAddressExists(entityList.get(0).getPrefixAddress().toLowerCase())){
+                    return CODE_ERROR_WALLET_EXISTS;
                 }
-
                 List<WalletEntity> walletEntitieList = new ArrayList<>();
                 for (int i = 0; i < entityList.size(); i++) {
                      if(i == 0){
@@ -1213,13 +1207,6 @@ public class WalletManager {
                     public void accept(Integer integer) throws Exception {
                         Wallet wallet = mWalletList.get(integer);
                         mWalletList.get(integer).setBackedUp(isBackedUp);
-                       /* if(!wallet.isHD()){
-                            mWalletList.get(integer).setBackedUp(isBackedUp);
-                        }else{
-                           //???
-                        }*/
-
-
                     }
                 })
                 .subscribe();
@@ -1258,6 +1245,7 @@ public class WalletManager {
         return Wallet.getNullInstance();
     }
 
+
     public boolean deleteWallet(Wallet wallet) {
 
         for (Wallet walletEntity : mWalletList) {
@@ -1271,7 +1259,7 @@ public class WalletManager {
             EventPublisher.getInstance().sendWalletSelectedChangedEvent();
         }
 
-        if(wallet.isHD() && wallet.getDepth() == 1){//子钱包删除
+        if(wallet.isHD() && wallet.getDepth() == WalletDepth.DEPTH_ONE){//子钱包删除
 
            return Flowable
                         .fromCallable(new Callable<Boolean>() {
@@ -1300,9 +1288,68 @@ public class WalletManager {
         }else{//删除普通钱包
             return WalletDao.deleteWalletInfo(wallet.getUuid());
         }
-
-
     }
+
+
+    public boolean deleteBatchWallet(Wallet rootWallet) {
+
+        //删除缓存中子钱包
+        for (Wallet walletEntity : mWalletList) {
+            if (rootWallet.getUuid().equals(walletEntity.getParentId())) {
+                mWalletList.remove(walletEntity);
+                break;
+            }
+        }
+        if (!isExistSelectedWallet() && !mWalletList.isEmpty()) {
+            mWalletList.get(0).setSelectedIndex(WalletSelectedIndex.SELECTED);
+            EventPublisher.getInstance().sendWalletSelectedChangedEvent();
+        }
+
+        //删除DB数据
+       return Flowable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                //删除母钱包
+                return WalletDao.deleteWalletInfo(rootWallet.getUuid());
+            }
+        }).filter(new Predicate<Boolean>() {
+            @Override
+            public boolean test(Boolean aBoolean) throws Exception {
+                return aBoolean;
+            }
+        }).map(new Function<Boolean, List<WalletEntity>>() {
+           @Override
+           public List<WalletEntity> apply(Boolean aBoolean) throws Exception {
+               return WalletDao.getHDWalletListByParentId(rootWallet.getUuid());
+           }
+       }).flatMap(new Function<List<WalletEntity>, Publisher<WalletEntity>>() {
+           @Override
+           public Publisher<WalletEntity> apply(List<WalletEntity> walletEntities) throws Exception {
+               return Flowable.fromIterable(walletEntities);
+           }
+       }).map(new Function<WalletEntity, Boolean>() {
+
+           @Override
+           public Boolean apply(WalletEntity wallet) throws Exception {
+               //删除所有子钱包
+               return WalletDao.deleteWalletInfo(wallet.getUuid());
+           }
+       }).toList()
+         .map(new Function<List<Boolean>, Boolean>() {
+             @Override
+             public Boolean apply(List<Boolean> booleanList) throws Exception {
+                 boolean isDeleteSuccess = true;
+                 for(int i = 0; i < booleanList.size(); i++) {
+                     if(!booleanList.get(i)){
+                         isDeleteSuccess = false;
+                         break;
+                     }
+                 }
+                 return isDeleteSuccess;
+             }
+         }).blockingGet();
+    }
+
 
     public boolean isValidWallet(Wallet walletEntity, String password) {
         try {
@@ -1370,6 +1417,35 @@ public class WalletManager {
     }
 
     public boolean isWalletAddressExists(String prefixAddress) {
+
+        boolean isCacheExists = false;
+        if (TextUtils.isEmpty(prefixAddress)) {
+            return false;
+        }
+
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return false;
+        }
+
+        for (Wallet walletEntity : mWalletList) {
+            if (walletEntity.getPrefixAddress().toLowerCase().equals(prefixAddress.toLowerCase())) {
+                isCacheExists = true;
+                return true;
+            }
+        }
+
+        if(!isCacheExists){
+            Wallet wallet = WalletManager.getInstance().getWalletInfoByAddress(prefixAddress);
+           if(wallet != null && (wallet.getPrefixAddress() != null && !wallet.getPrefixAddress().equals("")) &&
+              wallet.getPrefixAddress().equals(prefixAddress)){
+
+               return true;
+           }
+        }
+        return false;
+
+
+/*
         if (mWalletList == null || mWalletList.isEmpty()) {
             return false;
         }
@@ -1389,7 +1465,8 @@ public class WalletManager {
                 })
                 .firstElement()
                 .defaultIfEmpty(false)
-                .blockingGet();
+                .blockingGet();*/
+
     }
 
     public Observable<BigDecimal> getAccountBalance() {

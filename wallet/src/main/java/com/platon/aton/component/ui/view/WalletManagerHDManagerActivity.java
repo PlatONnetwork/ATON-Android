@@ -1,36 +1,33 @@
 package com.platon.aton.component.ui.view;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.util.TypedValue;
 import android.view.View;
-import android.widget.TextView;
 
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.WalletManagerAdapter;
-import com.platon.aton.component.ui.contract.WalletManagerContract;
 import com.platon.aton.component.ui.contract.WalletManagerHDManagerContract;
 import com.platon.aton.component.ui.dialog.CommonEditDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
+import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
+import com.platon.aton.component.ui.dialog.WalletHDMoreDialogFragment;
 import com.platon.aton.component.ui.presenter.WalletManagerHDManagerPresenter;
-import com.platon.aton.component.ui.presenter.WalletManagerPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.component.widget.ShadowContainer;
+import com.platon.aton.db.sqlite.WalletDao;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.netlistener.NetStateChangeObserver;
 import com.platon.aton.netlistener.NetStateChangeReceiver;
@@ -39,11 +36,10 @@ import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.Collections;
+import org.web3j.crypto.Credentials;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -98,6 +94,8 @@ public class WalletManagerHDManagerActivity extends BaseActivity<WalletManagerHD
 
     @Override
     protected void onResume() {
+
+        rootWallet = WalletDao.getWalletByUuid(rootWallet.getUuid()).buildWallet();
         getPresenter().fetchHDWalletList(rootWallet.getUuid());
         MobclickAgent.onPageStart(Constants.UMPages.WALLET_MANAGER);
         NetStateChangeReceiver.registerObserver(this);
@@ -120,19 +118,6 @@ public class WalletManagerHDManagerActivity extends BaseActivity<WalletManagerHD
         NetStateChangeReceiver.unRegisterReceiver(this);
     }
 
- /*   @OnClick({R.id.sc_create_wallet, R.id.sc_import_wallet})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sc_create_wallet:
-                CreateWalletActivity.actionStart(this);
-                break;
-            case R.id.sc_import_wallet:
-                ImportWalletActivity.actionStart(this);
-                break;
-            default:
-                break;
-        }
-    }*/
 
     @Override
     protected boolean immersiveBarViewEnabled() {
@@ -141,14 +126,28 @@ public class WalletManagerHDManagerActivity extends BaseActivity<WalletManagerHD
 
     private void initView() {
         rootWallet = getIntent().getParcelableExtra("rootWallet");
+
         commonTitleBar.setTitle(rootWallet.getName());
-        TextView tvRignt = commonTitleBar.findViewById(R.id.tv_right);
-        tvRignt.setVisibility(View.VISIBLE);
-        tvRignt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        commonTitleBar.setRightTextClickListener(new View.OnClickListener() {
+        commonTitleBar.findViewById(R.id.iv_right).setVisibility(View.VISIBLE);
+        commonTitleBar.setRightDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showModifyNameDialog("");
+                WalletHDMoreDialogFragment.newInstance(rootWallet).setOnWalletHDMoreClickListener(new WalletHDMoreDialogFragment.OnWalletHDMoreClickListener() {
+                    @Override
+                    public void onWalletRenameClick() {
+                        showModifyNameDialog("");
+                    }
+
+                    @Override
+                    public void onWalletMnemonicsBackupClick() {
+                        showWalletMnemonicsBackup(rootWallet);
+                    }
+
+                    @Override
+                    public void onWalletDeleteClick() {
+                        showWalletDelete(rootWallet);
+                    }
+                }).show(getSupportFragmentManager(),"showWalletHDMore");
             }
         });
 
@@ -167,26 +166,7 @@ public class WalletManagerHDManagerActivity extends BaseActivity<WalletManagerHD
             }
         });
         rvWallet.setAdapter(mAdapter);
-       /* rvWallet.addOnItemTouchListener(new WalletManagerAdapter.OnRecyclerItemClickListener(rvWallet) {
-            @Override
-            public void onItemClick(RecyclerView.ViewHolder vh) {
 
-            }
-
-            @Override
-            public void onItemLongClick(RecyclerView.ViewHolder vh) {
-
-                mItemTouchHelper.startDrag(vh);
-                //获取系统震动服务
-                Vibrator vib = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);//震动70毫秒
-                vib.vibrate(70);
-            }
-        });
-        //1.创建item helper
-        mItemTouchHelper = new ItemTouchHelper(mCallback);
-        //2.绑定到RecyclerView上面去
-        mItemTouchHelper.attachToRecyclerView(rvWallet);
-        //3.在ItemHelper的接口回调中过滤开启长按拖动，拓展其他操作*/
     }
 
     @Override
@@ -209,6 +189,34 @@ public class WalletManagerHDManagerActivity extends BaseActivity<WalletManagerHD
     @Override
     public void showWalletName(String name) {
         commonTitleBar.setTitle(name);
+    }
+
+    @Override
+    public void showWalletMnemonicsBackup(Wallet wallet) {
+
+        InputWalletPasswordDialogFragment.newInstance(wallet, InputWalletPasswordFromType.BACKUPS).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+            @Override
+            public void onCorrect(Credentials credentials, String password, Wallet wallet) {
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, wallet, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
+            }
+        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+    }
+
+    @Override
+    public void showWalletDelete(Wallet wallet) {
+
+        InputWalletPasswordDialogFragment.newInstance(wallet, InputWalletPasswordFromType.TRANSACTION, string(R.string.msg_delete_wallet)).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+            @Override
+            public void onWalletPasswordCorrect(Credentials credentials) {
+                //getPresenter().validPassword(type, credentials);
+            }
+        }).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+            @Override
+            public void onCorrect(Credentials credentials, String password, Wallet wallet) {
+                getPresenter().deleteHDWallet(wallet);
+            }
+        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+
     }
 
 
@@ -251,91 +259,6 @@ public class WalletManagerHDManagerActivity extends BaseActivity<WalletManagerHD
     }
 
 
-
-    private ItemTouchHelper.Callback mCallback = new ItemTouchHelper.Callback() {
-
-        /**
-         * 是否处理滑动事件 以及拖拽和滑动的方向 如果是列表类型的RecyclerView的只存在UP和DOWN，如果是网格类RecyclerView则还应该多有LEFT和RIGHT
-         * @param recyclerView
-         * @param viewHolder
-         * @return
-         */
-        @Override
-        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
-                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN |
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-                final int swipeFlags = 0;
-                return makeMovementFlags(dragFlags, swipeFlags);
-            } else {
-                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                final int swipeFlags = 0;
-//                    final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-                return makeMovementFlags(dragFlags, swipeFlags);
-            }
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            //得到当拖拽的viewHolder的Position
-            int fromPosition = viewHolder.getAdapterPosition();
-            //拿到当前拖拽到的item的viewHolder
-            int toPosition = target.getAdapterPosition();
-            if (fromPosition < toPosition) {
-                for (int i = fromPosition; i < toPosition; i++) {
-                    Collections.swap(getPresenter().getDataSource(), i, i + 1);
-                }
-            } else {
-                for (int i = fromPosition; i > toPosition; i--) {
-                    Collections.swap(getPresenter().getDataSource(), i, i - 1);
-                }
-            }
-            mAdapter.notifyItemMoved(fromPosition, toPosition);
-            getPresenter().sortWalletList();
-            return true;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                int position = viewHolder.getAdapterPosition();
-//                myAdapter.notifyItemRemoved(position);
-//                datas.remove(position);
-        }
-
-        /**
-         * 重写拖拽可用
-         * @return
-         */
-        @Override
-        public boolean isLongPressDragEnabled() {
-            return false;
-        }
-
-        /**
-         * 长按选中Item的时候开始调用
-         *
-         * @param viewHolder
-         * @param actionState
-         */
-        @Override
-        public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-            if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_f9fbff));
-            }
-            super.onSelectedChanged(viewHolder, actionState);
-        }
-
-        /**
-         * 手指松开的时候还原
-         * @param recyclerView
-         * @param viewHolder
-         */
-        @Override
-        public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            super.clearView(recyclerView, viewHolder);
-            viewHolder.itemView.setBackgroundColor(0);
-        }
-    };
 
     @Override
     public void onNetDisconnected() {

@@ -845,4 +845,29 @@ public class WalletDao {
         return false;
     }
 
+    public static boolean deleteBatchWalletInfoByParentId(String parentId) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                 .beginGroup()
+                 .equalTo("parentId", parentId)
+                 .endGroup()
+                 .findAll()
+                 .deleteAllFromRealm();
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
 }

@@ -816,6 +816,7 @@
     <string name="wallet_rename">Rename</string>
     <string name="wallet_hint_search">Search by wallet name/address</string>
     <string name="wallet_input_search_error">Please enter the wallet name or address</string>
+    <string name="wallet_delete_hd">Delete HD Wallet</string>
 
     <!-- delegate -->
     <string name="delegate_name">delegate...</string>

@@ -1,23 +1,16 @@
 package com.platon.aton.component.ui.presenter;
 
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.contract.WalletManagerContract;
 import com.platon.aton.component.ui.contract.WalletManagerHDManagerContract;
-import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.ManageWalletActivity;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.aton.event.EventPublisher;
-import com.platon.framework.app.Constants;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.SchedulersTransformer;
-import com.platon.framework.utils.PreferenceTool;
-
-import org.reactivestreams.Publisher;
-import org.web3j.crypto.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +152,18 @@ public class WalletManagerHDManagerPresenter extends BasePresenter<WalletManager
         }).firstElement()
           .defaultIfEmpty(false)
           .blockingGet();
+    }
+
+    @Override
+    public void deleteHDWallet(Wallet rootWallet) {
+
+       if(WalletManager.getInstance().deleteBatchWallet(rootWallet)){
+
+           EventPublisher.getInstance().sendWalletNumberChangeEvent();
+           EventPublisher.getInstance().sendWalletSelectedChangedEvent();
+           EventPublisher.getInstance().sendOpenRightSidebarEvent(null, WalletTypeSearch.UNKNOWN_WALLET);
+           getView().currentActivity().finish();
+       }
     }
 
     @Override
