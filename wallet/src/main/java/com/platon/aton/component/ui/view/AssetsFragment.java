@@ -664,7 +664,11 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
         //设置钱包备份状态(子钱包通过查询HD母钱包备份情况进行判断)
         if(!selectedWallet.isHD()){
-            layoutSecurityReminders.setVisibility(!selectedWallet.isBackedUp()? View.VISIBLE : View.GONE);
+            if(selectedWallet.isNull()){
+                layoutSecurityReminders.setVisibility(View.GONE);
+            }else{
+                layoutSecurityReminders.setVisibility(!selectedWallet.isBackedUp()? View.VISIBLE : View.GONE);
+            }
         }else{
 
             Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(selectedWallet.getParentId());
