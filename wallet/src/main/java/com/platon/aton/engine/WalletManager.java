@@ -807,7 +807,8 @@ public class WalletManager {
         }
 
         if(!isCacheExists){
-            return WalletDao.getWalletNameByAddress(walletAddress);
+            String address = WalletDao.getWalletNameByAddress(walletAddress);;
+            return TextUtils.isEmpty(address) ? "" : address;
         }
         return "";
     }
