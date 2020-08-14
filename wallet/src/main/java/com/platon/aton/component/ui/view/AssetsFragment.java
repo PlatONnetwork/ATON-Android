@@ -634,18 +634,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
     private void showSelectedWalletInfo(Wallet selectedWallet) {
 
-        if (layoutWalletAmount.getChildCount() == 2) {
-            layoutWalletAmount.removeViewAt(0);
-            tvWalletAmount = (AppCompatTextView) getLayoutInflater().inflate(R.layout.view_wallet_amount_text, null);
-            layoutWalletAmount.addView(tvWalletAmount, 0);
-            tvWalletAmount.setMaxWidth(getWalletAmountMaxWidth());
-        }
-
         tvWalletName.setText(selectedWallet.getName());
-        boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
-        tvWalletAmount.setText(visible ? StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getFreeBalance(), 8)) : "***");
-        tvWalletAmountUnit.setVisibility(visible ? View.VISIBLE : View.GONE);
-        showLockBalance(selectedWallet.getLockBalance());
         tvObservedWalletTag.setVisibility(selectedWallet.isObservedWallet() || !NetConnectivity.getConnectivityManager().isConnected() ? View.VISIBLE : View.INVISIBLE);
         tvObservedWalletTag.setText(selectedWallet.isObservedWallet() ? string(R.string.msg_observed_wallet) : string(R.string.msg_cold_wallet));
         civWalletAvatar.setImageResource(RUtils.drawable(selectedWallet.getAvatar()));
@@ -684,6 +673,16 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                   break;
               }
         }
+        //刷新交易记录及余额
+        getPresenter().loadData();
+        getPresenter().fetchWalletBalanbceBySelected(selectedWallet.getPrefixAddress());
+
+         /* ？？
+        boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
+        tvWalletAmount.setText(visible ? StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getFreeBalance(), 8)) : "***");
+        tvWalletAmountUnit.setVisibility(visible ? View.VISIBLE : View.GONE);*/
+      /*  showFreeBalance(selectedWallet.getFreeBalance());
+        showLockBalance(selectedWallet.getLockBalance());*/
     }
 
     private void showAssetsInfo() {

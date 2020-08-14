@@ -401,7 +401,19 @@ public class AppFramework {
                         .addField("selectedIndex", Integer.class).setRequired("selectedIndex",true)
                         .addField("parentId", String.class)
                         .addField("depth", Integer.class).setRequired("depth",true)
-                        .addField("isShow", Boolean.class).setRequired("isShow",true);
+                        .addField("isShow", Boolean.class).setRequired("isShow",true)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "103")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
+
+                                LogUtils.d("------------update chainId Realm success");
+                            }
+                        });
 
                 oldVersion++;
             }
