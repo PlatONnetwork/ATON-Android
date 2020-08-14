@@ -1081,7 +1081,10 @@ public class WalletManager {
              @Override
              public void subscribe(SingleEmitter<List<Wallet>> emitter) throws Exception {
                  List<Wallet> walletEntitys = WalletServiceImpl.getInstance().importMnemonicWalletList(mnemonic, name, password);
-                 if (walletEntitys == null || isWalletAddressExists(walletEntitys.get(0).getPrefixAddress().toLowerCase())) {
+
+                 if (walletEntitys == null || isWalletAddressExists(walletEntitys.get(0).getPrefixAddress().toLowerCase())
+                     || isWalletAddressExists(walletEntitys.get(1).getPrefixAddress().toLowerCase())) {
+
                      emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
                  } else {
                      for (int i = 0; i < walletEntitys.size(); i++) {
@@ -1128,7 +1131,9 @@ public class WalletManager {
                 if (entityList == null) {
                     return CODE_ERROR_PASSWORD;
                 }
-                if(isWalletAddressExists(entityList.get(0).getPrefixAddress().toLowerCase())){
+
+                if(isWalletAddressExists(entityList.get(0).getPrefixAddress().toLowerCase())
+                   || isWalletAddressExists(entityList.get(1).getPrefixAddress().toLowerCase())){
                     return CODE_ERROR_WALLET_EXISTS;
                 }
                 List<WalletEntity> walletEntitieList = new ArrayList<>();
