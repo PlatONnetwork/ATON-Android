@@ -42,6 +42,11 @@ public class AssetsContract {
         void fetchWalletBalance();
 
         /**
+         * 获取钱包余额(选中钱包)
+         */
+        void fetchWalletBalanbceBySelected(String address);
+
+        /**
          * 获取数据
          */
         void loadData();
