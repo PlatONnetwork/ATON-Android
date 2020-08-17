@@ -254,6 +254,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
+
         getPresenter().addNewTransaction(event.transaction);
     }
 

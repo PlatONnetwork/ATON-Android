@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -162,6 +161,7 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
                     List<TransactionWallet> transactionWallets = new ArrayList<>();
                     transactionWallets.add(TransactionWallet.getNullInstance());
                     transactionWallets.addAll(transactionWalletList);
+
                     mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, transactionWallets, new WalletListPop.OnWalletItemClickListener() {
                         @Override
                         public void onWalletItemClick(int position) {
