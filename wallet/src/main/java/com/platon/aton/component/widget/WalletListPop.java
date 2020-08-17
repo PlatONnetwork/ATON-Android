@@ -22,14 +22,12 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.platon.aton.entity.NullTransactionWallet;
-import com.platon.aton.entity.TransactionWallet;
-import com.platon.framework.utils.LogUtils;
-import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
+import com.platon.aton.entity.TransactionWallet;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.DensityUtil;
-import com.platon.framework.utils.ToastUtil;
+import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.RUtils;
 
 import java.util.List;
 
@@ -64,6 +62,7 @@ public class WalletListPop extends PopupWindow {
         this.mSubWalletItemClickListener = subWalletItemClickListener;
         this.mSelectWalletItemInfoListener = mSelectWalletItemInfoListener;
         this.mContentHeight = mTransactionWallettList.size() > 5 ? DensityUtil.dp2px(context, 390) + DensityUtil.dp2px(context, 20) : DensityUtil.dp2px(context, 65) * mTransactionWallettList.size() + DensityUtil.dp2px(context, 20);
+        //this.mContentHeight = DensityUtil.dp2px(context, 360);
         this.mSelectedWalletPosition = selectedWalletPosition;
         View rootView = LayoutInflater.from(context).inflate(R.layout.pop_select_wallets, null);
 

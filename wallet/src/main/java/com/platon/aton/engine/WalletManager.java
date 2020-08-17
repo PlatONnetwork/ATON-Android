@@ -354,7 +354,7 @@ public class WalletManager {
      */
     public List<TransactionWallet>  getTransactionWalletData(){
 
-        return Flowable.fromCallable(new Callable<List<Wallet>>() {
+        List<TransactionWallet> transactionWalletList = Flowable.fromCallable(new Callable<List<Wallet>>() {
 
             @Override
             public List<Wallet> call() throws Exception {
@@ -378,6 +378,25 @@ public class WalletManager {
                 });
             }
         }).toList().blockingGet();
+
+        Collections.sort(transactionWalletList, new Comparator<TransactionWallet>() {
+            @Override
+            public int compare(TransactionWallet o1, TransactionWallet o2) {
+
+                Boolean value1 = new Boolean(o1.getWallet().isHD());
+                Boolean value2 = new Boolean(o2.getWallet().isHD());
+                if(1 == value1.compareTo(value2)){
+                    return 1;
+                }else if(-1 == value1.compareTo(value2)){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }
+        });
+
+        return transactionWalletList;
+
     }
 
 
