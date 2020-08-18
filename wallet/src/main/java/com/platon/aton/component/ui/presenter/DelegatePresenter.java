@@ -91,11 +91,12 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @Override
     public void init(DelegateItemInfo delegateItemInfo) {
         this.mDelegateDetail = delegateItemInfo;
+        LogUtils.e("-------mDelegateDetail:" + mDelegateDetail.toString());
         if (mDelegateDetail != null) {
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
                 mWallet = WalletManager.getInstance().getSelectedWallet();
             } else {
-                mWallet = WalletManager.getInstance().getWalletByWalletAddress(mDelegateDetail.getWalletAddress());
+                mWallet = WalletManager.getInstance().getWalletByAddress(mDelegateDetail.getWalletAddress());
             }
         }
     }
