@@ -1,31 +1,20 @@
-package com.platon.aton.transactionrecord;
+package com.platon.aton.component.ui.presenter;
 
 import android.util.Log;
 
+import com.platon.aton.BaseTestCase;
 import com.platon.aton.component.ui.contract.TransactionRecordsContract;
-import com.platon.aton.component.ui.presenter.TransactionRecordsPresenter;
-import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.entity.Transaction;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
-import com.platon.aton.schedulers.SchedulerTestProvider;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
-import com.platon.framework.utils.PreferenceTool;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
+import org.mockito.Mockito;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,37 +24,20 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(sdk = 27, manifest = Config.NONE)
-public class TransactionRecordPresenterTest {
+
+public class TransactionRecordPresenterTest extends BaseTestCase {
     private TransactionRecordsPresenter presenter;
 
     @Mock
     private TransactionRecordsContract.View view;
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock
-    private SchedulerTestProvider schedulerTestProvider;
-
-    @Rule
-    public RxJavaTestSchedulerRule rule = new RxJavaTestSchedulerRule();
-
-
-    @Before
-    public void setup() {
-        PreferenceTool.init(RuntimeEnvironment.application);
-        NodeManager nodeManager = NodeManager.getInstance();
-        //输出日志
-        ShadowLog.stream = System.out;
-        schedulerTestProvider = new SchedulerTestProvider();
-        view = mock(TransactionRecordsContract.View.class);
+    @Override
+    public void initSetup() {
+        view = Mockito.mock(TransactionRecordsContract.View.class);
         presenter = new TransactionRecordsPresenter();
         presenter.attachView(view);
-
     }
 
     @Test

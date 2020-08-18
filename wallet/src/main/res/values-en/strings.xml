@@ -809,7 +809,7 @@
     <string name="wallet_receive_refresh_network">Please click to refresh or check the network!</string>
     <string name="wallet_type_error">Wallet type error</string>
     <string name="wallet_type_choose">Select wallet type</string>
-    <string name="wallet_type_ordinary">Ordinary</string>
+    <string name="wallet_type_ordinary">Normal</string>
     <string name="wallet_type_hd">HD</string>
     <string name="wallet_type">Type:</string>
     <string name="wallet_type_tip">A group of 30 wallets will be created when select HD</string>

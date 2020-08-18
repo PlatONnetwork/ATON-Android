@@ -320,10 +320,10 @@
 
                         <TextView
                             android:id="@+id/tv_input_error"
-                            android:layout_width="wrap_content"
+                            android:layout_width="160dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:gravity="center"
+                            android:gravity="left"
                             android:textColor="@color/color_ff4747"
                             android:textSize="12sp"
                             android:visibility="gone" />

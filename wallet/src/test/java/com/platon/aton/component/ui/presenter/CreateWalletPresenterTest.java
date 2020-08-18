@@ -1,14 +1,11 @@
 package com.platon.aton.component.ui.presenter;
 
 import com.platon.aton.BaseTestCase;
-import com.platon.aton.R;
-import com.platon.aton.component.ui.contract.AddNewAddressContract;
 import com.platon.aton.component.ui.contract.CreateWalletContract;
+import com.platon.aton.entity.WalletType;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
 
 public class CreateWalletPresenterTest extends BaseTestCase {
 
@@ -27,12 +24,23 @@ public class CreateWalletPresenterTest extends BaseTestCase {
 
 
     @Test
-    public void testCreateWallet(){
+    public void testCreateOrdinaryWallet(){
         String name = "Ella";
         String password = "123456";
         String repeatPassword = "1234567";
 
-        presenter.createWallet(name,password,repeatPassword);
+        presenter.createWallet(name,password,repeatPassword,WalletType.ORDINARY_WALLET);
+
+        Mockito.verify(view).showPasswordError(null,true);
+    }
+
+    @Test
+    public void testCreateHDWallet(){
+        String name = "Ella";
+        String password = "123456";
+        String repeatPassword = "1234567";
+
+        presenter.createWallet(name,password,repeatPassword,WalletType.HD_WALLET);
 
         Mockito.verify(view).showPasswordError(null,true);
     }

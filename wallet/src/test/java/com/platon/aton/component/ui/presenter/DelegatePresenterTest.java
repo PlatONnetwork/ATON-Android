@@ -2,17 +2,12 @@ package com.platon.aton.component.ui.presenter;
 
 import com.platon.aton.BaseTestCase;
 import com.platon.aton.component.ui.contract.DelegateContract;
-import com.platon.aton.component.ui.view.DelegateActivity;
 import com.platon.aton.entity.EstimateGasResult;
-import com.platon.framework.utils.LogUtils;
 
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.robolectric.Robolectric;
 import org.web3j.platon.StakingAmountType;
-
-import static org.junit.Assert.*;
 
 public class DelegatePresenterTest extends BaseTestCase {
 

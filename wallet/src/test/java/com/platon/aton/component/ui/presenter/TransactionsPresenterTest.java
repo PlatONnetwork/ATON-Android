@@ -1,33 +1,14 @@
-package com.platon.aton;
+package com.platon.aton.component.ui.presenter;
 
 
-import android.app.Application;
-import android.util.Log;
-
+import com.platon.aton.BaseTestCase;
 import com.platon.aton.component.ui.contract.TransactionsContract;
-import com.platon.aton.component.ui.presenter.TransactionsPresenter;
 import com.platon.aton.engine.NodeManager;
-import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Transaction;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
-import com.platon.aton.schedulers.SchedulerTestProvider;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
-import com.platon.framework.utils.PreferenceTool;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
 
 import java.util.ArrayList;
 import java.util.List;
