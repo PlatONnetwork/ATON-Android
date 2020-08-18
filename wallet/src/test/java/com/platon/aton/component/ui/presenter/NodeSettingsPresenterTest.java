@@ -3,27 +3,16 @@ package com.platon.aton.component.ui.presenter;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.platon.aton.BaseTestCase;
 import com.platon.aton.R;
 import com.platon.aton.component.ui.contract.NodeSettingsContract;
 import com.platon.aton.db.entity.NodeEntity;
-import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.Node;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
-import com.platon.aton.schedulers.SchedulerTestProvider;
 import com.platon.framework.network.SchedulersTransformer;
-import com.platon.framework.utils.PreferenceTool;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,32 +22,19 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static org.mockito.Mockito.mock;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(sdk = 27, manifest = Config.NONE)
-public class NodeSettingsPresenterTest {
+public class NodeSettingsPresenterTest extends BaseTestCase {
 
     private NodeSettingsPresenter presenter;
     @Mock
     private NodeSettingsContract.View  view;
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock
-    private SchedulerTestProvider schedulerTestProvider;
 
-    @Rule
-    public RxJavaTestSchedulerRule rule = new RxJavaTestSchedulerRule();
 
-    @Before
-    public  void  setup(){
-        PreferenceTool.init(RuntimeEnvironment.application);
-        NodeManager nodeManager = NodeManager.getInstance();
-        //输出日志
-        ShadowLog.stream = System.out;
-        schedulerTestProvider = new SchedulerTestProvider();
-        view = mock(NodeSettingsContract.View.class);
+    @Override
+    public void initSetup() {
+
+        view = Mockito.mock(NodeSettingsContract.View.class);
         presenter = new NodeSettingsPresenter();
         presenter.attachView(view);
     }
