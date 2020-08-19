@@ -3,8 +3,6 @@ package com.platon.aton.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.platon.aton.R;
-
 public class DelegateItemInfo implements Parcelable {
 
     /**
@@ -197,6 +195,20 @@ public class DelegateItemInfo implements Parcelable {
         dest.writeString(withdrawReward);
     }
 
-
-
+    @Override
+    public String toString() {
+        return "DelegateItemInfo{" +
+                "nodeId='" + nodeId + '\'' +
+                ", nodeName='" + nodeName + '\'' +
+                ", website='" + website + '\'' +
+                ", url='" + url + '\'' +
+                ", nodeStatus='" + nodeStatus + '\'' +
+                ", released='" + released + '\'' +
+                ", walletAddress='" + walletAddress + '\'' +
+                ", isInit=" + isInit +
+                ", delegated='" + delegated + '\'' +
+                ", isConsensus=" + isConsensus +
+                ", withdrawReward='" + withdrawReward + '\'' +
+                '}';
+    }
 }

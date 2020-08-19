@@ -60,7 +60,7 @@ public class ClaimRewardRecordAdapter2 extends RecyclerView.Adapter<ClaimRewardR
 
         final ClaimRewardRecord claimRewardRecord = mClaimRewardRecordList.get(position);
         holder.mWalletAvatarCiv.setImageResource(RUtils.drawable(claimRewardRecord.getWalletAvatar()));
-        holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getTotalReward(), 8))));
+        holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText2(claimRewardRecord.getTotalReward(), 12))));
         holder.mWalletNameTv.setText(claimRewardRecord.getWalletName());
         holder.mWalletAddressTv.setText(AddressFormatUtil.formatClaimRewardRecordAddress(claimRewardRecord.getAddress()));
         holder.mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(claimRewardRecord.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)));
@@ -91,8 +91,23 @@ public class ClaimRewardRecordAdapter2 extends RecyclerView.Adapter<ClaimRewardR
                 0,
                 DensityUtil.dp2px(mContext, 2));
 
-        holder.mNodeNameTv.setText(claimRewardRecord.getClaimRewardList().get(0).getNodeName());
-        holder.mClaimAmountTv.setText(String.format("%s%s", "+", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getClaimRewardList().get(0).getReward(), 8))));
+
+
+        if(claimRewardRecord.getClaimRewardList().size() > 0){
+            holder.mItem_claim_child_record_detail.removeAllViews();
+            for (int i = 0; i < claimRewardRecord.getClaimRewardList().size() ; i++) {
+
+                View subItemView = LayoutInflater.from(mContext).inflate(R.layout.item_claim_record_detail, null, false);
+                TextView tvNodeName = subItemView.findViewById(R.id.tv_node_name);
+                TextView tvChildClaimAmount = subItemView.findViewById(R.id.tv_child_claim_amount);
+
+                tvNodeName.setText(claimRewardRecord.getClaimRewardList().get(i).getNodeName());
+                tvChildClaimAmount.setText(String.format("%s%s", "+", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText2(claimRewardRecord.getClaimRewardList().get(i).getReward(), 12))));
+
+                holder.mItem_claim_child_record_detail.addView(subItemView);
+            }
+        }
+
     }
 
 
@@ -112,7 +127,7 @@ public class ClaimRewardRecordAdapter2 extends RecyclerView.Adapter<ClaimRewardR
              ImageView mSpreadIv;
              TextView mNodeNameTv;
              TextView mClaimAmountTv;
-             View mItem_claim_child_record_detail;
+             LinearLayout mItem_claim_child_record_detail;
 
         public ViewHolder(View itemView) {
             super(itemView);

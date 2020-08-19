@@ -1,38 +1,18 @@
-package com.platon.aton;
+package com.platon.aton.component.ui.presenter;
 
-import android.app.Application;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.platon.aton.BaseTestCase;
 import com.platon.aton.component.ui.contract.SendTransationContract;
-import com.platon.aton.component.ui.presenter.SendTransactionPresenter;
 import com.platon.aton.engine.NodeManager;
-import com.platon.aton.engine.ServerUtils;
-import com.platon.aton.engine.Web3jManager;
-import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Wallet;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
-import com.platon.aton.schedulers.SchedulerTestProvider;
 import com.platon.aton.utils.AddressFormatUtil;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
-import com.platon.framework.utils.PreferenceTool;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
+import org.mockito.Mockito;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -42,50 +22,35 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(sdk = 27, manifest = Config.NONE)
-public class SendTransationPresenterTest {
+
+public class SendTransationPresenterTest extends BaseTestCase {
 
     private SendTransactionPresenter presenter;
     @Mock
     private SendTransationContract.View view;
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-    @Mock
-    private SchedulerTestProvider schedulerTestProvider;
 
     @Mock
     public NodeManager nodeManager;
     @Mock
     public Node node;
-    @Rule
-    public RxJavaTestSchedulerRule rule = new RxJavaTestSchedulerRule();
 
-    @Before
-    public void setup() {
-        Application app = RuntimeEnvironment.application;
-        ApiResponse.init(app);
-        PreferenceTool.init(app);
+
+    @Override
+    public void initSetup() {
+
         nodeManager = NodeManager.getInstance();
         node = new Node.Builder().build();
         nodeManager.setCurNode(node);
 
-        //输出日志
-        ShadowLog.stream = System.out;
-
-        view = mock(SendTransationContract.View.class);
+        view = Mockito.mock(SendTransationContract.View.class);
         presenter = new SendTransactionPresenter();
         presenter.attachView(view);
-
     }
 
   /*  @Test

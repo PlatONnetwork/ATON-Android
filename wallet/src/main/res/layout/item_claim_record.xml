@@ -116,9 +116,18 @@ android:showDividers="middle"
 
     </LinearLayout>
 
-    <include
+    <LinearLayout
+        android:id="@+id/item_claim_child_record_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:visibility="gone"
+        android:orientation="vertical"/>
+
+   <!-- <include
         android:id="@+id/item_claim_child_record_detail"
         layout="@layout/item_claim_record_detail"
-        android:visibility="gone"/>
+        android:visibility="visible"/>-->
 
 </LinearLayout>

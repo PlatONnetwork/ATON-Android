@@ -1,38 +1,20 @@
-package com.platon.aton.delegate;
+package com.platon.aton.component.ui.presenter;
 
-import android.app.Application;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.platon.aton.BaseTestCase;
-import com.platon.aton.BuildConfig;
-import com.platon.aton.component.ui.view.DelegateActivity;
-import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.engine.Web3jManager;
 import com.platon.aton.entity.AccountBalance;
-import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Wallet;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
-import com.platon.framework.utils.PreferenceTool;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
@@ -43,8 +25,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
 import rx.Subscriber;
 
@@ -58,31 +38,10 @@ public class DelegateActivityTest extends BaseTestCase {
     public void initSetup() {
 
 
-
     }
 
 
-   /* @Test
-    public void testIsDelegate() {
-        String walletAddress = "0xa577c0230df2cb329415bfebcb936496ab8ae2e4";
-        String nodeId = "0x411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c";
-        ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
-                .put("addr", walletAddress)
-                .put("nodeId", nodeId)
-                .build())
-                .subscribe(new ApiSingleObserver<DelegateHandle>() {
-                    @Override
-                    public void onApiSuccess(DelegateHandle delegateHandle) {
-//                        presenter.getView().showIsCanDelegate(delegateHandle);
-                        Log.d("result", "========================" + delegateHandle.isCanDelegation() + "====================" + delegateHandle.getMessage());
-                    }
 
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-
-                    }
-                });
-    }*/
 
     @Test
     public void testGetWalletBalance() {
