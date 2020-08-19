@@ -1,26 +1,14 @@
-package com.platon.aton;
+package com.platon.aton.component.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.platon.aton.BaseTestCase;
 import com.platon.aton.component.ui.contract.ManageWalletContract;
-import com.platon.aton.component.ui.presenter.ManageWalletPresenter;
-import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.Wallet;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
-import com.platon.aton.schedulers.SchedulerTestProvider;
-import com.platon.framework.utils.PreferenceTool;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,33 +21,18 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
-import static org.mockito.Mockito.mock;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(sdk = 27, manifest = Config.NONE)
-public class ManageIndividualWalletPresenterTest {
+public class ManageIndividualWalletPresenterTest extends BaseTestCase {
     private ManageWalletPresenter presenter;
 
     @Mock
     private ManageWalletContract.View view;
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock
-    private SchedulerTestProvider schedulerTestProvider;
 
-    @Rule
-    public RxJavaTestSchedulerRule rule = new RxJavaTestSchedulerRule();
-
-    @Before
-    public void setup() {
-        PreferenceTool.init(RuntimeEnvironment.application);
-        NodeManager nodeManager = NodeManager.getInstance();
-        //输出日志
-        ShadowLog.stream = System.out;
-        schedulerTestProvider = new SchedulerTestProvider();
-        view = mock(ManageWalletContract.View.class);
+    @Override
+    public void initSetup() {
+        view = Mockito.mock(ManageWalletContract.View.class);
         presenter = new ManageWalletPresenter();
         presenter.attachView(view);
     }

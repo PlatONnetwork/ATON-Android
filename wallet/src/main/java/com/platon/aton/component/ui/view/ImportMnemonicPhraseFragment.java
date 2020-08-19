@@ -275,68 +275,6 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
             public void afterTextChanged(Editable s) { }
         });
 
-
-
-
-        /*RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String name = mEtWalletName.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(name)) {
-                        showNameError(string(R.string.validWalletNameEmptyTips), true);
-                    } else if (name.length() > 20) {
-                        showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (getPresenter().isExists(name)) {
-                        showNameError(string(R.string.wallet_name_exists), true);
-                    } else {
-                        showNameError("", false);
-                    }
-                }
-            }
-        });*/
-
-
-
-
-
-        /*RxView.focusChanges(mEtPassword).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String password = mEtPassword.getText().toString().trim();
-                String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(password)) {
-                        showPasswordError(string(R.string.validPasswordEmptyTips), true);
-                    } else if (password.length() < 6) {
-                        showPasswordError(string(R.string.validPasswordTips), true);
-                    } else {
-                        if (password.equals(repeatPassword)) {
-                            showPasswordError("", false);
-                        }
-                    }
-                }
-            }
-        });*/
-
-        /*RxView.focusChanges(mEtRepeatPassword).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String password = mEtPassword.getText().toString().trim();
-                String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(repeatPassword)) {
-                        showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
-                    } else if (!repeatPassword.equals(password)) {
-                        showPasswordError(string(R.string.passwordTips), true);
-                    } else {
-                        if (repeatPassword.equals(password) && password.length() >= 6) {
-                            showPasswordError("", false);
-                        }
-                    }
-                }
-            }
-        });*/
     }
 
     private void addTextWatcher() {

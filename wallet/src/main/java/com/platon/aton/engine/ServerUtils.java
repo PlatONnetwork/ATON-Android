@@ -1,7 +1,6 @@
 package com.platon.aton.engine;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
-import com.platon.aton.BuildConfig;
 import com.platon.framework.app.Constants;
 import com.platon.framework.network.ApiFastjsonConverterFactory;
 import com.platon.framework.utils.LogUtils;
@@ -70,12 +69,12 @@ public class ServerUtils {
 
     private static HttpLoggingInterceptor getLogInterceptor() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        //loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        if (BuildConfig.DEBUG) {
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+       /* if (BuildConfig.DEBUG) {
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         } else {
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
+        }*/
         return loggingInterceptor;
     }
 

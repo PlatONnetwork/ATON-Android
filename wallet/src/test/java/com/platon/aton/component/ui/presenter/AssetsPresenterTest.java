@@ -3,23 +3,11 @@ package com.platon.aton.component.ui.presenter;
 import com.platon.aton.BaseTestCase;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.ui.contract.AssetsContract;
-import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.AccountBalance;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
-import com.platon.aton.schedulers.SchedulerTestProvider;
-import com.platon.framework.utils.PreferenceTool;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,11 +17,9 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
+import static junit.framework.TestCase.assertNotNull;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(sdk = 27, manifest = Config.NONE)
+
 public class AssetsPresenterTest  extends BaseTestCase {
     private AssetsPresenter presenter;
 
@@ -42,7 +28,7 @@ public class AssetsPresenterTest  extends BaseTestCase {
 
     @Override
     public void initSetup() {
-        view = mock(AssetsContract.View.class);
+        view = Mockito.mock(AssetsContract.View.class);
         presenter = new AssetsPresenter();
         presenter.attachView(view);
     }
@@ -102,5 +88,6 @@ public class AssetsPresenterTest  extends BaseTestCase {
         });
 
     }
+
 
 }

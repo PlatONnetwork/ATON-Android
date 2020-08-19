@@ -853,21 +853,8 @@ public class WalletManager {
         return null;
     }
 
-    /**
-     * 根据钱包地址获取钱包
-     */
-    public Wallet getWalletByWalletAddress(String walletAddress) {
 
-        if (!mWalletList.isEmpty()) {
-            for (Wallet walletEntity : mWalletList) {
-                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
-                    return walletEntity;
-                }
-            }
-        }
 
-        return null;
-    }
 
     public List<Wallet> getWalletList() {
         if (mWalletList.isEmpty()) {
@@ -1157,15 +1144,17 @@ public class WalletManager {
                 }
                 List<WalletEntity> walletEntitieList = new ArrayList<>();
                 for (int i = 0; i < entityList.size(); i++) {
-                     if(i == 0){
+                     if(i == 0){//HD母钱包绑定助记词
                          entityList.get(i).setBackedUp(true);
                          entityList.get(i).setMnemonic(JZWalletUtil.encryptMnemonic(entityList.get(i).getKey(), mnemonic, password));
+                     }
+                     if(i == 1){//创建的第一个子钱包，设置为首页显示
+                         entityList.get(i).setShow(true);
                      }
                     entityList.get(i).setChainId(NodeManager.getInstance().getChainId());
                     walletEntitieList.add(entityList.get(i).buildWalletInfoEntity());
                 }
                 addAndSelectedWalletStatusNotice(entityList.get(1));
-                //addWallet(entityList.get(1));
                 WalletDao.insertWalletInfoList(walletEntitieList);
             }
 
@@ -1237,6 +1226,10 @@ public class WalletManager {
                 .subscribe();
     }
 
+
+    /**
+     * 根据钱包地址获取钱包
+     */
     public Wallet getWalletByAddress(String address) {
 
         boolean isCacheExists = false;

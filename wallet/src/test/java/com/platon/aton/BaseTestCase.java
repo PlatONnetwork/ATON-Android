@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.support.v4.app.Fragment;
 
-import com.platon.aton.app.AppFramework;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.Node;
-import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.utils.PreferenceTool;
 
@@ -34,7 +32,7 @@ import org.web3j.crypto.bech32.AddressManager;
  *
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 27,manifest = Config.NONE,constants = BuildConfig.class)
+@Config(sdk = 23,manifest = Config.NONE,constants = BuildConfig.class)
 public abstract class BaseTestCase {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
