@@ -8,6 +8,7 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -170,6 +171,10 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
 
                             showSelectWalletInfo(selectedWallet, transactionWallet.getSubWallets());
                             getPresenter().fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
+                            if (mWalletListPop.isShowing()) {
+                                mWalletListPop.dismiss();
+                                ivArrow.setImageResource(R.drawable.icon_arrow_down);
+                            }
                         }
                     }, new WalletListPop.OnSubWalletItemClickListener() {
                         @Override
@@ -179,6 +184,7 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
                             getPresenter().fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
                             if (mWalletListPop.isShowing()) {
                                 mWalletListPop.dismiss();
+                                ivArrow.setImageResource(R.drawable.icon_arrow_down);
                             }
                         }
                     },getSelectedWalletPosition(selectedWallet),new WalletListPop.OnSelectWalletItemInfoListener(){
@@ -191,8 +197,10 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
                 }
                 if (mWalletListPop.isShowing()) {
                     mWalletListPop.dismiss();
+                    ivArrow.setImageResource(R.drawable.icon_arrow_down);
                 } else {
                     mWalletListPop.showAsDropDown(layoutSelectWallets, 0, -DensityUtil.dp2px(TransactionRecordsActivity.this, 12));
+                    ivArrow.setImageResource(R.drawable.icon_arrow_up);
                 }
             }
         });
@@ -201,6 +209,7 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
 
         layoutRefresh.autoRefresh();
     }
+
 
     @Override
     public void finishLoadMore() {

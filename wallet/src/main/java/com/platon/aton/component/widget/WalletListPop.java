@@ -29,7 +29,11 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.RUtils;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class WalletListPop extends PopupWindow {
 
@@ -61,8 +65,9 @@ public class WalletListPop extends PopupWindow {
         this.mWalletItemClickListener = walletItemClickListener;
         this.mSubWalletItemClickListener = subWalletItemClickListener;
         this.mSelectWalletItemInfoListener = mSelectWalletItemInfoListener;
+        //this.mContentHeight = mTransactionWallettList.size() > 5 ? DensityUtil.dp2px(context, 390) + DensityUtil.dp2px(context, 20) : DensityUtil.dp2px(context, 65) * mTransactionWallettList.size() + DensityUtil.dp2px(context, 20);
         this.mContentHeight = mTransactionWallettList.size() > 5 ? DensityUtil.dp2px(context, 390) + DensityUtil.dp2px(context, 20) : DensityUtil.dp2px(context, 65) * mTransactionWallettList.size() + DensityUtil.dp2px(context, 20);
-        //this.mContentHeight = DensityUtil.dp2px(context, 360);
+        //this.mContentHeight = DensityUtil.dp2px(context, 390);
         this.mSelectedWalletPosition = selectedWalletPosition;
         View rootView = LayoutInflater.from(context).inflate(R.layout.pop_select_wallets, null);
 
@@ -72,7 +77,7 @@ public class WalletListPop extends PopupWindow {
         setHeight(mContentHeight);
         setBackgroundDrawable(new ColorDrawable());
         setFocusable(false);
-        setOutsideTouchable(true);
+        setOutsideTouchable(false);
 
         initViews(rootView);
     }
@@ -126,7 +131,7 @@ public class WalletListPop extends PopupWindow {
                 mWalletListAdapter.notifyDataSetChanged();
                 if (mWalletItemClickListener != null) {
                     mWalletItemClickListener.onWalletItemClick(position);
-                    dismiss();
+
                 }
             }
         });
@@ -225,11 +230,6 @@ public class WalletListPop extends PopupWindow {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             TransactionWallet transactionWallet = mTransactionWallettList.get(position);
-           /* if(position >= 0){
-                LogUtils.e("postion:"+ position + "--------item transactionWallet" + mTransactionWallettList.get(position).toString());
-                //LogUtils.e("--------item transactionWallet.getSubWallets.size" + mTransactionWallettList.get(position).getSubWallets().size() + "position:" + position);
-
-            }*/
 
             int viewType = getItemViewType(position);
 
@@ -261,24 +261,25 @@ public class WalletListPop extends PopupWindow {
 
 
             //--------------------------  为母钱包设置子钱包布局  ------------------------------------
-
+            ViewHolder finalViewHolder = viewHolder;
             if(transactionWallet.getWallet() != null && transactionWallet.getWallet().isHD() && transactionWallet.getWallet().getDepth() == 0){
 
                 //子钱包布局开关
                 viewHolder.subwalletIv.setVisibility((transactionWallet.getWallet().isHD() && transactionWallet.getWallet().getDepth() == 0) ? View.VISIBLE : View.GONE);
                 //viewHolder.subwalletIv.setEnabled((!wallet.isHD() && wallet.getDepth() == 0) ? true : false);
-                ViewHolder finalViewHolder = viewHolder;
+
                 viewHolder.subwalletIv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         if(finalViewHolder.layoutSubwallet.getVisibility() == View.VISIBLE){
                             finalViewHolder.layoutSubwallet.setVisibility(View.GONE);
+                            finalViewHolder.subwalletIv.setImageResource(R.drawable.icon_arrow_down);
                         }else{
                             finalViewHolder.layoutSubwallet.setVisibility(View.VISIBLE);
+                            finalViewHolder.subwalletIv.setImageResource(R.drawable.icon_arrow_up);
                         }
-
                         LogUtils.e("------onclick");
-
                     }
                 });
 
@@ -378,5 +379,6 @@ public class WalletListPop extends PopupWindow {
     //选中钱包获取回调
     public interface OnSelectWalletItemInfoListener {
         String onSelectWalletItemInfo();
+        //void onSelectOpenSubWalletItemClick();
     }
 }
