@@ -60,7 +60,7 @@ public class ClaimRewardRecordAdapter2 extends RecyclerView.Adapter<ClaimRewardR
 
         final ClaimRewardRecord claimRewardRecord = mClaimRewardRecordList.get(position);
         holder.mWalletAvatarCiv.setImageResource(RUtils.drawable(claimRewardRecord.getWalletAvatar()));
-        holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getTotalReward(), 12))));
+        holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText2(claimRewardRecord.getTotalReward(), 12))));
         holder.mWalletNameTv.setText(claimRewardRecord.getWalletName());
         holder.mWalletAddressTv.setText(AddressFormatUtil.formatClaimRewardRecordAddress(claimRewardRecord.getAddress()));
         holder.mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(claimRewardRecord.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)));
@@ -102,7 +102,7 @@ public class ClaimRewardRecordAdapter2 extends RecyclerView.Adapter<ClaimRewardR
                 TextView tvChildClaimAmount = subItemView.findViewById(R.id.tv_child_claim_amount);
 
                 tvNodeName.setText(claimRewardRecord.getClaimRewardList().get(i).getNodeName());
-                tvChildClaimAmount.setText(String.format("%s%s", "+", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getClaimRewardList().get(i).getReward(), 12))));
+                tvChildClaimAmount.setText(String.format("%s%s", "+", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText2(claimRewardRecord.getClaimRewardList().get(i).getReward(), 12))));
 
                 holder.mItem_claim_child_record_detail.addView(subItemView);
             }
