@@ -21,10 +21,13 @@
         android:id="@+id/list_wallet"
         style="@style/List_common_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:choiceMode="singleChoice"
         android:dividerHeight="0dp"
         android:divider="#00000000"
         tools:listitem="@layout/item_pop_wallets" />
+
+
+
 
 </LinearLayout>

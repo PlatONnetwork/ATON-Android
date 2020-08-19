@@ -352,14 +352,15 @@
 
                         </LinearLayout>
 
+                        <View
+                            android:id="@+id/layout_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp" />
+
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
 
-                <View
-                    android:id="@+id/layout_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"/>
             </FrameLayout>
 
 
