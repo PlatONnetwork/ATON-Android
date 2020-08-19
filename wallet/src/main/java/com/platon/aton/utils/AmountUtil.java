@@ -124,4 +124,14 @@ public class AmountUtil {
     public static String formatAmountText(String amount, int maxFractionDigits) {
         return (TextUtils.isEmpty(amount) || "0".equals(amount)) ? "--" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18, maxFractionDigits), maxFractionDigits);
     }
+
+    /**
+     * 格式化金额文本
+     *
+     * @param amount
+     * @return
+     */
+    public static String formatAmountText2(String amount, int maxFractionDigits) {
+        return (TextUtils.isEmpty(amount) || "0".equals(amount)) ? "0.00" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18, maxFractionDigits), maxFractionDigits);
+    }
 }
