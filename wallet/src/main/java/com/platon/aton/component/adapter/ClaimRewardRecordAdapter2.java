@@ -92,7 +92,6 @@ public class ClaimRewardRecordAdapter2 extends RecyclerView.Adapter<ClaimRewardR
                 DensityUtil.dp2px(mContext, 2));
 
 
-
         if(claimRewardRecord.getClaimRewardList().size() > 0){
             holder.mItem_claim_child_record_detail.removeAllViews();
             for (int i = 0; i < claimRewardRecord.getClaimRewardList().size() ; i++) {
