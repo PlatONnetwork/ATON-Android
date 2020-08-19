@@ -101,7 +101,7 @@ public class WalletManager {
      */
     public void initWalletNet(){
         String chainId = NodeManager.getInstance().getChainId();
-        if(chainId.equals(BuildConfig.ID_INNERTEST_NET)){//作为主网
+        if(chainId.equals(BuildConfig.ID_MAIN_NET)){//作为主网
             WalletApplication.init(WalletApplication.MAINNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
         }else{
             WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);

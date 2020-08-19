@@ -173,7 +173,7 @@ public class NodeManager {
                     .isChecked(false)
                     .chainId(BuildConfig.ID_DEVELOP_NET)
                     .build());
-        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界) + 主网(川陀)
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_TEST_NET)
@@ -181,6 +181,17 @@ public class NodeManager {
                     .isChecked(true)
                     .chainId(BuildConfig.ID_TEST_NET)
                     .build());
+
+            nodeInfoEntityList.add(new Node.Builder()
+                    .id(UUID.randomUUID().hashCode())
+                    .nodeAddress(BuildConfig.URL_MAIN_NET)
+                    .isDefaultNode(false)
+                    .isChecked(false)
+                    .chainId(BuildConfig.ID_MAIN_NET)
+                    .build());
+
+
+
         } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试环境 + 开发环境
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())

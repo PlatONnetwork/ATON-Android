@@ -124,6 +124,8 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             return activity.getString(R.string.test_net);
         } else if (TextUtils.equals(BuildConfig.URL_DEVELOP_NET, node.getNodeAddress())) {
             return activity.getString(R.string.develop_net);
+        }else if(TextUtils.equals(BuildConfig.URL_MAIN_NET, node.getNodeAddress())){
+            return activity.getString(R.string.main_net);
         }
         return "";
     }

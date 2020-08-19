@@ -702,6 +702,7 @@
     <string name="withdraw_amount_tips">赎回数量不能少于%1$sLAT</string>
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
+    <string name="main_net">川陀</string>
     <string name="newbaleyworld">新贝莱世界</string>
     <string name="test_net">测试网络</string>
     <string name="develop_net">开发网络</string>
