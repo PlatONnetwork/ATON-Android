@@ -809,6 +809,7 @@
 
     <string name="msg_transaction_over_block_gas_limit">GasLimt超过最大区块限制</string>
     <string name="the_validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
+    <string name="the_validator_has_locked_and_cannot_be_delegated">锁定中的节点不能接受委托</string>
     <string name="msg_transaction_node_associated_wallet">节点参与钱包地址，不可参与委托</string>
     <string name="msg_transaction_node_as_inside_candidate">@string/validators_details_tips</string>
     <string name="msg_transaction_node_freezing_cannot_delegate">节点冻结中，不能委托</string>

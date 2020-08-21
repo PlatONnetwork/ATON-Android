@@ -81,4 +81,18 @@ public class AmountUtilsTest {
         AmountUtil.getPrettyFee(value, 8);
     }
 
+    @Test
+    public void amountTransf(){
+        //乘以18个0
+        String value10 = "10000000000000000000";//1.0E19
+        String value100 = "100000000000000000000";//1.0E20
+        String value100000 = "100000000000000000000000";
+        String result10 = AmountUtil.formatAmountText(value10);
+        String result100 = AmountUtil.formatAmountText(value100);
+        String result100000 = AmountUtil.formatAmountText(value100000);
+        System.out.println("---result10:" + result10);
+        System.out.println("---result100:" + result100);
+        System.out.println("---result100000:" + result100000);
+    }
+
 }

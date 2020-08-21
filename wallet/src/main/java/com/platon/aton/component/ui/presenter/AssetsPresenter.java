@@ -280,12 +280,14 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             if (transactionList != null) {
                 if (transactionList.contains(transaction)) {
                     //更新
+                    LogUtils.e("-------更新transaction：" + transaction.getValue() + "walletName:" +transaction.getWalletName());
                     newTransactionList = new ArrayList<>(transactionList);
                     int index = newTransactionList.indexOf(transaction);
                     newTransactionList.set(index, transaction);
                     Collections.sort(newTransactionList);
                 } else {
                     //添加
+                    LogUtils.e("-------新增transaction：" + transaction.getValue() + "walletName:" +transaction.getWalletName());
                     newTransactionList = getNewTransactionList(transactionList, Arrays.asList(transaction), true);
                     Collections.sort(newTransactionList);
                 }

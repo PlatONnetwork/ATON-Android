@@ -32,8 +32,9 @@
 
     <ImageView
         android:id="@+id/iv_subwallet_tag"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/layout_space_07"
         android:background="@drawable/selector_item_assets_sub_wallet_tag" />
 
 </LinearLayout>

@@ -224,7 +224,16 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWalletSelectedChangedEvent(Event.WalletSelectedChangedEvent event) {
+
         showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
+        //设置recycleview滚动选中钱包
+        List<Wallet> walletList = mWalletListAdapter.getDatas();
+        for (int i = 0; i < walletList.size(); i++) {
+            if(WalletManager.getInstance().getSelectedWallet().getUuid().equals(walletList.get(i).getUuid())){
+                rvAssetsWalletList.smoothScrollToPosition(i);
+                break;
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -255,6 +264,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
 
+        LogUtils.e("------event.transaction:" + event.transaction.getValue() +"walletName: " + event.transaction.getWalletName());
         getPresenter().addNewTransaction(event.transaction);
     }
 
@@ -666,14 +676,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         }
 
         layoutDeviceOfflinePrompt.setVisibility((showOfflinePrompt && !NetConnectivity.getConnectivityManager().isConnected()) ? View.VISIBLE : View.GONE);
-        //设置recycleview滚动选中
-        List<Wallet> walletList = mWalletListAdapter.getDatas();
-        for (int i = 0; i < walletList.size(); i++) {
-              if(selectedWallet.getUuid().equals(walletList.get(i).getUuid())){
-                  rvAssetsWalletList.smoothScrollToPosition(i);
-                  break;
-              }
-        }
+
         //刷新交易记录及余额
         getPresenter().loadData();
         getPresenter().fetchWalletBalanbceBySelected(selectedWallet.getPrefixAddress());
@@ -804,6 +807,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Override
     public void notifyTransactionSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, String queryAddress, boolean loadLatestData) {
 
+        LogUtils.e("------newTransactionList:" + newTransactionList.toString());
         mTransactionListAdapter.setQueryAddressList(Arrays.asList(queryAddress));
         if (loadLatestData || newTransactionList == null || newTransactionList.isEmpty()) {
 

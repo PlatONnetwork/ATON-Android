@@ -49,7 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * @author ziv
+ * 节点详情
  */
 public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContract.View, ValidatorsDetailPresenter> implements ValidatorsDetailContract.View {
 
@@ -285,12 +285,14 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
 
         //节点是否退出
         boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
+        //节点是否锁定
+        boolean isNodeLocked = TextUtils.equals(NodeStatus.LOCKED, nodeDetail.getNodeStatus());
         //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
         boolean isInit = nodeDetail.isInit();
         //客户端钱包列表是否为空
         boolean isWalletAddressListEmpty = WalletManager.getInstance().getAddressList().isEmpty();
 
-        return isNodeExit || isInit || isWalletAddressListEmpty ? View.VISIBLE : View.GONE;
+        return isNodeExit || isNodeLocked || isInit || isWalletAddressListEmpty ? View.VISIBLE : View.GONE;
 
     }
 
@@ -299,7 +301,7 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
         //节点是否退出
         boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
         //节点是否锁定
-        boolean isNodeLocked = TextUtils.equals(NodeStatus.LOCKED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.LOCKED, nodeDetail.getNodeStatus());
+        boolean isNodeLocked = TextUtils.equals(NodeStatus.LOCKED, nodeDetail.getNodeStatus());
         //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
         boolean isInit = nodeDetail.isInit();
         //客户端钱包列表是否为空
@@ -311,6 +313,8 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
     private String getDelegateTips(VerifyNodeDetail nodeDetail) {
         //节点是否退出
         boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
+        //节点是否锁定
+        boolean isNodeLocked = TextUtils.equals(NodeStatus.LOCKED, nodeDetail.getNodeStatus());
         //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
         boolean isInit = nodeDetail.isInit();
         //客户端钱包列表是否为空
@@ -320,6 +324,10 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
 
         if (isNodeExit) {
             delegateTips = getString(R.string.the_validator_has_exited_and_cannot_be_delegated);
+        }
+
+        if(isNodeLocked){
+            delegateTips = getString(R.string.the_validator_has_locked_and_cannot_be_delegated);
         }
 
         if (isInit) {

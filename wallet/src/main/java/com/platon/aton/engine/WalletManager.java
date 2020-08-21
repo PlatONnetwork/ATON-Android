@@ -1371,6 +1371,15 @@ public class WalletManager {
 
     public boolean isValidWallet(Wallet walletEntity, String password) {
         try {
+
+            //子钱包(查询子钱包对应的HD母钱包信息组装到子钱包)
+            if(walletEntity.isHD() && walletEntity.getDepth() == WalletDepth.DEPTH_ONE){
+                Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(walletEntity.getParentId());
+                walletEntity.setMnemonic(rootWallet.getMnemonic());
+                walletEntity.setKey(rootWallet.getKey());
+            }
+
+
             return JZWalletUtil.decrypt(walletEntity.getKey(), password) != null;
         } catch (Exception exp) {
             LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
