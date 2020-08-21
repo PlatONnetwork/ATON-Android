@@ -26,6 +26,8 @@ import com.platon.framework.app.Constants;
 import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -181,6 +183,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                             } else {
                                 newWalletEntityList.addAll(objects);
                             }
+
                             selectWalletListAdapter.notifyDataChanged(newWalletEntityList);
                             listWallet.setItemChecked(newWalletEntityList.indexOf(new Wallet.Builder().uuid(uuid).build()), true);
                         }

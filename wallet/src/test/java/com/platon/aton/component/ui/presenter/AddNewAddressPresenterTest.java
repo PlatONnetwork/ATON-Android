@@ -1,25 +1,14 @@
 package com.platon.aton.component.ui.presenter;
 
-import android.app.Application;
 
 import com.platon.aton.BaseTestCase;
-import com.platon.aton.BuildConfig;
 import com.platon.aton.component.ui.contract.AddNewAddressContract;
 import com.platon.framework.utils.LogUtils;
 
-import org.junit.Assert;
-import org.junit.Before;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
-
-
-
 
 public class AddNewAddressPresenterTest extends BaseTestCase {
 

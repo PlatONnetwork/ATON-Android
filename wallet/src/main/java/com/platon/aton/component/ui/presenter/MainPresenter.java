@@ -165,11 +165,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     @Override
     public void updateSelectedWalletnotifyData(Wallet selectedWallet) {
-
-
         WalletManager.getInstance().addAndSelectedWalletStatusNotice(selectedWallet);
-
-
     }
 
 

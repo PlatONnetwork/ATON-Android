@@ -156,8 +156,8 @@
     <string name="official_community">Official Community</string>
     <string name="add_shared_wallet">Add Joint Wallet</string>
     <string name="add">Add</string>
-    <string name="action_create_wallet">Create</string>
-    <string name="action_import_wallet">Import</string>
+    <string name="action_create_wallet">Create&#160;&#160;Wallet</string>
+    <string name="action_import_wallet">Import&#160;&#160;Wallet</string>
     <string name="nav_property">Wallet</string>
     <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
@@ -237,7 +237,7 @@
     <string name="transfer_amount_cannot_be_empty">Amount cannot be empty</string>
     <string name="transfer_amount_exceed_balance">Amount exceed balance</string>
     <string name="insufficient_balance">Insufficient balance payment fee</string>
-    <string name="sent">Sent</string>
+    <string name="sent">Send</string>
     <string name="received">Received</string>
     <string name="receive_atp">Receive&#160;LAT</string>
     <string name="editNode">Edit Node</string>
@@ -285,7 +285,7 @@
     <string name="transactionConfirmation">Transaction Confirmation</string>
     <string name="totalValue">Value</string>
     <string name="type">Type</string>
-    <string name="txt_info">Txn info</string>
+    <string name="txt_info">Tx info</string>
     <string name="executeContractFee">Execute Contract Fee</string>
     <string name="addSharedWalletSuccess">Joint wallet added successfully</string>Refuse
     <string name="signingConfirmationFailed">Signing confirmation failed</string>
@@ -332,7 +332,7 @@
     <string name="action_send_all">Send all</string>
     <string name="balance_text">Balance:&#160;%1$s&#160;LAT</string>
     <string name="fee">Fee</string>
-    <string name="transaction_fee">Fee</string>
+    <string name="transaction_fee">Tx fee</string>
     <string name="save_successfully">Save successfully</string>
     <string name="joint_wallet_execution">Joint Wallet Execution</string>
     <string name="create_joint_wallet">Create Joint Wallet</string>
@@ -444,7 +444,7 @@
     <string name="node_exit_consensus">Node has exited consensus,voting failed</string>
     <string name="recipient_wallet">To</string>
     <string name="recipient_address">Recipient</string>
-    <string name="transfer">transfer</string>
+    <string name="transfer">Transfer</string>
     <string name="mpc_transaction">MPCTx</string>
     <string name="create_validator">CreateValidator</string>
     <string name="edit_validator">EditValidator</string>
@@ -653,7 +653,7 @@
     <string name="title_authorization_signature">Authorization Signature</string>
     <string name="msg_transaction_authorization_desc">Please scan below QR code using the cold wallet that holds the private key.</string>
     <string name="title_details">Details</string>
-    <string name="msg_txn_info">Txn info：</string>
+    <string name="msg_txn_info">Tx info：</string>
     <string name="msg_sender">Sender：</string>
     <string name="msg_recipient">Recipient：</string>
     <string name="msg_fee">Fee：</string>
@@ -703,7 +703,7 @@
 
     <string name="msg_timestamp">Timestamp</string>
 
-    <string name="msg_operator_address">Operator_Address：</string>
+    <string name="msg_operator_address">Operator Address：</string>
     <string name="msg_delegated_to">Delegated to：</string>
     <string name="msg_undelegated_from">Undelegated from：</string>
     <string name="msg_no_delegation_available">No delegation LAT available for withdrawal</string>
@@ -795,6 +795,7 @@
 
     <string name="msg_transaction_over_block_gas_limit">Gaslimt exceeds the maximum block limit</string>
     <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
+    <string name="the_validator_has_locked_and_cannot_be_delegated">The locked node does not accept delegation</string>
     <string name="msg_transaction_node_associated_wallet">Node participates in wallet address, cannot participate in delegation</string>
     <string name="msg_transaction_node_as_inside_candidate">@string/validators_details_tips</string>
     <string name="msg_transaction_node_freezing_cannot_delegate">Node freezing, cannot delegate</string>

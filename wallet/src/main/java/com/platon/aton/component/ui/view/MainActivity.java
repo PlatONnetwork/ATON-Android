@@ -151,11 +151,15 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
 
             btnAll.setChecked(true);
             layoutDrawer.openDrawer(GravityCompat.END);
+            etSearch.getText().clear();
+            layoutSearch.setVisibility(View.GONE);
             getPresenter().loadData(WalletTypeSearch.WALLET_ALL,etSearch.getText().toString().trim());
         }else if(toWalletTypeSearch == WalletTypeSearch.HD_WALLET){
 
             btnHd.setChecked(true);
             layoutDrawer.openDrawer(GravityCompat.END);
+            etSearch.getText().clear();
+            layoutSearch.setVisibility(View.GONE);
             getPresenter().loadData(toWalletTypeSearch,etSearch.getText().toString().trim());
 
             //滚动到指定钱包index
@@ -255,6 +259,7 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
                     @Override
                     public void accept(Object o) {
                         layoutSearch.setVisibility(View.GONE);
+                        etSearch.getText().clear();
                     }
                 });
 

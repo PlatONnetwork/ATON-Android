@@ -168,7 +168,9 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
                     showPasswordError(string(R.string.validPasswordEmptyTips), true);
                 } else if (password.length() < 6) {
                     showPasswordError(string(R.string.validPasswordTips), true);
-                } else {
+                } else if(!repeatPassword.equals(password)){
+                    showPasswordError(string(R.string.passwordTips), true);
+                } else{
                     if (password.equals(repeatPassword)) {
                         showPasswordError("", false);
                     }
@@ -310,6 +312,7 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         }else{
             tvWalletNumOverLimit.setVisibility(View.VISIBLE);
         }
+        enableCreate(!isEnablePassword && !isEnableName && isEnableCreate);
     }
 
 

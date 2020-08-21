@@ -22,6 +22,7 @@ import com.platon.aton.entity.TransferType;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.utils.LogUtils;
 
 import java.util.List;
 
@@ -58,6 +59,8 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
     @Override
     public void refreshData(Transaction transaction, int position) {
         super.refreshData(transaction, position);
+        LogUtils.e("----refreshData  transaction.getValue():" + transaction.getValue() + "position:" + position);
+
         refreshData(transaction);
     }
 
@@ -70,6 +73,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         for (String key : bundle.keySet()) {
             switch (key) {
                 case TransactionDiffCallback.KEY_TRANSACTION:
+                    LogUtils.e("----updateItem  transaction.getValue():" + ((Transaction)bundle.getParcelable(key)).getValue());
                     refreshData(bundle.getParcelable(key));
                     break;
                 default:
@@ -103,6 +107,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
             mTransactionAmountTv.setText(AmountUtil.formatAmountText(transaction.getValue()));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_b6bbd0));
         } else if (isSend) {
+
             mTransactionAmountTv.setText(String.format("%s%s", "-", AmountUtil.formatAmountText(transaction.getValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {

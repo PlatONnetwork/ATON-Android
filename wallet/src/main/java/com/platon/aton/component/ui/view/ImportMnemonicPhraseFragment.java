@@ -241,6 +241,8 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
                         showPasswordError(string(R.string.validPasswordEmptyTips), true);
                     } else if (password.length() < 6) {
                         showPasswordError(string(R.string.validPasswordTips), true);
+                    } else if (!repeatPassword.equals(password)) {
+                        showPasswordError(string(R.string.passwordTips), true);
                     } else {
                         if (password.equals(repeatPassword)) {
                             showPasswordError("", false);
@@ -394,6 +396,8 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
             tvWalletNumOverLimit.setVisibility(View.GONE);
             isEnableCreate = true;
         }
+
+        enableImport(!isEnableName && !isEnablePassword && !isMnemonicPhrase  && isEnableCreate);
     }
 
     @Override
