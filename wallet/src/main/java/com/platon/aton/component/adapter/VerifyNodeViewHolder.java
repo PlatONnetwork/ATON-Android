@@ -143,7 +143,9 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
     private int getNodeStatusTextAndBorderColor(String nodeStatus, boolean isConsensus) {
         if (TextUtils.equals(NodeStatus.ACTIVE, nodeStatus)) {
             return isConsensus ? R.color.color_f79d10 : R.color.color_4a90e2;
-        } else {
+        }else if(TextUtils.equals(NodeStatus.LOCKED, nodeStatus)){
+            return R.color.color_808080;
+        }else {
             return R.color.color_19a20e;
         }
     }

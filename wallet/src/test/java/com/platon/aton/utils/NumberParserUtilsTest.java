@@ -106,6 +106,22 @@ public class NumberParserUtilsTest {
         Log.d("======", "得到结果result---------->" + newStr);
     }
 
+    @Test
+    public void test(){
+        String value10 = "10000000000000000000";//1.0E19
+        String value100 = "100000000000000000000";//1.0E20
+        String value100000 = "100000000000000000000000";//9.999999999999999E22???
+        String value1000000 = "1000000000000000000000000";//9.999999999999999E22???
+        Double result10 = NumberParserUtils.parseDouble(value10);
+        Double result100 = NumberParserUtils.parseDouble(value100);
+        Double result100000 = NumberParserUtils.parseDouble(value100000);
+        Double result1000000 = NumberParserUtils.parseDouble(value1000000);
+        System.out.println("---result10:" + result10);
+        System.out.println("---result100:" + result100);
+        System.out.println("---result100000:" + result100000);
+        System.out.println("---result1000000:" + result1000000);
+    }
+
 
 
 }
