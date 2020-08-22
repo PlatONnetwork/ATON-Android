@@ -154,11 +154,14 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
                 llKeystore.setVisibility(View.GONE);
             }
             tvDelete.setVisibility(wallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
-            //是否可以备份
-            if(wallet.getMnemonic() != null && !wallet.getMnemonic().equals("")){//钱包通过APP创建的
+
+            //是否可以备份助记词:(钱包通过APP创建的 + 导入助记词)，可以显示备份助记词，
+            //其他情况私钥导入、keyStore导入都不可以显示,因为其生成不了助记词
+            if(wallet.getMnemonic() != null && !wallet.getMnemonic().equals("")){//钱包通过APP创建的 + 导入助记词
                 llBackup.setVisibility(View.VISIBLE);
             }else{
-                llBackup.setVisibility(!wallet.isBackedUp() ? View.VISIBLE : View.GONE);
+                llBackup.setVisibility(View.GONE);
+                //llBackup.setVisibility(!wallet.isBackedUp() ? View.VISIBLE : View.GONE);
             }
 
         }
