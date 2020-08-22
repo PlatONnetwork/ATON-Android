@@ -1127,7 +1127,7 @@ public class WalletManager {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
                 entity.setBackedUp(true);
-                //entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));//导入助记词，不需要保存助记词
+                entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));//导入助记词，不需要保存助记词
                 entity.setChainId(NodeManager.getInstance().getChainId());
                 addAndSelectedWalletStatusNotice(entity);
                 WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
