@@ -10,6 +10,7 @@ import com.platon.aton.utils.RxUtils;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
+import com.platon.framework.utils.LogUtils;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -179,6 +180,87 @@ public class TransactionRecordPresenterTest extends BaseTestCase {
         System.out.println(smallSequence);
 
     }
+
+
+
+    @Test
+    public void getBeginSequenceByDirection(){
+        String  direction = "new";
+        Long directionLong = presenter.getBeginSequenceByDirection(direction);
+        LogUtils.d("---------directionLong:" + directionLong);
+    }
+
+    @Test
+    public void getNewList(){
+        List<Transaction> oldTransactionList = new ArrayList<>();
+        Transaction transaction1 = new Transaction();
+        transaction1.setWalletName("lucy");
+        transaction1.setChainId("001");
+        transaction1.setFrom("lat1vwxgu7k0hl3psg6cls7nv54cra855y4suc04yz");
+
+        Transaction transaction2 = new Transaction();
+        transaction2.setWalletName("ella");
+        transaction2.setChainId("002");
+        transaction2.setFrom("lat1rwgwmhtm0j0y724vv55uugmlft9f0dgec9gq27");
+        oldTransactionList.add(transaction1);
+        oldTransactionList.add(transaction2);
+
+        List<Transaction> curTransactionList = new ArrayList<>();
+        Transaction transaction3 = new Transaction();
+        transaction3.setWalletName("lucy");
+        transaction3.setChainId("001");
+        transaction3.setFrom("lat1vwxgu7k0hl3psg6cls7nv54cra855y4suc04yz");
+
+        Transaction transaction4 = new Transaction();
+        transaction4.setWalletName("ella");
+        transaction4.setChainId("002");
+        transaction4.setFrom("lat1rwgwmhtm0j0y724vv55uugmlft9f0dgec9gq27");
+        curTransactionList.add(transaction3);
+        curTransactionList.add(transaction4);
+
+        boolean isLoadMore = true;
+        List<Transaction> transactionList = presenter.getNewList(oldTransactionList,curTransactionList,isLoadMore);
+        LogUtils.d("---------transactionList数量:" + transactionList.size());
+    }
+
+
+    @Test
+    public void addAll(){
+
+        List<Transaction> oldTransactionList = new ArrayList<>();
+        Transaction transaction1 = new Transaction();
+        transaction1.setWalletName("lucy");
+        transaction1.setChainId("001");
+        transaction1.setFrom("lat1vwxgu7k0hl3psg6cls7nv54cra855y4suc04yz");
+
+        Transaction transaction2 = new Transaction();
+        transaction2.setWalletName("ella");
+        transaction2.setChainId("002");
+        transaction2.setFrom("lat1rwgwmhtm0j0y724vv55uugmlft9f0dgec9gq27");
+        oldTransactionList.add(transaction1);
+        oldTransactionList.add(transaction2);
+        presenter.setmTransactionList(oldTransactionList);
+
+
+        List<Transaction> curTransactionList = new ArrayList<>();
+        Transaction transaction3 = new Transaction();
+        transaction3.setWalletName("lucy");
+        transaction3.setChainId("001");
+        transaction3.setFrom("lat1vwxgu7k0hl3psg6cls7nv54cra855y4suc04yz");
+
+        Transaction transaction4 = new Transaction();
+        transaction4.setWalletName("ella");
+        transaction4.setChainId("002");
+        transaction4.setFrom("lat1rwgwmhtm0j0y724vv55uugmlft9f0dgec9gq27");
+        curTransactionList.add(transaction3);
+        curTransactionList.add(transaction4);
+
+        List<Transaction> transactionList = presenter.addAll(curTransactionList);
+        LogUtils.d("---------transactionList数量:" + transactionList.size());
+
+    }
+
+
 
 
 }

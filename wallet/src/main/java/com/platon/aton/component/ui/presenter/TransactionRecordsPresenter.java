@@ -27,6 +27,14 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
 
     private List<Transaction> mTransactionList;
 
+    public List<Transaction> getmTransactionList() {
+        return mTransactionList;
+    }
+
+    public void setmTransactionList(List<Transaction> mTransactionList) {
+        this.mTransactionList = mTransactionList;
+    }
+
     @Override
     public void fetchTransactions(String direction, List<String> addressList,boolean isWalletChanged) {
 
@@ -73,7 +81,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
 
     }
 
-    private List<Transaction> getNewList(List<Transaction> oldTransactionList, List<Transaction> curTransactionList, boolean isLoadMore) {
+    public List<Transaction> getNewList(List<Transaction> oldTransactionList, List<Transaction> curTransactionList, boolean isLoadMore) {
         List<Transaction> oldList = oldTransactionList == null ? new ArrayList<Transaction>() : oldTransactionList;
         List<Transaction> curList = curTransactionList;
         List<Transaction> newList = new ArrayList<>();
@@ -88,7 +96,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
     }
 
 
-    private List<Transaction> addAll(List<Transaction> transactionList) {
+    public List<Transaction> addAll(List<Transaction> transactionList) {
         return Flowable
                 .fromIterable(transactionList)
                 .filter(new Predicate<Transaction>() {
@@ -106,7 +114,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                 .blockingGet();
     }
 
-    private long getBeginSequenceByDirection(String direction) {
+    public long getBeginSequenceByDirection(String direction) {
         //拉最新的
         if (mTransactionList == null || mTransactionList.isEmpty() || DIRECTION_NEW.equals(direction)) {
             return -1;

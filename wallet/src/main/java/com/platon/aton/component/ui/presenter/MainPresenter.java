@@ -185,7 +185,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
 
-    private boolean shouldUpdate(VersionInfo versionInfo) {
+    public boolean shouldUpdate(VersionInfo versionInfo) {
         long lastUpdateTime = PreferenceTool.getLong(Constants.Preference.KEY_UPDATE_VERSION_TIME, 0L);
         boolean shouldShowUpdateDialog = !(lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime));
         return (versionInfo.isNeed() && versionInfo.isForce()) || (versionInfo.isNeed() && shouldShowUpdateDialog);

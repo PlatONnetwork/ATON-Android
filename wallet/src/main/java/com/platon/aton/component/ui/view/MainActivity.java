@@ -165,7 +165,9 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
             //滚动到指定钱包index
             for (int i = 0; i < getPresenter().getDataSource().size(); i++) {
                 if(selectedWallet.getUuid().equals(getPresenter().getDataSource().get(i).getUuid())){
-                    listWallet.smoothScrollToPosition(i);
+                    //listWallet.smoothScrollToPosition(i);
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) listWallet.getLayoutManager();
+                    layoutManager.scrollToPositionWithOffset(i,0);
                     break;
                 }
             }
@@ -221,6 +223,7 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
         //加载RecyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        linearLayoutManager.setReverseLayout(false);
         listWallet.setLayoutManager(linearLayoutManager);
         mSidebarWalletListAdapter = new SidebarWalletListAdapter(getPresenter().getDataSource(),getContext());
         itemDecoration = new CommonSidebarItemDecoration2(getContext(),getPresenter().getDataSource(),2);

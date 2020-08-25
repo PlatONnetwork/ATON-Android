@@ -70,12 +70,12 @@ public class ServerUtils {
 
     private static HttpLoggingInterceptor getLogInterceptor() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        //loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        if (BuildConfig.DEBUG) {
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+       /* if (BuildConfig.DEBUG) {
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         } else {
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
+        }*/
         return loggingInterceptor;
     }
 

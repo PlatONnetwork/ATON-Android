@@ -3,6 +3,7 @@ package com.platon.aton.component.ui.presenter;
 import com.platon.aton.BaseTestCase;
 import com.platon.aton.component.ui.contract.DelegateContract;
 import com.platon.aton.entity.EstimateGasResult;
+import com.platon.framework.utils.LogUtils;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -79,8 +80,8 @@ public class DelegatePresenterTest extends BaseTestCase {
         StakingAmountType stakingAmountType = StakingAmountType.getStakingAmountType(1000);
 
         presenter.setmEstimateGasResult(estimateGasResult);
-       /* String result = presenter.checkDelegateParam(estimateGasResult,stakingAmountType);
-        LogUtils.i("------result :" + result);*/
+        //String result = presenter.checkDelegateParam(estimateGasResult,stakingAmountType);
+        //LogUtils.i("------result :" + result);
 
     }
 
@@ -90,6 +91,19 @@ public class DelegatePresenterTest extends BaseTestCase {
         String nodeId = "0x411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c";
         presenter.getEstimateGas(prefixAddress,nodeId);
     }*/
+
+
+    @Test
+    public void checkKeywordsAddress(){
+        String prefixAddress = "lax1jxeg784p2vuemglc7cy59mzgq50heg3gawvxkj";
+        boolean result = presenter.checkKeywordsAddress(prefixAddress);
+        LogUtils.i("------result :" + result);
+    }
+
+
+
+
+
 
 
 
