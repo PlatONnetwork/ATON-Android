@@ -39,6 +39,7 @@ import com.platon.aton.component.adapter.base.CommonSidebarItemDecoration2;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.presenter.MainPresenter;
 import com.platon.aton.component.widget.FragmentTabHost;
+import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.MainTab;
 import com.platon.aton.entity.MainTabTag;
 import com.platon.aton.entity.Wallet;
@@ -54,6 +55,8 @@ import com.umeng.socialize.UMShareAPI;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,6 +113,7 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
     private SidebarWalletListAdapter mSidebarWalletListAdapter;
     private CommonSidebarItemDecoration2 itemDecoration;
     private @WalletTypeSearch int walletTypeSearch = WalletTypeSearch.WALLET_ALL;
+    private List<Wallet>  mWalletListHD;//HD母钱包
 
     @Override
     public MainPresenter createPresenter() {
@@ -219,14 +223,14 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
             }
         });
 
-
+        mWalletListHD = WalletManager.getInstance().getWalletListFromDBByHD().blockingGet();
         //加载RecyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         linearLayoutManager.setReverseLayout(false);
         listWallet.setLayoutManager(linearLayoutManager);
-        mSidebarWalletListAdapter = new SidebarWalletListAdapter(getPresenter().getDataSource(),getContext());
-        itemDecoration = new CommonSidebarItemDecoration2(getContext(),getPresenter().getDataSource(),2);
+        mSidebarWalletListAdapter = new SidebarWalletListAdapter(getPresenter().getDataSource(),getContext(),mWalletListHD);
+        itemDecoration = new CommonSidebarItemDecoration2(getContext(),getPresenter().getDataSource(),2,mWalletListHD);
         listWallet.setAdapter(mSidebarWalletListAdapter);
         listWallet.addItemDecoration(itemDecoration);
         mSidebarWalletListAdapter.setOnSelectClickListener(new SidebarWalletListAdapter.OnSelectClickListener(){
@@ -321,6 +325,10 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
     @Override
     protected void onResume() {
         super.onResume();
+        //刷新HD母钱包数据
+        mWalletListHD = WalletManager.getInstance().getWalletListFromDBByHD().blockingGet();
+        mSidebarWalletListAdapter.setHDWalletListDataSource(mWalletListHD);
+        itemDecoration.setWalletListHDDataSource(mWalletListHD);
         tabhost.getTabWidget().getChildTabViewAt(1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

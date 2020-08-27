@@ -83,7 +83,7 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
                 0,
                 DensityUtil.dp2px(mContext, 2));
 
-        GlideUtils.loadImage(mContext, data.getUrl(), mWalletAvatarCiv);
+        GlideUtils.loadRound(mContext, data.getUrl(), mWalletAvatarCiv);
 
         mNodeStatusTv.setText(NodeManager.getInstance().getNodeStatusDescRes(data.getNodeStatus(),data.isConsensus()));
         mNodeStatusTv.setTextColor(getNodeStatusTextColor(data.getNodeStatus(), data.isConsensus()));
@@ -152,7 +152,9 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
                     mNodeNameTv.setText(bundle.getString(key));
                     break;
                 case DelegateItemInfoDiffCallback.KEY_URL:
-                    GlideUtils.loadImage(mContext, bundle.getString(key), mWalletAvatarCiv);
+                    //GlideUtils.loadImage(mContext, bundle.getString(key), mWalletAvatarCiv);
+                    GlideUtils.loadRound(mContext, bundle.getString(key), mWalletAvatarCiv);
+
                     break;
                 case DelegateItemInfoDiffCallback.KEY_NODE_STATUS_AND_CONSENSUS:
                     HashMap<String, Object> map = (HashMap<String, Object>) bundle.getSerializable(key);

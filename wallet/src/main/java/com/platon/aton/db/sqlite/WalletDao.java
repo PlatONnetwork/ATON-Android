@@ -114,6 +114,34 @@ public class WalletDao {
 
 
     /**
+     * 查询所有钱包中HD母钱包
+     * @return
+     */
+    public static List<WalletEntity> getWalletInfoListByHD() {
+        List<WalletEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                    .equalTo("depth",0)
+                    .equalTo("isHD",true)
+                    .sort("updateTime", Sort.ASCENDING)
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
+
+    /**
      * 查询所有HD钱包之(子钱包)根据prendId
      * @return
      */

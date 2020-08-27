@@ -6,28 +6,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="@dimen/layout_space_10"
-    android:background="@color/color_ffffff"
-    android:padding="@dimen/layout_space_10">
+    android:paddingBottom="@dimen/layout_space_10"
+    android:paddingLeft="@dimen/layout_space_10"
+    android:paddingRight="@dimen/layout_space_10"
+    android:background="@color/color_f9fbff">
 
 
-    <TextView
-        android:id="@+id/tv_wallet_name"
+    <LinearLayout
+        android:id="@+id/linear_view_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:gravity="center_vertical|left"
-        style="@style/Text.000000.15"
-        android:layout_marginBottom="@dimen/layout_space_05"
-        android:text="wallet name"/>
+        android:background="@color/color_ffffff"
+        android:padding="@dimen/layout_space_10"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_wallet_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|left"
-        style="@style/Text.000000.15"
-        android:text="wallet address"/>
+        <TextView
+            android:id="@+id/tv_wallet_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="center_vertical|left"
+            style="@style/Text.000000.15"
+            android:layout_marginBottom="@dimen/layout_space_05"
+            android:text="wallet name"/>
+
+        <TextView
+            android:id="@+id/tv_wallet_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            style="@style/Text.000000.15"
+            android:text="wallet address"/>
+
+    </LinearLayout>
+
+
+
 
 </LinearLayout>
 

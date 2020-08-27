@@ -294,6 +294,29 @@ public class WalletManager {
     }
 
 
+    public Single<List<Wallet>> getWalletListFromDBByHD() {
+        return Flowable
+                .fromCallable(new Callable<List<WalletEntity>>() {
+                    @Override
+                    public List<WalletEntity> call() throws Exception {
+                        return WalletDao.getWalletInfoListByHD();
+                    }
+                })
+                .flatMap(new Function<List<WalletEntity>, Publisher<Wallet>>() {
+                    @Override
+                    public Publisher<Wallet> apply(List<WalletEntity> walletEntities) throws Exception {
+                        return Flowable.range(0, walletEntities.size()).map(new Function<Integer, Wallet>() {
+                            @Override
+                            public Wallet apply(Integer integer) throws Exception {
+                                return walletEntities.get(integer).buildWallet();
+                            }
+                        });
+                    }
+                })
+                .toList();
+    }
+
+
     public Single<List<Wallet>> getHDWalletListDBByParentId(String parendId) {
         return Flowable
                 .fromCallable(new Callable<List<WalletEntity>>() {

@@ -6,24 +6,26 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_right_sidebar"
     android:clickable="true"
-    android:padding="@dimen/layout_space_10"
+    android:paddingTop="@dimen/layout_space_10"
+    android:paddingBottom="@dimen/layout_space_26"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/layout_space_20"
+        android:layout_marginTop="@dimen/layout_space_28"
+        android:paddingLeft="@dimen/layout_space_10"
+        android:paddingRight="@dimen/layout_space_10"
+        style="@style/Text.000000.18"
         android:textStyle="bold"
-        style="@style/Text.000.18"
         android:gravity="left"
         android:text="@string/hdIndividualWallet"/>
 
-
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
+        android:paddingTop="@dimen/layout_space_20"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/color_f9fbff"
-        android:fitsSystemWindows="true"
         android:orientation="vertical">
 
 
@@ -31,10 +33,10 @@
             android:id="@+id/layout_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/layout_space_10"
+            android:paddingRight="@dimen/layout_space_10"
             android:background="@color/color_f9fbff"
-            android:orientation="horizontal"
-            android:paddingTop="@dimen/layout_space_10"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="horizontal">
 
             <RadioGroup
                 android:id="@+id/radio_group"
@@ -109,7 +111,9 @@
             android:id="@+id/layout_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/layout_space_14"
+            android:layout_marginTop="14dp"
+            android:paddingLeft="@dimen/layout_space_10"
+            android:paddingRight="@dimen/layout_space_10"
             android:orientation="horizontal"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/layout_tab">
@@ -157,17 +161,15 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingTop="@dimen/layout_space_05"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_space_05"
             android:background="@color/color_f9fbff"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_search">
+            android:focusable="true">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_wallet"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 tools:listitem="@layout/item_sidebar_wallet_list" />
 
             <include
@@ -178,7 +180,7 @@
 
         </FrameLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

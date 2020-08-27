@@ -60,6 +60,7 @@ import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.component.widget.VerticalImageSpan;
 import com.platon.aton.engine.AppConfigManager;
 import com.platon.aton.engine.TransactionManager;
+import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegateType;
 import com.platon.aton.entity.EstimateGasResult;
@@ -411,14 +412,14 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
      * 初始化侧滑栏
      */
     private void initSidebarView(){
-
+        List<Wallet>  mWalletListHD = WalletManager.getInstance().getWalletListFromDBByHD().blockingGet();
         //加载RecyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         listWallet.setLayoutManager(linearLayoutManager);
-        mSidebarWalletListAdapter = new SidebarWalletListAdapter(getPresenter().getDataSource(),getContext());
+        mSidebarWalletListAdapter = new SidebarWalletListAdapter(getPresenter().getDataSource(),getContext(),mWalletListHD);
         mSidebarWalletListAdapter.setFromType(SidebarWalletListAdapter.FROMTYPE_DELEGATE);
-        itemDecoration = new CommonSidebarItemDecoration2(getContext(),getPresenter().getDataSource(),2);
+        itemDecoration = new CommonSidebarItemDecoration2(getContext(),getPresenter().getDataSource(),2,mWalletListHD);
         listWallet.setAdapter(mSidebarWalletListAdapter);
         listWallet.addItemDecoration(itemDecoration);
         mSidebarWalletListAdapter.setOnSelectClickListener(new SidebarWalletListAdapter.OnSelectClickListener(){

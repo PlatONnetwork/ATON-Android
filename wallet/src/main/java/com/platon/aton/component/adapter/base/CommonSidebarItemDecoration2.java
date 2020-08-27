@@ -26,17 +26,24 @@ public class CommonSidebarItemDecoration2 extends RecyclerView.ItemDecoration {
         private Rect textBound;//文字的范围i
         private Paint mPaint;
         private List<Wallet> walletList = new ArrayList<>();
+        private List<Wallet> walletListHD = new ArrayList<>();
         private int mTitleHeight;//title的高
+        private int unTitleHeight;//没有标题title的高
         private final int COLOR_BG;
         private final int COLOR_FONT = Color.BLACK;
         private final int decoration;
+        private Context mContext;
 
-        public CommonSidebarItemDecoration2(Context context, List<Wallet> wallets, int decoration) {
+        public CommonSidebarItemDecoration2(Context context, List<Wallet> wallets, int decoration, List<Wallet> walletsHD) {
+            this.mContext = context;
             this.COLOR_BG = context.getResources().getColor(R.color.color_f9fbff);
             this.decoration = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, decoration, context.getResources().getDisplayMetrics());
             this.walletList.clear();
             this.walletList.addAll(wallets);
-            mTitleHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, context.getResources().getDisplayMetrics());
+            this.walletListHD.clear();
+            this.walletListHD.addAll(walletsHD);
+            mTitleHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, context.getResources().getDisplayMetrics());
+            unTitleHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, context.getResources().getDisplayMetrics());
             //title字体大小
             final float mFontSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 18, context.getResources().getDisplayMetrics());
             textBound = new Rect();
@@ -49,6 +56,11 @@ public class CommonSidebarItemDecoration2 extends RecyclerView.ItemDecoration {
             this.walletList.addAll(wallets);
         }
 
+        public void setWalletListHDDataSource(List<Wallet> walletsHD){
+            this.walletListHD.clear();
+            this.walletListHD.addAll(walletsHD);
+        }
+
         /**
          * 设置Title的空间
          */
@@ -59,49 +71,33 @@ public class CommonSidebarItemDecoration2 extends RecyclerView.ItemDecoration {
             if(walletList.size() > 0){
 
                 if (position == 0) {//position为0，第一个item有title
-                    outRect.set(0, mTitleHeight, 0, decoration);//留下title空间
+                    if(walletList.get(0).isHD()){
+                        outRect.set(0, mTitleHeight, 0, 0);//留下title空间
+                    }else{
+                        outRect.set(0, unTitleHeight , 0, 0);
+                    }
+
                 } else {//对是否需要留白 进行判断
 
                     if(walletList.size() > 0){
                         Wallet resourceBean = walletList.get(position);
-                        Wallet lastBean = walletList.get(position - 1);
+                        Wallet lastBean = (position - 1) >= 0 ? walletList.get(position - 1) : null;
                         if (resourceBean == null || lastBean == null) return;
 
                         if(!TextUtils.isEmpty(resourceBean.getParentWalletName()) && !TextUtils.isEmpty(lastBean.getParentWalletName())){//子钱包比对
                             if (!resourceBean.getParentWalletName().equals(lastBean.getParentWalletName())) {
-                                outRect.set(0, mTitleHeight, 0, decoration);//留下title空间
+                                outRect.set(0, mTitleHeight, 0, 0);//留下title空间
                             } else {
-                                outRect.set(0, 0, 0, decoration);
+                                outRect.set(0, 0, 0, 0);
                             }
                         }else if(TextUtils.isEmpty(resourceBean.getParentWalletName()) && TextUtils.isEmpty(lastBean.getParentWalletName())){//普通钱包比对
 
                         }else{//普通钱包与子钱包比对
-                            outRect.set(0, mTitleHeight, 0, decoration);//留下title空间
+                            outRect.set(0, mTitleHeight, 0, 0);//留下title空间
                         }
-
-
-
-
                     }
                 }
-
             }
-
-
-           /* if (position == 0) {//position为0，第一个item有title
-                outRect.set(0, mTitleHeight, 0, decoration);//留下title空间
-            } else {//对是否需要留白 进行判断
-                if(walletList.size() > 0){
-                    Wallet resourceBean = walletList.get(position);
-                    Wallet lastBean = walletList.get(position - 1);
-                    if (resourceBean == null || lastBean == null) return;
-                    if ( !resourceBean.getParentWalletName().equals(lastBean.getParentWalletName())) {
-                        outRect.set(0, mTitleHeight, 0, decoration);//留下title空间
-                    } else {
-                        outRect.set(0, 0, 0, decoration);
-                    }
-                }
-            }*/
         }
 
         /**
@@ -110,7 +106,7 @@ public class CommonSidebarItemDecoration2 extends RecyclerView.ItemDecoration {
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
             super.onDraw(c, parent, state);
-            final int left = parent.getPaddingLeft();
+            final int left = parent.getPaddingLeft() + (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 10, mContext.getResources().getDisplayMetrics());
             final int right = parent.getWidth() - parent.getPaddingRight();
             final int current = parent.getChildCount();//屏幕当前item数量
 
@@ -120,62 +116,79 @@ public class CommonSidebarItemDecoration2 extends RecyclerView.ItemDecoration {
                     RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) child.getLayoutParams();
                     int position = parent.getChildLayoutPosition(child);//child的adapter position
 
+
+
+
                      if (position == 0) {//为0  绘制title
                         Wallet resourceBean = walletList.get(position);
                         if (resourceBean == null) return;
                         String title = resourceBean.getParentWalletName();
                         String newTitle = TextUtils.isEmpty(title) ? "" : title;
-                        drawTitle(c, left, right, child, layoutParams, newTitle);//进行绘制
+                        if(resourceBean.isHD()){
+                            drawTitle(c, left, right, child, layoutParams, newTitle, getSubWalletBGColor(walletListHD,resourceBean));//进行绘制
+                        }else{
+                            drawTitle(c, left, right, child, layoutParams, newTitle, R.color.color_f9fbff);//进行绘制
+                        }
+
                     } else {//不为0时 判断 是否需要绘制title
                         Wallet resourceBean = walletList.get(position);
                         Wallet lastBean = walletList.get(position - 1);
                         if (resourceBean == null || lastBean == null) return;
 
-
-
                          if(!TextUtils.isEmpty(resourceBean.getParentWalletName()) && !TextUtils.isEmpty(lastBean.getParentWalletName())){//子钱包比对
                              if (!resourceBean.getParentWalletName().equals(lastBean.getParentWalletName())) {
-                                 drawTitle(c, left, right, child, layoutParams, resourceBean.getParentWalletName());
+                                 drawTitle(c, left, right, child, layoutParams, resourceBean.getParentWalletName(),getSubWalletBGColor(walletListHD,resourceBean));
                              }
                          }else if(TextUtils.isEmpty(resourceBean.getParentWalletName()) && TextUtils.isEmpty(lastBean.getParentWalletName())){//普通钱包比对
 
                          }else{//普通钱包与子钱包比对
-                             drawTitle(c, left, right, child, layoutParams, resourceBean.getParentWalletName());
+                             drawTitle(c, left, right, child, layoutParams, resourceBean.getParentWalletName(),getSubWalletBGColor(walletListHD,resourceBean));
                          }
                     }
 
-
-                   /* if (position == 0) {//为0  绘制title
-                        Wallet resourceBean = walletList.get(position);
-                        if (resourceBean == null) return;
-                        String title = resourceBean.getParentWalletName();
-                        String newTitle = TextUtils.isEmpty(title) ? "" : title;
-                        drawTitle(c, left, right, child, layoutParams, newTitle);//进行绘制
-                    } else {//不为0时 判断 是否需要绘制title
-                        Wallet resourceBean = walletList.get(position);
-                        Wallet lastBean = walletList.get(position - 1);
-                        if (resourceBean == null || lastBean == null) return;
-                        if (!resourceBean.getParentWalletName().equals(lastBean.getParentWalletName())) {//和上一个的名称不一样
-                            drawTitle(c, left, right, child, layoutParams, resourceBean.getParentWalletName());
-                        }
-                    }*/
                 }
+            }
+        }
+
+
+    /**
+     * 获取子钱包标题背景色
+     * @param walletListHD
+     * @param wallet
+     * @return
+     */
+        private int getSubWalletBGColor(List<Wallet> walletListHD, Wallet wallet){
+            int walletIndex = 0;
+            for (int i = 0; i < walletListHD.size(); i++) {
+                Wallet walletHD = walletListHD.get(i);
+                if(walletHD.getUuid().equals(wallet.getParentId())){
+                    //由于数据源已经进行了排序，所以遍历时，同一组子钱包的walletIndex是相同的
+                    walletIndex = i;
+                    break;
+                }
+            }
+
+            if(walletIndex % 2 == 0){
+                return R.color.color_eff4fd;
+            }else{
+                return R.color.color_f9fbff;
             }
         }
 
         /**
          * 绘制文字
          */
-        private void drawTitle(Canvas c, int left, int right, View child, RecyclerView.LayoutParams layoutParams, String titleText) {
+        private void drawTitle(Canvas c, int left, int right, View child, RecyclerView.LayoutParams layoutParams, String titleText, int colorBg) {
             //绘制背景色
-            mPaint.setColor(COLOR_BG);
-            c.drawRect(left, child.getTop() - layoutParams.topMargin - mTitleHeight, right, child.getTop() - layoutParams.topMargin, mPaint);
+            mPaint.setColor(mContext.getResources().getColor(colorBg));
+            int value = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 2, mContext.getResources().getDisplayMetrics());
+            c.drawRect(0, child.getTop() - layoutParams.topMargin - mTitleHeight, right, (child.getTop() - layoutParams.topMargin), mPaint);
             //绘制文字，没有使用计算baseline的方式
             mPaint.setColor(COLOR_FONT);
             mPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
             mPaint.getTextBounds(titleText, 0, (TextUtils.isEmpty(titleText) ? 0 : titleText.length()), textBound);
             //c.drawText(titleText, child.getPaddingLeft(), child.getTop() - layoutParams.topMargin - (mTitleHeight / 2 - textBound.height() / 2), mPaint);
-            c.drawText(titleText,0, child.getTop() - layoutParams.topMargin - (mTitleHeight / 2 - textBound.height() / 2), mPaint);
+            c.drawText(titleText, child.getPaddingLeft(), child.getTop() - layoutParams.topMargin - (mTitleHeight / 2 - textBound.height() / 2) - value, mPaint);
         }
 
         /**
