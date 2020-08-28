@@ -1217,7 +1217,6 @@ public class WalletManager {
         return false;
     }
 
-
     /**
      * 备份钱包，真正备份并更新DB
      * @param wallet
