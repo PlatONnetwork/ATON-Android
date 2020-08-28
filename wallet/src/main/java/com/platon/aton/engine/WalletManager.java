@@ -1236,7 +1236,6 @@ public class WalletManager {
         }else{
             return WalletDao.updateBackedUpWithUuid(wallet.getUuid(), backedUp);
         }
-
     }
 
     /**
