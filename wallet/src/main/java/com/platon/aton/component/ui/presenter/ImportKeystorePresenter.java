@@ -95,7 +95,7 @@ public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContrac
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_OK:
-                    EventPublisher.getInstance().sendWalletNumberChangeEvent();
+                    //EventPublisher.getInstance().sendWalletNumberChangeEvent();
                     dismissLoadingDialogImmediately();
                     MainActivity.actionStart(currentActivity());
                     currentActivity().finish();

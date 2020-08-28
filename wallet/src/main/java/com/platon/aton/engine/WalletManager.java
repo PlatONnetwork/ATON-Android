@@ -76,7 +76,8 @@ public class WalletManager {
     public static final int CODE_ERROR_WALLET_EXISTS = -200;
     public static final int CODE_ERROR_UNKNOW = -999;
 
-    private List<Wallet> mWalletList = new ArrayList<>();
+    private List<Wallet> mWalletList = new ArrayList<>();//所有展示的钱包
+    private List<Wallet> mWalletListHDMother = new ArrayList<>();//所有母钱包
     public static final int CODE_ERROR_INVALIA_ADDRESS = -5;
 
     /**
@@ -674,27 +675,6 @@ public class WalletManager {
             WalletDao.updateBatchWalletSortIndexWithParentId(wallet.getUuid(),sortIndex);
         }
         return true;
-
-      /*  return Flowable
-                .fromCallable(new Callable<Boolean>() {
-
-                    @Override
-                    public Boolean call() throws Exception {
-                        return WalletDao.updateWalletSortIndexWithUuid(wallet.getUuid(),sortIndex);
-                    }
-                }).filter(new Predicate<Boolean>(){
-
-                    @Override
-                    public boolean test(Boolean aBoolean) throws Exception {
-                        return wallet.isHD() && wallet.getDepth() == 0;//判断是否是HD分组钱包母钱包，如果是同步更新旗下子钱包一样的sortIndex
-                    }
-                }).map(new Function<Boolean, Boolean>() {
-                    @Override
-                    public Boolean apply(Boolean aBoolean) throws Exception {
-
-                        return WalletDao.updateBatchWalletSortIndexWithParentId(wallet.getUuid(),sortIndex);
-                    }
-                }).blockingFirst();*/
     }
 
 
@@ -877,14 +857,50 @@ public class WalletManager {
     }
 
 
-
-
+    /**
+     * 获取所有首页钱包展示钱包
+     * @return
+     */
     public List<Wallet> getWalletList() {
         if (mWalletList.isEmpty()) {
             return mWalletList = getWalletListFromDB().blockingGet();
         }
         Collections.sort(mWalletList);
+        //加载所有展示的HD子钱包对应的母钱包
+        if(mWalletListHDMother.isEmpty()){
+            mWalletListHDMother = getWalletListFromDBByHD().blockingGet();
+        }
         return mWalletList;
+    }
+
+    /**
+     * 获取所有母钱包
+     * @return
+     */
+    public List<Wallet> getWalletListHDMother(){
+
+         return mWalletListHDMother;
+    }
+
+    /**
+     * 新增子钱包后，将其母钱包添加入全局母钱包集合，以方便判断钱包是否关闭备份
+     * @param wallet
+     */
+    public void addWalletListHDMother(Wallet wallet){
+        if(wallet.isHD()){
+            Wallet mWalletHDMother = getWalletInfoByUuid(wallet.getParentId());
+            //检查是否集合中，之前是否存在此母钱包
+            boolean isExist = false;
+            for (int i = 0; i < mWalletListHDMother.size(); i++) {
+                if(mWalletListHDMother.get(i).getUuid().equals(mWalletHDMother.getUuid())){
+                    isExist = true;
+                    break;
+                }
+            }
+            if(!isExist){
+                mWalletListHDMother.add(mWalletHDMother);
+            }
+        }
     }
 
 
@@ -1202,16 +1218,19 @@ public class WalletManager {
     }
 
 
+    /**
+     * 备份钱包，真正备份并更新DB
+     * @param wallet
+     * @param backedUp
+     * @return
+     */
     public boolean updateBackedUpWithUuid(Wallet wallet, boolean backedUp) {
         if (TextUtils.isEmpty(wallet.getUuid())) {
             return false;
         }
-        for (Wallet walletEntity : mWalletList) {
-            if (wallet.getUuid().equals(walletEntity.getUuid())) {
-                walletEntity.setBackedUp(backedUp);
-                break;
-            }
-        }
+        //更新缓存
+        updateWalletBackedUpPromptWithUUID(wallet,backedUp);
+        //更新DB
         if(wallet.isHD() && wallet.getDepth() == 1){//子钱包
             Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
             return WalletDao.updateBackedUpWithUuid(rootWallet.getUuid(), backedUp);
@@ -1221,8 +1240,13 @@ public class WalletManager {
 
     }
 
-    public void updateWalletBackedUpPromptWithUUID(String uuid, boolean isBackedUp) {
+    /**
+     * 通过点击备份X按钮，关闭备份提示，更新缓存
+     * @param isBackedUp
+     */
+    public void updateWalletBackedUpPromptWithUUID(Wallet wallet, boolean isBackedUp) {
 
+        String uuid = wallet.getUuid();
         if (TextUtils.isEmpty(uuid)) {
             return;
         }
@@ -1231,22 +1255,46 @@ public class WalletManager {
             return;
         }
 
-        Flowable.range(0, mWalletList.size())
-                .filter(new Predicate<Integer>() {
-                    @Override
-                    public boolean test(Integer integer) throws Exception {
-                        return TextUtils.equals(mWalletList.get(integer).getUuid(), uuid);
-                    }
-                })
-                .firstElement()
-                .doOnSuccess(new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) throws Exception {
-                        Wallet wallet = mWalletList.get(integer);
-                        mWalletList.get(integer).setBackedUp(isBackedUp);
-                    }
-                })
-                .subscribe();
+        if(mWalletListHDMother.isEmpty()){
+           return;
+        }
+
+        if(!wallet.isHD()){//普通钱包
+
+            Flowable.range(0, mWalletList.size())
+                    .filter(new Predicate<Integer>() {
+                        @Override
+                        public boolean test(Integer integer) throws Exception {
+                            return TextUtils.equals(mWalletList.get(integer).getUuid(), uuid);
+                        }
+                    })
+                    .firstElement()
+                    .doOnSuccess(new Consumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) throws Exception {
+                            mWalletList.get(integer).setBackedUp(isBackedUp);
+                        }
+                    })
+                    .subscribe();
+        }else{
+
+            Flowable.range(0, mWalletListHDMother.size())
+                    .filter(new Predicate<Integer>() {
+                        @Override
+                        public boolean test(Integer integer) throws Exception {
+                            return TextUtils.equals(mWalletListHDMother.get(integer).getUuid(), wallet.getParentId());
+                        }
+                    })
+                    .firstElement()
+                    .doOnSuccess(new Consumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) throws Exception {
+                            mWalletListHDMother.get(integer).setBackedUp(isBackedUp);
+                        }
+                    })
+                    .subscribe();
+        }
+
     }
 
 

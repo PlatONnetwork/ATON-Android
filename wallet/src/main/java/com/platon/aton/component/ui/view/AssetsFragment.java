@@ -248,9 +248,11 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
         layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
 
+        //新增子钱包后，将其母钱包添加入全局母钱包集合，以方便判断钱包是否关闭备份
+        WalletManager.getInstance().addWalletListHDMother(WalletManager.getInstance().getSelectedWallet());
+
         showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
-        //刷新侧滑栏数据
-        //EventPublisher.getInstance().sendOpenRightSidebarEvent(null,WalletTypeSearch.WALLET_ALL);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -508,7 +510,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                         layoutSecurityReminders.setVisibility(View.GONE);
                         Wallet selectedWallet = WalletManager.getInstance().getSelectedWallet();
                         if (selectedWallet != null) {
-                            WalletManager.getInstance().updateWalletBackedUpPromptWithUUID(selectedWallet.getUuid(), true);
+                            WalletManager.getInstance().updateWalletBackedUpPromptWithUUID(selectedWallet, true);
                             notifyWalletList();
                         }
                     }
@@ -670,9 +672,13 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                 layoutSecurityReminders.setVisibility(!selectedWallet.isBackedUp()? View.VISIBLE : View.GONE);
             }
         }else{
-
-            Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(selectedWallet.getParentId());
-            layoutSecurityReminders.setVisibility(!rootWallet.isBackedUp()? View.VISIBLE : View.GONE);
+            List<Wallet> walletListHDMother = WalletManager.getInstance().getWalletListHDMother();
+            for (int i = 0; i < walletListHDMother.size(); i++) {
+                if(walletListHDMother.get(i).getUuid().equals(selectedWallet.getParentId())){
+                    layoutSecurityReminders.setVisibility(!walletListHDMother.get(i).isBackedUp()? View.VISIBLE : View.GONE);
+                    break;
+                }
+            }
         }
 
         layoutDeviceOfflinePrompt.setVisibility((showOfflinePrompt && !NetConnectivity.getConnectivityManager().isConnected()) ? View.VISIBLE : View.GONE);

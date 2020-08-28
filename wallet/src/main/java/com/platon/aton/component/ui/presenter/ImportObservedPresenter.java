@@ -85,7 +85,7 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_OK:
-                    EventPublisher.getInstance().sendWalletNumberChangeEvent();
+                    //EventPublisher.getInstance().sendWalletNumberChangeEvent();
                     dismissLoadingDialogImmediately();
                     PreferenceTool.putInt(NodeManager.getInstance().getChainId(), PreferenceTool.getInt(NodeManager.getInstance().getChainId(), 1) + 1);
                     MainActivity.actionStart(currentActivity());
