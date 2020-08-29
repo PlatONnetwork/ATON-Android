@@ -1292,7 +1292,6 @@ public class WalletManager {
                     })
                     .subscribe();
         }
-
     }
 
 
