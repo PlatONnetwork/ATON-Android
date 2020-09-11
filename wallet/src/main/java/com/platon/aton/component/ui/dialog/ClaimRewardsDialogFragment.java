@@ -12,7 +12,6 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.widget.ShadowButton;
-import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ClaimRewardInfo;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
@@ -76,7 +75,7 @@ public class ClaimRewardsDialogFragment extends BaseDialogFragment {
 
         ClaimRewardInfo claimRewardInfo = getArguments().getParcelable(Constants.Bundle.BUNDLE_DATA);
 
-        tvClaimRewardsAmount.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(claimRewardInfo.getClaimRewardAmount(), 12), ContextCompat.getColor(getContext(), R.color.color_105cfe), ContextCompat.getColor(getContext(), R.color.color_105cfe), DensityUtil.sp2px(getContext(), 12), DensityUtil.sp2px(getContext(), 22)));
+        tvClaimRewardsAmount.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(claimRewardInfo.getClaimRewardAmount(), 8), ContextCompat.getColor(getContext(), R.color.color_105cfe), ContextCompat.getColor(getContext(), R.color.color_105cfe), DensityUtil.sp2px(getContext(), 12), DensityUtil.sp2px(getContext(), 22)));
 
         tvFeeAmount.setText(getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardInfo.getFeeAmount())));
 
@@ -84,7 +83,8 @@ public class ClaimRewardsDialogFragment extends BaseDialogFragment {
 
         tvClaimWallet.setText(claimRewardInfo.getFromWalletName());
 
-        sbtnConfirm.setEnabled(BigDecimalUtil.isNotSmaller(WalletManager.getInstance().getWalletByAddress(claimRewardInfo.getFromWalletAddress()).getFreeBalance(), claimRewardInfo.getFeeAmount()));
+        //sbtnConfirm.setEnabled(BigDecimalUtil.isNotSmaller(WalletManager.getInstance().getWalletByAddress(claimRewardInfo.getFromWalletAddress()).getFreeBalance(), claimRewardInfo.getFeeAmount()));
+        sbtnConfirm.setEnabled(BigDecimalUtil.isNotSmaller(claimRewardInfo.getAvaliableBalanceAmount(), claimRewardInfo.getFeeAmount()));
 
         mDisposable = RxView.clicks(sbtnConfirm)
                 .compose(bindToLifecycle())

@@ -25,7 +25,10 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.ui.presenter.ManageWalletPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
+import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletDepth;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
@@ -74,10 +77,8 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
-
         getPresenter().init(getWalletEntityFromIntent());
     }
-
 
     @Override
     public int getLayoutId() {
@@ -102,17 +103,17 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
                 showModifyNameDialog("");
                 break;
             case R.id.rl_private_key:
-                showPasswordDialog(TYPE_EXPORT_PRIVATE_KEY, getWalletEntityFromIntent());
+                showPasswordDialog(TYPE_EXPORT_PRIVATE_KEY, getPresenter().getWalletData());
                 break;
             case R.id.rl_keystore:
-                showPasswordDialog(TYPE_EXPORT_KEYSTORE, getWalletEntityFromIntent());
+                showPasswordDialog(TYPE_EXPORT_KEYSTORE, getPresenter().getWalletData());
                 break;
             case R.id.rl_backup:
                 getPresenter().backup();
                 break;
             //删除钱包按钮
             case R.id.tv_delete:
-                if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey())) {
+                if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey()) && getWalletEntityFromIntent().getDepth() == WalletDepth.DEPTH_ZERO) {
                     getPresenter().deleteObservedWallet();
                 } else {
                     showPasswordDialog(TYPE_DELETE_WALLET, getWalletEntityFromIntent());
@@ -139,14 +140,31 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
         commonTitleBar.setTitle(wallet.getName());
         tvReName.setText(wallet.getName());
         tvAddress.setText(wallet.getPrefixAddress());
-        if (TextUtils.isEmpty(wallet.getKey())) {
-            llPrivateKey.setVisibility(View.GONE);
-            llKeystore.setVisibility(View.GONE);
-        }
-        tvDelete.setVisibility(wallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
-        //是否可以备份  都可以备份
-        llBackup.setVisibility(wallet.isBackedUpEnabled() ? View.VISIBLE : View.GONE);
 
+        if(wallet.isHD()){
+            llPrivateKey.setVisibility(View.VISIBLE);
+            llKeystore.setVisibility(View.VISIBLE);
+            Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
+            tvDelete.setVisibility(rootWallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
+            //是否可以备份
+            llBackup.setVisibility(View.GONE);
+        }else{
+            if (TextUtils.isEmpty(wallet.getKey())) {
+                llPrivateKey.setVisibility(View.GONE);
+                llKeystore.setVisibility(View.GONE);
+            }
+            tvDelete.setVisibility(wallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
+
+            //是否可以备份助记词:(钱包通过APP创建的 + 导入助记词)，可以显示备份助记词，
+            //其他情况私钥导入、keyStore导入都不可以显示,因为其生成不了助记词
+            if(wallet.getMnemonic() != null && !wallet.getMnemonic().equals("")){//钱包通过APP创建的 + 导入助记词
+                llBackup.setVisibility(View.VISIBLE);
+            }else{
+                llBackup.setVisibility(View.GONE);
+                //llBackup.setVisibility(!wallet.isBackedUp() ? View.VISIBLE : View.GONE);
+            }
+
+        }
     }
 
     @Override
@@ -167,7 +185,13 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
                     if (getPresenter().isExists(text)) {
                         showLongToast(string(R.string.wallet_name_exists));
                     } else {
-                        getPresenter().modifyName(text);
+                        Wallet wallet = getPresenter().getWalletData();
+                        if(wallet.isHD()){
+                            getPresenter().modifyHDName(text);
+                        }else{
+                            getPresenter().modifyName(text);
+                        }
+
                     }
                 }
             }
@@ -199,9 +223,15 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
 
     @Override
     public void showPasswordDialog(int type, Wallet walletEntity) {
-        InputWalletPasswordDialogFragment.newInstance(walletEntity, type == TYPE_DELETE_WALLET ? string(R.string.msg_delete_wallet) : null).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity, InputWalletPasswordFromType.TRANSACTION, type == TYPE_DELETE_WALLET ? string(R.string.msg_delete_wallet) : null).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
+                //getPresenter().validPassword(type, credentials);
+            }
+        }).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+            @Override
+            public void onCorrect(Credentials credentials, String password, Wallet wallet) {
+                getPresenter().init(wallet);
                 getPresenter().validPassword(type, credentials);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");

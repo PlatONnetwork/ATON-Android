@@ -25,6 +25,7 @@ import com.platon.aton.component.widget.table.PagerItemAdapter;
 import com.platon.aton.component.widget.table.PagerItems;
 import com.platon.aton.component.widget.table.SmartTabLayout;
 import com.platon.aton.entity.GuideType;
+import com.platon.aton.utils.DefParserStrUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.framework.app.Constants;
@@ -227,6 +228,11 @@ public class ImportWalletActivity extends BaseActivity {
                 return;
             }
             showLongToast(string(R.string.unrecognized_content));
+
+        }else if(requestCode == CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE){
+
+            ImportMnemonicPhraseFragment importMnemonicPhraseFragment = (ImportMnemonicPhraseFragment) getSupportFragmentManager().getFragments().get(2);
+            importMnemonicPhraseFragment.onActivityResult(requestCode,resultCode,data);
         }
     }
 

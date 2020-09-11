@@ -3,6 +3,7 @@ package com.platon.aton.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,15 +21,18 @@ import com.platon.aton.component.ui.contract.CreateWalletContract;
 import com.platon.aton.component.ui.presenter.CreateWalletPresenter;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.WalletType;
 import com.platon.aton.utils.CheckStrength;
+import com.platon.aton.utils.DefParserStrUtil;
 import com.platon.aton.utils.SoftHideKeyboardUtils;
+import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View, CreateWalletPresenter> implements CreateWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
+public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View, CreateWalletPresenter> implements CreateWalletContract.View, View.OnClickListener {
 
     Unbinder unbinder;
     @BindView(R.id.et_name)
@@ -47,6 +51,8 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
     TextView mTvPasswordDesc;
     @BindView(R.id.tv_password_error)
     TextView mTvPasswordError;
+    @BindView(R.id.tv_wallet_type)
+    TextView mTvWalletType;
     @BindView(R.id.sbtn_create)
     ShadowButton mSbtnCreate;
     @BindView(R.id.tv_strength)
@@ -61,9 +67,19 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
     View mVLine4;
     @BindView(R.id.layout_password_strength)
     LinearLayout mPasswordStrengthLayout;
+    @BindView(R.id.wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
+    public static final int REQ_WALLET_TYPE_QR_CODE = 0x101;
+    @WalletType
+    int walletType = WalletType.ORDINARY_WALLET;//默认普通钱包类型
+    private int walletNum = 0;
+    private boolean isEnableCreate = false;
+    private boolean isEnableName = true;
+    private boolean isEnablePassword = true;
+
 
     public static void actionStart(Context context) {
         context.startActivity(new Intent(context, CreateWalletActivity.class));
@@ -82,6 +98,7 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
+        getPresenter().loadDBWalletNumber();
         initView();
         showPassword();
         showRepeatPassword();
@@ -97,22 +114,103 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         return true;
     }
 
+    @Override
+    public void showWalletNumber(int walletNum) {
+        this.walletNum = walletNum;
+        setWalletNumOverLimit();
+    }
+
     private void initView() {
 
         mSbtnCreate.setOnClickListener(this);
-        mEtName.addTextChangedListener(this);
-        mEtPassword.addTextChangedListener(this);
         mEtPassword.setTypeface(Typeface.DEFAULT);
-        mEtRepeatPassword.addTextChangedListener(this);
         mEtRepeatPassword.setTypeface(Typeface.DEFAULT);
         mIvPasswordEyes.setOnClickListener(this);
         mIvRepeatPasswordEyes.setOnClickListener(this);
-        mEtName.setOnFocusChangeListener(this);
-        mEtPassword.setOnFocusChangeListener(this);
-        mEtRepeatPassword.setOnFocusChangeListener(this);
-        showNameError("", false);
-        showPasswordError("", false);
+        mTvWalletType.setOnClickListener(this);
+       /* showNameError("", false);
+        showPasswordError("", false);*/
         SoftHideKeyboardUtils.assistActivity(this);
+        enableCreate(false);
+
+        mEtName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = mEtName.getText().toString().trim();
+                    if (TextUtils.isEmpty(name)) {
+                        showNameError(string(R.string.validWalletNameEmptyTips), true);
+                    } else if (name.length() > 20) {
+                        showNameError(string(R.string.validWalletNameTips), true);
+                    } else if (WalletManager.getInstance().isWalletNameExists(name)) {
+                        showNameError(string(R.string.wallet_name_exists), true);
+                    } else {
+                        showNameError("", false);
+                    }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
+
+        mEtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = mEtPassword.getText().toString().trim();
+                String repeatPassword = mEtRepeatPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(password)) {
+                    showPasswordError(string(R.string.validPasswordEmptyTips), true);
+                } else if (password.length() < 6) {
+                    showPasswordError(string(R.string.validPasswordTips), true);
+                } else if(!repeatPassword.equals(password)){
+                    showPasswordError(string(R.string.passwordTips), true);
+                } else{
+                    if (password.equals(repeatPassword)) {
+                        showPasswordError("", false);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String password = mEtPassword.getText().toString().trim();
+                checkPwdStrength(password);
+            }
+        });
+
+
+
+        mEtRepeatPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = mEtPassword.getText().toString().trim();
+                String repeatPassword = mEtRepeatPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(repeatPassword)) {
+                    showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
+                } else if (!repeatPassword.equals(password)) {
+                    showPasswordError(string(R.string.passwordTips), true);
+                } else {
+                    if (repeatPassword.equals(password) && password.length() >= 6) {
+                        showPasswordError("", false);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
+
+
     }
 
     private void enableCreate(boolean enabled) {
@@ -155,6 +253,8 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
     public void showNameError(String text, boolean isVisible) {
         mTvNameError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvNameError.setText(text);
+        this.isEnableName = isVisible;
+        enableCreate(!isEnablePassword && !isEnableName && isEnableCreate);
     }
 
     @Override
@@ -162,7 +262,10 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        this.isEnablePassword = isVisible;
+        enableCreate(!isEnablePassword && !isEnableName && isEnableCreate);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -170,7 +273,7 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
             case R.id.sbtn_create:
                 getPresenter().createWallet(mEtName.getText().toString().trim(),
                         mEtPassword.getText().toString().trim(),
-                        mEtRepeatPassword.getText().toString().trim());
+                        mEtRepeatPassword.getText().toString().trim(), walletType);
                 break;
             case R.id.iv_password_eyes:
                 showPassword();
@@ -178,68 +281,54 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
             case R.id.iv_repeat_password_eyes:
                 showRepeatPassword();
                 break;
+            case R.id.tv_wallet_type:
+                String walletType = mTvWalletType.getText().toString();
+                int type = DefParserStrUtil.transforInverseWalletType(walletType, this);
+                SwitchWalletTypeActivity.actionStartForResult(this, type, CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE);
+                break;
             default:
                 break;
         }
     }
 
+
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        String name = mEtName.getText().toString().trim();
-        String password = mEtPassword.getText().toString().trim();
-        String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-        if (v == mEtName && !hasFocus) {
-            if (TextUtils.isEmpty(name)) {
-                showNameError(string(R.string.validWalletNameEmptyTips), true);
-            } else if (name.length() > 20) {
-                showNameError(string(R.string.validWalletNameTips), true);
-            } else if (WalletManager.getInstance().isWalletNameExists(name)) {
-                showNameError(string(R.string.wallet_name_exists), true);
-            } else {
-                showNameError("", false);
-            }
-        }
-        if (v == mEtPassword && !hasFocus) {
-            if (TextUtils.isEmpty(password)) {
-                showPasswordError(string(R.string.validPasswordEmptyTips), true);
-            } else if (password.length() < 6) {
-                showPasswordError(string(R.string.validPasswordTips), true);
-            } else {
-                if (password.equals(repeatPassword)) {
-                    showPasswordError("", false);
-                }
-            }
-        }
-        if (v == mEtRepeatPassword && !hasFocus) {
-            if (TextUtils.isEmpty(repeatPassword)) {
-                showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
-            } else if (!repeatPassword.equals(password)) {
-                showPasswordError(string(R.string.passwordTips), true);
-            } else {
-                if (repeatPassword.equals(password) && password.length() >= 6) {
-                    showPasswordError("", false);
-                }
-            }
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE && resultCode == RESULT_OK) {
+            walletType = data.getIntExtra(Constants.Extra.EXTRA_WALLET_TYPE, 0);
+            mTvWalletType.setText(DefParserStrUtil.transformWalletType(walletType, this));
+           //设置钱包上限
+            setWalletNumOverLimit();
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    private void setWalletNumOverLimit(){
 
+        //检查钱包上限
+        isEnableCreate = checkWalletNumLimit(walletNum,walletType);
+        if(isEnableCreate){
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+        }
+        enableCreate(!isEnablePassword && !isEnableName && isEnableCreate);
     }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        String name = mEtName.getText().toString().trim();
-        String password = mEtPassword.getText().toString().trim();
-        String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-        enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 20);
-        checkPwdStrength(password);
+    private boolean checkWalletNumLimit(int currentWalletNum,@WalletType int walletType){
+        //控制钱包数量上限
+        int sumWalletNum = 0;
+        if (walletType == WalletType.ORDINARY_WALLET) {
+            sumWalletNum = currentWalletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        } else {
+            sumWalletNum = currentWalletNum + Constants.WalletConstants.WALLET_ADD_HD;
+        }
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private void checkPwdStrength(String password) {
@@ -292,4 +381,6 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
                 break;
         }
     }
+
+
 }

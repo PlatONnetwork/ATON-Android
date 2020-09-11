@@ -349,6 +349,13 @@ public class AppFramework {
                 schema.get("WalletEntity")
                         .addField("mainNetAddress", String.class)
                         .addField("testNetAddress", String.class)
+                        .addField("isHD", Boolean.class).setRequired("isHD",true)
+                        .addField("pathIndex", Integer.class).setRequired("pathIndex",true)
+                        .addField("sortIndex", Integer.class).setRequired("sortIndex",true)
+                        .addField("selectedIndex", Integer.class).setRequired("selectedIndex",true)
+                        .addField("parentId", String.class)
+                        .addField("depth", Integer.class).setRequired("depth",true)
+                        .addField("isShow", Boolean.class).setRequired("isShow",true)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -376,8 +383,40 @@ public class AppFramework {
                         });
 
                 oldVersion++;
-            }
+            }else if(oldVersion == 113){
 
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                                LogUtils.d("------------clear NodeEntity Realm success");
+                            }
+                        });
+                 //https://www.codetd.com/article/4137544
+                schema.get("WalletEntity")
+                        .addField("isHD", Boolean.class).setRequired("isHD",true)
+                        .addField("pathIndex", Integer.class).setRequired("pathIndex",true)
+                        .addField("sortIndex", Integer.class).setRequired("sortIndex",true)
+                        .addField("selectedIndex", Integer.class).setRequired("selectedIndex",true)
+                        .addField("parentId", String.class)
+                        .addField("depth", Integer.class).setRequired("depth",true)
+                        .addField("isShow", Boolean.class).setRequired("isShow",true)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "103")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
+
+                                LogUtils.d("------------update chainId Realm success");
+                            }
+                        });
+
+                oldVersion++;
+            }
         }
 
     }

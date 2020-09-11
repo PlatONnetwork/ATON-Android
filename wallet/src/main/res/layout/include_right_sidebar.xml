@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_right_sidebar"
+    android:clickable="true"
+    android:padding="@dimen/layout_space_10"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_space_20"
+        android:textStyle="bold"
+        style="@style/Text.000.18"
+        android:gravity="left"
+        android:text="@string/hdIndividualWallet"/>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_f9fbff"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/layout_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_f9fbff"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/layout_space_10"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/btn_all"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="@string/validators_all"
+                    android:textColor="@drawable/bg_color_item_sidebar_wallet_type"
+                    android:background="@drawable/bg_item_sidebar_wallet_type"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/btn_hd"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textColor="@drawable/bg_color_item_sidebar_wallet_type"
+                    android:background="@drawable/bg_item_sidebar_wallet_type"
+                    android:text="@string/wallet_type_hd"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/btn_ordinary"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:textColor="@drawable/bg_color_item_sidebar_wallet_type"
+                    android:background="@drawable/bg_item_sidebar_wallet_type"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="@string/wallet_type_ordinary"
+                    android:textSize="15sp" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0.1"
+                android:gravity="center_vertical|right"
+                android:orientation="horizontal"
+                android:paddingRight="8dp">
+
+                <ImageView
+                    android:id="@+id/iv_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_right_sidebar_search"
+                    android:gravity="center" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/layout_space_14"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/layout_tab">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|left"
+                android:background="@drawable/bg_search_validator_et"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.96">
+
+                <EditText
+                    android:id="@+id/et_search"
+                    style="@style/Text.000.14"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="center_vertical|left"
+                    android:hint="@string/wallet_hint_search"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:paddingLeft="@dimen/layout_space_10"
+                    android:textColorHint="@color/color_898c9e"
+                    android:textCursorDrawable="@drawable/bg_cursor_search_validator"
+                    tools:text="hahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahhhahahahahahh" />
+
+                <TextView
+                    android:id="@+id/iv_hide"
+                    android:textColor="@color/color_105cfe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="@dimen/layout_space_10"
+                    android:text="@string/msg_hide"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="@dimen/layout_space_05"
+            android:background="@color/color_f9fbff"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_search">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_sidebar_wallet_list" />
+
+            <include
+                layout="@layout/include_no_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>

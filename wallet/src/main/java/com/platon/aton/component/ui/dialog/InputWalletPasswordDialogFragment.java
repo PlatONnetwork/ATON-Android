@@ -18,7 +18,10 @@ import com.platon.aton.app.LoadingTransformer;
 import com.platon.aton.component.widget.CustomUnderlineEditText;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
+import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletDepth;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
@@ -62,18 +65,20 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
     private OnWalletPasswordCorrectListener mListener;
 
 
-    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet) {
+    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet, @InputWalletPasswordFromType int fromType) {
         InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putInt(Constants.Bundle.BUNDLE_WALLET_FROM_TYPE,fromType);
         bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, wallet);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
 
-    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet, String title) {
+    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet, @InputWalletPasswordFromType int fromType, String title) {
         InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, wallet);
+        bundle.putInt(Constants.Bundle.BUNDLE_WALLET_FROM_TYPE,fromType);
         bundle.putString(Constants.Bundle.BUNDLE_TEXT, title);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
@@ -103,7 +108,16 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
     private void initViews() {
 
         Wallet wallet = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
+        @InputWalletPasswordFromType int fromType = getArguments().getInt(Constants.Bundle.BUNDLE_WALLET_FROM_TYPE,0);
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
+        Wallet rootWallet = null;
+        //子钱包(查询子钱包对应的HD母钱包信息组装到子钱包)
+        if(wallet.isHD() && wallet.getDepth() == WalletDepth.DEPTH_ONE){
+            rootWallet = WalletManager.getInstance().getWalletInfoByUuid(wallet.getParentId());
+            wallet.setMnemonic(rootWallet.getMnemonic());
+            wallet.setKey(rootWallet.getKey());
+        }
+
 
         ShadowDrawable.setShadowDrawable(layoutContent,
                 ContextCompat.getColor(context, R.color.color_ffffff),
@@ -113,7 +127,11 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                 0,
                 DensityUtil.dp2px(context, 2f));
 
-        if (wallet != null) {
+        //设置钱包名称
+        if (wallet != null && (wallet.isHD() && wallet.getDepth() == 1)
+            && fromType == InputWalletPasswordFromType.BACKUPS) {
+            textWalletName.setText(rootWallet.getName());
+        }else{
             textWalletName.setText(wallet.getName());
         }
 
@@ -151,7 +169,31 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                             public Credentials call() throws Exception {
 
                                 CommonUtil.getMaxMemoryInfo(context);
+                                if(fromType == InputWalletPasswordFromType.BACKUPS){//备份
+
+                                    return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+
+                                }else if(fromType == InputWalletPasswordFromType.TRANSACTION
+                                         && (wallet.isHD() && wallet.getDepth() == 1)
+                                         && (wallet.getMnemonic() != null && !"".equals(wallet.getMnemonic()))
+                                         && (wallet.getKey() != null && !"".equals(wallet.getKey())) ){//子钱包交易
+
+                                            //验证密码正确性
+                                            Credentials credentials =  JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+                                            if(credentials == null)
+                                                 return null;
+                                            String mMnemonic = JZWalletUtil.decryptMnenonic(wallet.getKey(), wallet.getMnemonic(), getPassword());
+                                            Wallet subWallet = WalletManager.getInstance().importMnemonicGenerateWallet(mMnemonic,wallet.getName(),getPassword(),wallet.getPathIndex()).blockingGet();
+                                            //设置子钱包keyStore
+                                            wallet.setKey(subWallet.getKey());
+                                            return JZWalletUtil.getCredentials(getPassword(), subWallet.getKey());
+                                }else if(fromType == InputWalletPasswordFromType.TRANSACTION
+                                         && !wallet.isHD()){//普通钱包交易
+
+                                       return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+                                }
                                 return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
+
                             }
                         })
                                 .compose(bindToLifecycle())
@@ -170,7 +212,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                                             }
                                             if (mCorrectListener != null) {
                                                 dismiss();
-                                                mCorrectListener.onCorrect(credentials, getPassword());
+                                                mCorrectListener.onCorrect(credentials, getPassword(), wallet);
                                             }
                                         } else {
                                             tvPasswordError.setVisibility(View.VISIBLE);
@@ -215,7 +257,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
     public interface OnWalletCorrectListener {
 
-        void onCorrect(Credentials credentials, String password);
+        void onCorrect(Credentials credentials, String password, Wallet wallet);
     }
 
     public interface OnWalletPasswordCorrectListener {

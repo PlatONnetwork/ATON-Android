@@ -67,7 +67,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.walletAvatarIv.setImageResource(RUtils.drawable(info.getWalletIcon()));
         holder.walletNameTv.setText(info.getWalletName());
         holder.walletAddressTv.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
-        holder.unclaimedRewardAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(info.getWithdrawReward(), 12), ContextCompat.getColor(mContext, R.color.color_000000), ContextCompat.getColor(mContext, R.color.color_000000),
+        holder.unclaimedRewardAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(info.getWithdrawReward(), 8), ContextCompat.getColor(mContext, R.color.color_000000), ContextCompat.getColor(mContext, R.color.color_000000),
                 DensityUtil.dp2px(mContext, 14), DensityUtil.dp2px(mContext, 16)));
         holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward(), 8));
         holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
@@ -128,7 +128,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
             holder.walletAvatarIv.setImageResource(RUtils.drawable(delegateInfo.getWalletIcon()));
             holder.walletNameTv.setText(delegateInfo.getWalletName());
             holder.walletAddressTv.setText(AddressFormatUtil.formatAddress(delegateInfo.getWalletAddress()));
-            holder.unclaimedRewardAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(delegateInfo.getWithdrawReward(), 12), ContextCompat.getColor(mContext, R.color.color_000000), ContextCompat.getColor(mContext, R.color.color_000000),
+            holder.unclaimedRewardAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(delegateInfo.getWithdrawReward(), 8), ContextCompat.getColor(mContext, R.color.color_000000), ContextCompat.getColor(mContext, R.color.color_000000),
                     DensityUtil.dp2px(mContext, 14), DensityUtil.dp2px(mContext, 16)));
             holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(delegateInfo.getCumulativeReward(), 8));
             holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(delegateInfo.getDelegated()));

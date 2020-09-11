@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -15,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.ui.contract.ImportKeystoreContract;
@@ -31,8 +32,6 @@ import com.platon.framework.base.BaseLazyFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observable;
-import io.reactivex.functions.Function3;
 
 public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContract.View, ImportKeystorePresenter> implements ImportKeystoreContract.View {
     Unbinder unbinder;
@@ -54,8 +53,15 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
     TextView mTvPasswordError;
     @BindView(R.id.btn_paste)
     Button mBtnPaste;
+    @BindView(R.id.tv_wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
 
     private boolean mShowPassword;
+    private boolean isEnableName = true;
+    private boolean isEnablePassword = true;
+    private boolean isEnableKeystore = true;
+    private boolean isEnableCreate = false;
+
 
     @Override
     public int getLayoutId() {
@@ -85,13 +91,26 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
         getPresenter().checkPaste();
     }
 
+    @Override
+    public void showWalletNumber(int walletNum) {
+        int sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+            isEnableCreate = false;
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+            isEnableCreate = true;
+        }
+    }
+
     private void initDatas() {
-        enableImport(false);
         showPassword();
-        showKeystoreError("", false);
+       /* showKeystoreError("", false);
         showNameError("", false);
-        showPasswordError("", false);
+        showPasswordError("", false);*/
+        enableImport(false);
         getPresenter().init();
+        getPresenter().loadDBWalletNumber();
         SoftHideKeyboardUtils.assistActivity(getActivity());
     }
 
@@ -132,81 +151,72 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
                     }
                 });
 
-        Observable<CharSequence> keystoreObservable = RxTextView.textChanges(mEtKeystore).skipInitialValue();
-        Observable<CharSequence> passwordObservable = RxTextView.textChanges(mEtPassword).skipInitialValue();
-        Observable<CharSequence> walletNameObservable = RxTextView.textChanges(mEtWalletName).skipInitialValue();
-
-        Observable
-                .combineLatest(keystoreObservable, passwordObservable, walletNameObservable, new Function3<CharSequence, CharSequence, CharSequence, Boolean>() {
-                    @Override
-                    public Boolean apply(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) throws Exception {
-                        String keystore = charSequence.toString().trim();
-                        String passsword = charSequence2.toString().trim();
-                        String walletName = charSequence3.toString().trim();
-                        return !TextUtils.isEmpty(keystore) && !TextUtils.isEmpty(passsword) && passsword.length() >= 6 && !TextUtils.isEmpty(walletName) && walletName.length() <= 20;
-                    }
-                }).compose(RxUtils.bindToLifecycle(this)).subscribe(new CustomObserver<Boolean>() {
+        mEtWalletName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void accept(Boolean aBoolean) {
-                enableImport(aBoolean);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-        });
 
-        RxView
-                .focusChanges(mEtKeystore)
-                .skipInitialValue()
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Boolean>() {
-                    @Override
-                    public void accept(Boolean hasFocus) {
-                        String keystore = mEtKeystore.getText().toString().trim();
-                        if (!hasFocus) {
-                            if (TextUtils.isEmpty(keystore)) {
-                                showKeystoreError(string(R.string.validKeystoreEmptyTips), true);
-                            } else {
-                                showKeystoreError("", false);
-                            }
-                        }
-                    }
-                });
-
-        RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new CustomObserver<Boolean>() {
             @Override
-            public void accept(Boolean hasFocus) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String walletName = mEtWalletName.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(walletName)) {
-                        showNameError(string(R.string.validWalletNameEmptyTips), true);
-                    } else if (walletName.length() > 12) {
-                        showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (getPresenter().isExists(walletName)) {
-                        showNameError(string(R.string.wallet_name_exists), true);
-                    } else {
-                        showNameError("", false);
-                    }
+                if (TextUtils.isEmpty(walletName)) {
+                    showNameError(string(R.string.validWalletNameEmptyTips), true);
+                } else if (walletName.length() > 12) {
+                    showNameError(string(R.string.validWalletNameTips), true);
+                } else if (getPresenter().isExists(walletName)) {
+                    showNameError(string(R.string.wallet_name_exists), true);
+                } else {
+                    showNameError("", false);
                 }
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
-        RxView
-                .focusChanges(mEtPassword)
-                .skipInitialValue()
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Boolean>() {
-                    @Override
-                    public void accept(Boolean hasFocus) {
-                        String password = mEtPassword.getText().toString().trim();
-                        if (!hasFocus) {
-                            if (TextUtils.isEmpty(password)) {
-                                showPasswordError(string(R.string.validPasswordEmptyTips), true);
-                            } else if (password.length() < 6) {
-                                showPasswordError(string(R.string.validPasswordTips), true);
-                            } else {
-                                showPasswordError("", false);
-                            }
-                        }
-                    }
-                });
+        mEtKeystore.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String keystore = mEtKeystore.getText().toString().trim();
+                if (TextUtils.isEmpty(keystore)) {
+                    showKeystoreError(string(R.string.validKeystoreEmptyTips), true);
+                } else {
+                    showKeystoreError("", false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        mEtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = mEtPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(password)) {
+                    showPasswordError(string(R.string.validPasswordEmptyTips), true);
+                } else if (password.length() < 6) {
+                    showPasswordError(string(R.string.validPasswordTips), true);
+                } else {
+                    showPasswordError("", false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
     }
 
     private void showPassword() {
@@ -263,18 +273,24 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
     public void showKeystoreError(String text, boolean isVisible) {
         mTvKeystoreError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvKeystoreError.setText(text);
+        this.isEnableKeystore = isVisible;
+        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword && isEnableCreate);
     }
 
     @Override
     public void showNameError(String text, boolean isVisible) {
         mTvNameError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvNameError.setText(text);
+        this.isEnableName = isVisible;
+        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword && isEnableCreate);
     }
 
     @Override
     public void showPasswordError(String text, boolean isVisible) {
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
+        this.isEnablePassword = isVisible;
+        enableImport(!isEnableName && !isEnableKeystore && !isEnablePassword && isEnableCreate);
     }
 
     @Override

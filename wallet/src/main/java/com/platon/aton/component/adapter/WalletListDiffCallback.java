@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.entity.WalletSelectedIndex;
 
 import java.util.List;
 
@@ -50,13 +51,13 @@ public class WalletListDiffCallback extends BaseDiffCallback<Wallet> {
             return false;
         }
 
-        if (oldWallet.isSelected() != newWallet.isSelected()) {
+        if (oldWallet.getSelectedIndex() != newWallet.getSelectedIndex()) {
             return false;
         }
 
-        if (oldWallet.isBackedUpPrompt() != newWallet.isBackedUpPrompt()) {
+       /* if (oldWallet.isBackedUpPrompt() != newWallet.isBackedUpPrompt()) {
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -74,8 +75,13 @@ public class WalletListDiffCallback extends BaseDiffCallback<Wallet> {
             bundle.putString(KEY_WALLET_NAME, newWallet.getName());
         }
 
-        if (oldWallet.isSelected() != newWallet.isSelected()) {
-            bundle.putBoolean(KEY_WALLET_SELECTED, newWallet.isSelected());
+        if (oldWallet.getSelectedIndex() != newWallet.getSelectedIndex()) {
+            if(newWallet.getSelectedIndex() == WalletSelectedIndex.SELECTED){
+                bundle.putBoolean(KEY_WALLET_SELECTED, true);
+            }else{
+                bundle.putBoolean(KEY_WALLET_SELECTED, false);
+            }
+
         }
 
         return bundle;

@@ -4,8 +4,9 @@ import com.platon.aton.component.ui.contract.WalletManagerContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.ManageWalletActivity;
-import com.platon.aton.db.sqlite.WalletDao;
+import com.platon.aton.component.ui.view.WalletManagerHDManagerActivity;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.framework.app.Constants;
@@ -33,7 +34,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
     @Override
     public void fetchWalletList() {
         if (isViewAttached()) {
-            List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+            List<Wallet> walletList = WalletManager.getInstance().getWalletListByOrdinaryAndHD();
             if (!mWalletList.isEmpty()) {
                 mWalletList.clear();
             }
@@ -46,6 +47,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                 getView().showEmpty();
                 return;
             }
+
             getView().showWalletList();
             getView().notifyWalletListChanged();
         }
@@ -58,12 +60,27 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
             Observable.fromCallable(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    long updateTime = System.currentTimeMillis();
+
+                    List<Wallet> assetsWalletList = WalletManager.getInstance().getWalletList();
                     for (int i = 0; i < mWalletList.size(); i++) {
                         Wallet walletEntity = mWalletList.get(i);
-                        updateTime += 10;
-                        walletEntity.setUpdateTime(System.currentTimeMillis());
-                        WalletDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
+                        int sortIndex = mWalletList.size() - i;
+                        walletEntity.setSortIndex(sortIndex);
+
+                        //更新DB
+                        WalletManager.getInstance().updateDBWalletSortIndexByUuid(walletEntity,sortIndex);
+
+                        //更新缓存,首页钱包排序排序索引(sortIndex)
+                        for (int j = 0; j < assetsWalletList.size() ; j++) {
+                             Wallet assetWallet =  assetsWalletList.get(j);
+                             if(!walletEntity.isHD() && walletEntity.getUuid().equals(assetWallet.getUuid())){//普通钱包
+                                 WalletManager.getInstance().getWalletList().get(j).setSortIndex(sortIndex);
+                                 break;
+                             }else if(walletEntity.isHD() && walletEntity.getUuid().equals(assetWallet.getParentId())){//HD分组钱包，则对应更新旗下子钱包
+                                 WalletManager.getInstance().getWalletList().get(j).setSortIndex(sortIndex);
+                                 break;
+                             }
+                        }
                     }
                     return true;
                 }
@@ -80,17 +97,23 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
     @Override
     public void backupWallet(int position) {
         Wallet walletEntity = mWalletList.get(position);
-        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity, InputWalletPasswordFromType.BACKUPS).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
-            public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
+            public void onCorrect(Credentials credentials, String password, Wallet wallet) {
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, wallet, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
     @Override
     public void startAction(int position) {
-        ManageWalletActivity.actionStart(currentActivity(), mWalletList.get(position));
+        Wallet wallet = mWalletList.get(position);
+        if(wallet.isHD()){
+            WalletManagerHDManagerActivity.actionStart(currentActivity(), wallet);
+        }else{
+            ManageWalletActivity.actionStart(currentActivity(), wallet);
+        }
+
     }
 
     @Override

@@ -48,6 +48,7 @@ public class VerifyNodeDetail implements Parcelable {
      * Candidate —— 候选中
      * Exiting —— 退出中
      * Exited —— 已退出
+     * Locked  —— 锁定中
      */
     private String nodeStatus;
 

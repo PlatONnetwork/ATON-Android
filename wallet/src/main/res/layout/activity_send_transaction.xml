@@ -81,7 +81,7 @@
                         android:imeOptions="actionNext"
                         android:maxLength="42"
                         android:lines="2"
-                        android:paddingRight="48dp"
+                        android:paddingRight="25dp"
                         android:textColorHint="@color/color_b6bbd0" />
 
 

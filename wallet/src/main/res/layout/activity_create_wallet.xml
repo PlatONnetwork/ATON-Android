@@ -32,10 +32,58 @@
             android:orientation="vertical"
             android:paddingTop="24dp">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Text.61646e.16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="@string/wallet_type"/>
+
+                <TextView
+                    android:id="@+id/tv_wallet_type"
+                    style="@style/Text.000.15"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:drawablePadding="@dimen/layout_space_03"
+                    android:drawableRight="@drawable/icon_right_arrow"
+                    android:text="@string/wallet_type_ordinary" />
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/bg_edittext_underline_n"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="16dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/wallet_type_tip"
+                android:textColor="@color/color_b6bbd0"
+                android:textSize="11sp" />
+
+
+
             <TextView
                 style="@style/Text.61646e.16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:text="@string/name" />
@@ -65,6 +113,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
                 android:text="Name can't be empty !"
+                android:visibility="gone"
                 android:textColor="@color/color_f5302c"
                 android:textSize="12sp" />
 
@@ -205,6 +254,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
+                android:visibility="gone"
                 android:text="@string/passwordTips"
                 android:textColor="@color/color_f5302c"
                 android:textSize="12sp" />
@@ -232,6 +282,18 @@
                 app:text="@string/create_wallet"
                 app:textAppearance="@style/MainButtonStyle"
                 app:textBackground="@drawable/bg_main_button" />
+
+            <TextView
+                android:id="@+id/wallet_num_over_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/msg_wallet_num_over_limit_tips"
+                android:visibility="gone"
+                android:textColor="@color/color_f5302c"
+                android:textSize="12sp" />
 
             <TextView
                 android:layout_width="match_parent"

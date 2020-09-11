@@ -26,7 +26,19 @@ task jacocoTestReport(type: JacocoReport) {
             excludes: ['**/R*.class',
                        '**/*$InjectAdapter.class',
                        '**/*$ModuleAdapter.class',
-                       '**/*$ViewInjector*.class'
+                       '**/*$ViewInjector*.class',
+                       'com/platon/aton/component/ui/view/**.*',
+                       'com/platon/aton/component/widget/*'
+//                       'com/platon/aton/component/ui/view/**.*'
+//                       'com/platon/aton/component/ui/dialog/*',
+//                       'com/platon/aton/component/ui/contract/**.*',
+//                       'com/platon/aton/component/ui/**.*',
+//                       'com/platon/aton/component/adapter/*',
+//                       'com/platon/aton/component/service/*',
+//                       'com/platon/aton/component/widget/*',
+//                       'com/platon/aton/component/netlistener/**.*',
+//                       'com/platon/aton/app/*',
+//                       'com/platon/aton/event/*'
             ]
     )
 

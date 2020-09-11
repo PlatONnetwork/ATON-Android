@@ -74,11 +74,13 @@ public class Constants {
         String EXTRA_DELEGATE_INFO = "extra_delegate_info";
         String EXTRA_DELEGATE_DETAIL = "extra_delegate_detail";
         String EXTRA_BOOLEAN = "extra_boolean";
+        String EXTRA_WALLET_TYPE = "extra_wallet_type";
     }
 
     public interface Bundle {
 
         String BUNDLE_WALLET = "bundle_wallet";
+        String BUNDLE_WALLET_FROM_TYPE = "bundle_wallet_from_type";
         String BUNDLE_TRANSFER_AMOUNT = "bundle_transfer_amount";
         String BUNDLE_TO_ADDRESS = "bundle_to_address";
         String BUNDLE_FEE_AMOUNT = "bundle_fee_amount";
@@ -180,6 +182,12 @@ public class Constants {
         String REFRESH_DIRECTION = "new";//最新数据的方法
     }
 
+    public interface WalletConstants {
+       int WALLET_LIMIT = 200; //钱包上限为200个，即普通钱包 + HD子钱包一共的数量
+       int WALLET_ADD_ORDINARY = 1;//新创建一个普通钱包加1
+       int WALLET_ADD_HD = 30;//新创建一组HD钱包加30
+    }
+
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
@@ -188,7 +196,9 @@ public class Constants {
         //分支版本0.11.1.0(版本号：0.12.0)
         //int VERSION = 112;
         //分支版本0.13.0(版本号：0.13.0)
-        int VERSION = 113;
+        //int VERSION = 113;
+        //分支版本0.13.1(版本号：0.13.1)--分层钱包
+        int VERSION = 114;
     }
 
     public interface DelegateRecordType {

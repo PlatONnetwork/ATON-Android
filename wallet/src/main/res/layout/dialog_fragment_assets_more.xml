@@ -72,7 +72,40 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="@string/importIndividualWallet" />
-
         </LinearLayout>
+
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="45dp"
+            android:background="@color/color_ebeef4" />
+
+        <LinearLayout
+            android:id="@+id/ll_hd_wallet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingTop="16dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="16dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_more_classic_hd" />
+
+            <TextView
+                style="@style/Text.000.14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/hdIndividualWallet" />
+        </LinearLayout>
+
+
     </LinearLayout>
 </LinearLayout>

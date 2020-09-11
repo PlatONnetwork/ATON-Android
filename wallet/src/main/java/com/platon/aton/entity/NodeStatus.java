@@ -6,6 +6,7 @@ import android.support.annotation.StringDef;
         NodeStatus.ALL,
         NodeStatus.ACTIVE,
         NodeStatus.CANDIDATE,
+        NodeStatus.LOCKED,
         NodeStatus.EXITING,
         NodeStatus.EXITED
 })
@@ -23,6 +24,11 @@ public @interface NodeStatus {
      * 候选中
      */
     String CANDIDATE = "Candidate";
+    /**
+     * 锁定中
+     */
+    String LOCKED = "Locked";
+    /**
     /**
      * 退出中
      */

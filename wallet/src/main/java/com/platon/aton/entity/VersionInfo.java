@@ -21,6 +21,10 @@ public class VersionInfo {
      * apk下载地址
      */
     private String url;
+    /**
+     * 新版本描述
+     */
+    private String desc;
 
     public VersionInfo() {
     }
@@ -55,5 +59,13 @@ public class VersionInfo {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

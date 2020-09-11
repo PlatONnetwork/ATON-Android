@@ -20,7 +20,7 @@ public class DelegateRecordPresenter extends BasePresenter<DelegateRecordContrac
 
     @Override
     public void loadDelegateRecordData(long beginSequence, String direction, String type) {
-        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
+        List<String> walletAddressList = WalletManager.getInstance().getAddressListFromDB();
         getDelegateRecordData(beginSequence, Constants.VoteConstants.LIST_SIZE, direction, type, walletAddressList.toArray(new String[walletAddressList.size()]));
     }
 

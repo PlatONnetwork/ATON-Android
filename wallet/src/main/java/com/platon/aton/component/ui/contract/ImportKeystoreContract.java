@@ -12,6 +12,7 @@ public class ImportKeystoreContract {
         void showNameError(String text, boolean isVisible);
         void showPasswordError(String text, boolean isVisible);
         void enablePaste(boolean enabled);
+        void showWalletNumber(int walletNum);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -20,5 +21,6 @@ public class ImportKeystoreContract {
         void importKeystore(String keystore, String name, String password);
         void checkPaste();
         boolean isExists(String walletName);
+        void loadDBWalletNumber();
     }
 }

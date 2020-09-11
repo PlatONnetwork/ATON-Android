@@ -9,12 +9,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.platon.aton.R;
-import com.platon.aton.component.adapter.ClaimRewardRecordAdapter;
-import com.platon.aton.component.adapter.expandablerecycleradapter.BaseExpandableRecyclerViewAdapter;
+import com.platon.aton.component.adapter.ClaimRewardRecordAdapter2;
 import com.platon.aton.component.ui.contract.ClaimRecordContract;
 import com.platon.aton.component.ui.presenter.ClaimRecordPresenter;
 import com.platon.aton.component.ui.presenter.Direction;
-import com.platon.aton.entity.ClaimReward;
 import com.platon.aton.entity.ClaimRewardRecord;
 import com.platon.framework.base.BaseActivity;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -38,7 +36,7 @@ public class ClaimRewardRecordActivity extends BaseActivity<ClaimRecordContract.
     SmartRefreshLayout layoutRefresh;
 
     private Unbinder unbinder;
-    private ClaimRewardRecordAdapter mClaimRewardRecordAdapter;
+    private ClaimRewardRecordAdapter2 mClaimRewardRecordAdapter;
 
     @Override
     public int getLayoutId() {
@@ -65,7 +63,7 @@ public class ClaimRewardRecordActivity extends BaseActivity<ClaimRecordContract.
 
         unbinder = ButterKnife.bind(this);
 
-        mClaimRewardRecordAdapter = new ClaimRewardRecordAdapter(this);
+        mClaimRewardRecordAdapter = new ClaimRewardRecordAdapter2(this);
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -81,30 +79,16 @@ public class ClaimRewardRecordActivity extends BaseActivity<ClaimRecordContract.
             }
         });
 
-        mClaimRewardRecordAdapter.setListener(new BaseExpandableRecyclerViewAdapter.ExpandableRecyclerViewOnClickListener<ClaimRewardRecord, ClaimReward>() {
-            @Override
-            public boolean onGroupLongClicked(ClaimRewardRecord groupItem) {
-                return false;
-            }
 
-            @Override
-            public boolean onInterceptGroupExpandEvent(ClaimRewardRecord groupItem, boolean isExpand) {
-                return false;
-            }
-
-            @Override
-            public void onGroupClicked(ClaimRewardRecord groupItem) {
-
-            }
-
-            @Override
-            public void onChildClicked(ClaimRewardRecord groupItem, ClaimReward childItem) {
-
-            }
-        });
 
         listClaimRecord.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         listClaimRecord.setAdapter(mClaimRewardRecordAdapter);
+        mClaimRewardRecordAdapter.setClickListener(new ClaimRewardRecordAdapter2.OnClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+            }
+        });
 
         layoutRefresh.autoRefresh();
     }

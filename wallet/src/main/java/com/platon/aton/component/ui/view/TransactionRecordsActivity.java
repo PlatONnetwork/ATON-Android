@@ -8,6 +8,7 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.component.widget.WalletListPop;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Transaction;
+import com.platon.aton.entity.TransactionWallet;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.framework.app.Constants;
@@ -64,6 +66,8 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
     private TransactionListAdapter mTransactionListAdapter;
     private WalletListPop mWalletListPop;
     private List<String> mAddressList;
+    private List<TransactionWallet> transactionWalletList;
+    private Wallet selectedWallet;
 
     @Override
     public TransactionRecordsPresenter createPresenter() {
@@ -105,9 +109,11 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
 
     private void initViews() {
 
-        Wallet selectedWallet = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
+        selectedWallet = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET) == null ? TransactionWallet.getNullInstance().getWallet() : getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
+        transactionWalletList = WalletManager.getInstance().getTransactionWalletData();
+        //mAddressList = WalletManager.getInstance().getAddressList();
+        mAddressList = WalletManager.getInstance().getAddressListFromDB();
 
-        mAddressList = WalletManager.getInstance().getAddressList();
 
         ShadowDrawable.setShadowDrawable(layoutSelectWallets,
                 ContextCompat.getColor(this, R.color.color_ffffff),
@@ -152,30 +158,58 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
             @Override
             public void onClick(View v) {
                 if (mWalletListPop == null) {
-                    List<Wallet> walletList = new ArrayList<>();
-                    walletList.add(Wallet.getNullInstance());
-                    walletList.addAll(WalletManager.getInstance().getWalletList());
-                    mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, walletList, new WalletListPop.OnWalletItemClickListener() {
+
+                    List<TransactionWallet> transactionWallets = new ArrayList<>();
+                    transactionWallets.add(TransactionWallet.getNullInstance());
+                    transactionWallets.addAll(transactionWalletList);
+
+                    mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, transactionWallets, new WalletListPop.OnWalletItemClickListener() {
                         @Override
                         public void onWalletItemClick(int position) {
-                            Wallet wallet = walletList.get(position);
-                            showSelectWalletInfo(wallet);
+                            TransactionWallet transactionWallet = transactionWallets.get(position);
+                            selectedWallet = transactionWallet.getWallet();
+
+                            showSelectWalletInfo(selectedWallet, transactionWallet.getSubWallets());
                             getPresenter().fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
+                            if (mWalletListPop.isShowing()) {
+                                mWalletListPop.dismiss();
+                                ivArrow.setImageResource(R.drawable.icon_arrow_down);
+                            }
                         }
-                    }, getSelectedWalletPosition(selectedWallet));
+                    }, new WalletListPop.OnSubWalletItemClickListener() {
+                        @Override
+                        public void onSubWalletItemClick(Wallet subselectedWallet) {
+                            selectedWallet = subselectedWallet;
+                            showSelectWalletInfo(selectedWallet,null);
+                            getPresenter().fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
+                            if (mWalletListPop.isShowing()) {
+                                mWalletListPop.dismiss();
+                                ivArrow.setImageResource(R.drawable.icon_arrow_down);
+                            }
+                        }
+                    },getSelectedWalletPosition(selectedWallet),new WalletListPop.OnSelectWalletItemInfoListener(){
+
+                        @Override
+                        public String onSelectWalletItemInfo() {
+                            return selectedWallet == null ? TransactionWallet.NULL_TRANSACTIONWALLET_UUID : selectedWallet.getUuid();
+                        }
+                    });
                 }
                 if (mWalletListPop.isShowing()) {
                     mWalletListPop.dismiss();
+                    ivArrow.setImageResource(R.drawable.icon_arrow_down);
                 } else {
                     mWalletListPop.showAsDropDown(layoutSelectWallets, 0, -DensityUtil.dp2px(TransactionRecordsActivity.this, 12));
+                    ivArrow.setImageResource(R.drawable.icon_arrow_up);
                 }
             }
         });
 
-        showSelectWalletInfo(selectedWallet);
+        showSelectWalletInfo(selectedWallet,null);
 
         layoutRefresh.autoRefresh();
     }
+
 
     @Override
     public void finishLoadMore() {
@@ -209,16 +243,16 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
     }
 
     private int getSelectedWalletPosition(Wallet selectedWallet) {
-        if (selectedWallet == null || WalletManager.getInstance().getWalletList() == null || WalletManager.getInstance().getWalletList().isEmpty()) {
+        if (selectedWallet == null || transactionWalletList == null || transactionWalletList.isEmpty()) {
             return 0;
         }
 
         return Flowable
-                .range(0, WalletManager.getInstance().getWalletList().size())
+                .range(0, transactionWalletList.size())
                 .filter(new Predicate<Integer>() {
                     @Override
                     public boolean test(Integer integer) throws Exception {
-                        return WalletManager.getInstance().getWalletList().get(integer).getPrefixAddress().equalsIgnoreCase(selectedWallet.getPrefixAddress());
+                        return transactionWalletList.get(integer).getWallet().getUuid().equalsIgnoreCase(selectedWallet.getUuid());
                     }
                 })
                 .map(new Function<Integer, Integer>() {
@@ -228,20 +262,31 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
                     }
                 })
                 .firstElement()
-                .defaultIfEmpty(0)
-                .onErrorReturnItem(0)
+                .defaultIfEmpty(-1)
+                .onErrorReturnItem(-1)
                 .blockingGet();
     }
 
-    private void showSelectWalletInfo(Wallet selectedWallet) {
-        if (selectedWallet == null || selectedWallet.isNull()) {
+    private void showSelectWalletInfo(Wallet selectedWallet, List<Wallet> subWallets) {
+        if (selectedWallet.getUuid().equals(TransactionWallet.NULL_TRANSACTIONWALLET_UUID)) {
             ivSelectedWalletAvatar.setImageResource(R.drawable.icon_all_wallets);
             tvSelectedWalletName.setText(getString(R.string.msg_all_wallets));
-            mAddressList = WalletManager.getInstance().getAddressList();
+            mAddressList = WalletManager.getInstance().getAddressListFromDB();
         } else {
             ivSelectedWalletAvatar.setImageResource(RUtils.drawable(selectedWallet.getAvatar()));
             tvSelectedWalletName.setText(selectedWallet.getName());
-            mAddressList = Arrays.asList(selectedWallet.getPrefixAddress());
+            if(selectedWallet.isHD() && selectedWallet.getDepth() == 0 && subWallets != null){//HD钱包组
+
+                List<String> addressList = new ArrayList<>();
+                for (Wallet wallet : subWallets) {
+                    addressList.add(wallet.getPrefixAddress());
+                }
+                mAddressList = addressList;
+
+            }else{//普通钱包 或 子钱包
+                mAddressList = Arrays.asList(selectedWallet.getPrefixAddress());
+            }
+
         }
     }
 

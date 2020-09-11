@@ -21,6 +21,7 @@ import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.TransactionAuthorizationData;
 import com.platon.aton.entity.TransactionAuthorizationDetail;
 import com.platon.aton.entity.Wallet;
@@ -112,7 +113,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         tvSenderTitle.setText(getSenderTitleRes(transactionAuthorizationDetail.getFunctionType()));
         tvRecipientTitle.setText(getRecipientInfoRes(transactionAuthorizationDetail.getFunctionType()));
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
-        String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 12));
+        String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 8));
         tvAmount.setText(amountText);
         CommonTextUtils.richText(tvAmount, amountText, "LAT", new AbsoluteSizeSpan(DensityUtil.dp2px(this, 24)) {
             @Override
@@ -158,7 +159,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                         if (TextUtils.isEmpty(wallet.getKey())) {
                             showLongToast(R.string.msg_keystore_nor_exist);
                         } else {
-                            InputWalletPasswordDialogFragment.newInstance(wallet).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                            InputWalletPasswordDialogFragment.newInstance(wallet, InputWalletPasswordFromType.TRANSACTION).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                                 @Override
                                 public void onWalletPasswordCorrect(Credentials credentials) {
                                     AuthorizationSignatureDialogFragment.newInstance(transactionAuthorizationData.toTransactionSignatureData(credentials).toJSONString()).show(getSupportFragmentManager(), "showAuthorizationSignatureDialog");
@@ -253,7 +254,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         if (FunctionType.TRANSFER == transactionAuthorizationDetail.getFunctionType()) {
             return getTransferFormatName(transactionAuthorizationDetail.getReceiver());
         } else if (FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE == transactionAuthorizationDetail.getFunctionType()) {
-            return AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 12);
+            return AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 8);
         } else {
             return String.format("%s(%s)", transactionAuthorizationDetail.getNodeName(), transactionAuthorizationDetail.getNodeId());
         }

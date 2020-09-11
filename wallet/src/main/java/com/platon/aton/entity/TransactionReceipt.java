@@ -10,6 +10,11 @@ public class TransactionReceipt {
 
     private String blockNumber;
 
+    //新增字段
+    private Long timestamp;
+
+    private String actualTxCost;
+
     public TransactionReceipt(int status, String hash) {
         this.status = status;
         this.hash = hash;
@@ -48,5 +53,21 @@ public class TransactionReceipt {
 
     public void setBlockNumber(String blockNumber) {
         this.blockNumber = blockNumber;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getActualTxCost() {
+        return actualTxCost;
+    }
+
+    public void setActualTxCost(String actualTxCost) {
+        this.actualTxCost = actualTxCost;
     }
 }

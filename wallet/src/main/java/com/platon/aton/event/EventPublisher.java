@@ -101,4 +101,14 @@ public class EventPublisher {
     public void sendBackedUpWalletSuccessedEvent(String uuid) {
         BusProvider.post(new Event.BackedUpWalletSuccessedEvent(uuid));
     }
+
+    public void sendOpenRightSidebarEvent(Wallet wallet,int walletTypeSearch) {
+        BusProvider.post(new Event.OpenRightSidebarEvent(wallet,walletTypeSearch));
+    }
+
+
+
+
+
+
 }

@@ -60,7 +60,6 @@ public class AboutActivity extends BaseActivity {
     ImageView ivLogo;
     @BindView(R.id.tv_service_agreement)
     TextView tvServiceAgreement;
-
     private Unbinder unbinder;
 
     @Override
@@ -221,7 +220,9 @@ public class AboutActivity extends BaseActivity {
     private void showUpdateVersionDialog(VersionInfo versionInfo) {
         CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                 string(R.string.version_update),
-                string(R.string.version_update_tips, versionInfo.getNewVersion()),
+                versionInfo.getNewVersion(),
+                //string(R.string.version_update_tips, versionInfo.getNewVersion()),
+                versionInfo.getDesc(),
                 string(R.string.update_now), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {

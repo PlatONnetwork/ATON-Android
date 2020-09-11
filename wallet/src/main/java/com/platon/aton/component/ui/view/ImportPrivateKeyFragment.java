@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -16,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.ui.contract.ImportPrivateKeyContract;
@@ -32,8 +33,6 @@ import com.platon.framework.base.BaseLazyFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observable;
-import io.reactivex.functions.BiFunction;
 
 public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyContract.View, ImportPrivateKeyPresenter> implements ImportPrivateKeyContract.View {
     Unbinder unbinder;
@@ -73,9 +72,16 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
     Button mBtnPaste;
     @BindView(R.id.layout_password_strength)
     LinearLayout mPasswordStrengthLayout;
+    @BindView(R.id.tv_wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
+    private boolean isEnablePrivateKey = true;
+    private boolean isEnableName = true;
+    private boolean isEnablePassword = true;
+    private boolean isEnableCreate = false;
+
 
     @Override
     public int getLayoutId() {
@@ -151,133 +157,129 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
                         mEtPrivateKey.setSelection(mEtPrivateKey.getText().toString().length());
                     }
                 });
-        Observable<Boolean> privateKeyAndWalletNameObservable = Observable
-                .combineLatest(RxTextView.textChanges(mEtPrivateKey).skipInitialValue(), RxTextView.textChanges(mEtWalletName).skipInitialValue(), new BiFunction<CharSequence, CharSequence, Boolean>() {
-                    @Override
-                    public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                        String privateKey = charSequence.toString().trim();
-                        String walletName = charSequence2.toString().trim();
-                        return !TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && walletName.length() <= 20;
-                    }
-                });
 
-        Observable<Boolean> passwordAndRepeatPasswordObservable = Observable.combineLatest(RxTextView.textChanges(mEtPassword).skipInitialValue(), RxTextView.textChanges(mEtRepeatPassword).skipInitialValue(), new BiFunction<CharSequence, CharSequence, Boolean>() {
+
+        mEtPrivateKey.addTextChangedListener(new TextWatcher() {
             @Override
-            public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                checkPwdStrength(charSequence.toString());
-                return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2) && charSequence.length() >= 6;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String privateKey = mEtPrivateKey.getText().toString().trim();
+                if (TextUtils.isEmpty(privateKey)) {
+                    showPrivateKeyError(string(R.string.validPrivateKeyEmptyTips), true);
+                } else {
+                    showPrivateKeyError("", false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
 
-        Observable
-                .combineLatest(privateKeyAndWalletNameObservable, passwordAndRepeatPasswordObservable, new BiFunction<Boolean, Boolean, Boolean>() {
-
-                    @Override
-                    public Boolean apply(Boolean aBoolean, Boolean aBoolean2) throws Exception {
-                        return aBoolean && aBoolean2;
-                    }
-                })
-                .compose(RxUtils.bindToLifecycle(this)).subscribe(new CustomObserver<Boolean>() {
+        mEtWalletName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void accept(Boolean aBoolean) {
-                enableImport(aBoolean);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = mEtWalletName.getText().toString().trim();
+                if (TextUtils.isEmpty(name)) {
+                    showNameError(string(R.string.validWalletNameEmptyTips), true);
+                } else if (name.length() > 20) {
+                    showNameError(string(R.string.validWalletNameTips), true);
+                } else if (getPresenter().isExists(name)) {
+                    showNameError(string(R.string.wallet_name_exists), true);
+                } else {
+                    showNameError("", false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
 
-        RxView
-                .focusChanges(mEtPrivateKey)
-                .skipInitialValue()
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Boolean>() {
-                    @Override
-                    public void accept(Boolean hasFocus) {
-                        String privateKey = mEtPrivateKey.getText().toString().trim();
-                        if (!hasFocus) {
-                            if (TextUtils.isEmpty(privateKey)) {
-                                showPrivateKeyError(string(R.string.validPrivateKeyEmptyTips), true);
-                            } else {
-                                showPrivateKeyError("", false);
-                            }
-                        }
-                    }
-                });
-        RxView
-                .focusChanges(mEtWalletName)
-                .skipInitialValue()
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Boolean>() {
-                    @Override
-                    public void accept(Boolean hasFocus) {
-                        String name = mEtWalletName.getText().toString().trim();
-                        if (!hasFocus) {
-                            if (TextUtils.isEmpty(name)) {
-                                showNameError(string(R.string.validWalletNameEmptyTips), true);
-                            } else if (name.length() > 20) {
-                                showNameError(string(R.string.validWalletNameTips), true);
-                            } else if (getPresenter().isExists(name)) {
-                                showNameError(string(R.string.wallet_name_exists), true);
-                            } else {
-                                showNameError("", false);
-                            }
-                        }
-                    }
-                });
-        RxView
-                .focusChanges(mEtPassword)
-                .skipInitialValue()
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Boolean>() {
-                    @Override
-                    public void accept(Boolean hasFocus) {
-                        String password = mEtPassword.getText().toString().trim();
-                        String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                        if (!hasFocus) {
-                            if (TextUtils.isEmpty(password)) {
-                                showPasswordError(string(R.string.validPasswordEmptyTips), true);
-                            } else if (password.length() < 6) {
-                                showPasswordError(string(R.string.validPasswordTips), true);
-                            } else {
-                                if (password.equals(repeatPassword)) {
-                                    showPasswordError("", false);
-                                }
-                            }
-                        }
-                    }
-                });
+        mEtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-        RxView
-                .focusChanges(mEtRepeatPassword)
-                .skipInitialValue()
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Boolean>() {
-                    @Override
-                    public void accept(Boolean hasFocus) {
-                        String password = mEtPassword.getText().toString().trim();
-                        String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                        if (!hasFocus) {
-                            if (TextUtils.isEmpty(repeatPassword)) {
-                                showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
-                            } else if (!repeatPassword.equals(password)) {
-                                showPasswordError(string(R.string.passwordTips), true);
-                            } else {
-                                if (repeatPassword.equals(password) && password.length() >= 6) {
-                                    showPasswordError("", false);
-                                }
-                            }
-                        }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = mEtPassword.getText().toString().trim();
+                String repeatPassword = mEtRepeatPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(password)) {
+                    showPasswordError(string(R.string.validPasswordEmptyTips), true);
+                } else if (password.length() < 6) {
+                    showPasswordError(string(R.string.validPasswordTips), true);
+                } else {
+                    if (password.equals(repeatPassword)) {
+                        showPasswordError("", false);
                     }
-                });
+                }
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) {
+                String password = mEtPassword.getText().toString().trim();
+                checkPwdStrength(password);
+            }
+        });
+
+
+        mEtRepeatPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = mEtPassword.getText().toString().trim();
+                String repeatPassword = mEtRepeatPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(repeatPassword)) {
+                    showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
+                } else if (!repeatPassword.equals(password)) {
+                    showPasswordError(string(R.string.passwordTips), true);
+                } else {
+                    if (repeatPassword.equals(password) && password.length() >= 6) {
+                        showPasswordError("", false);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     private void initDatas() {
-        enableImport(false);
+
         showPassword();
         showRepeatPassword();
-        showPrivateKeyError("", false);
+        /*showPrivateKeyError("", false);
         showNameError("", false);
-        showPasswordError("", false);
+        showPasswordError("", false);*/
+        enableImport(false);
         getPresenter().init();
+        getPresenter().loadDBWalletNumber();
+    }
+
+
+    @Override
+    public void showWalletNumber(int walletNum) {
+        int sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+            isEnableCreate = false;
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+            isEnableCreate = true;
+        }
     }
 
     @Override
@@ -288,7 +290,7 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         }
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
             String unzip = GZipUtil.unCompress(scanResult);
             getPresenter().parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
         }
@@ -298,7 +300,7 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
     public String getKeystoreFromIntent() {
         Bundle bundle = getArguments();
         if (bundle != null && !bundle.isEmpty()) {
-            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
         }
         return "";
     }
@@ -398,16 +400,21 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         }
     }
 
+
     @Override
     public void showPrivateKeyError(String text, boolean isVisible) {
         mTvPrivateKeyError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPrivateKeyError.setText(text);
+        this.isEnablePrivateKey = isVisible;
+        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword &&isEnableCreate);
     }
 
     @Override
     public void showNameError(String text, boolean isVisible) {
         mTvNameError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvNameError.setText(text);
+        this.isEnableName = isVisible;
+        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword &&isEnableCreate);
     }
 
     @Override
@@ -415,6 +422,8 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        this.isEnablePassword = isVisible;
+        enableImport(!isEnablePrivateKey && !isEnableName && !isEnablePassword &&isEnableCreate);
     }
 
     @Override
@@ -422,4 +431,5 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
         mBtnPaste.setEnabled(enabled);
         mBtnPaste.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_105cfe : R.color.color_d8d8d8));
     }
+
 }

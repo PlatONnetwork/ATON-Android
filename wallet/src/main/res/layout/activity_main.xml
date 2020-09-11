@@ -1,37 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_drawer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:divider="@drawable/divider_tab_bar"
-    android:orientation="vertical"
-    android:showDividers="middle"
-    tools:context=".component.ui.view.MainActivity">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <View
-            android:id="@+id/view_status_bar"
-            android:layout_width="match_parent"
-            android:layout_height="118dp"
-            android:background="@drawable/bg_assets_top" />
+        android:layout_height="match_parent"
+        android:divider="@drawable/divider_tab_bar"
+        android:orientation="vertical"
+        android:showDividers="middle"
+        tools:context=".component.ui.view.MainActivity">
 
         <FrameLayout
-            android:id="@+id/realTabContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:focusableInTouchMode="true"
-            android:paddingTop="20dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
+            <View
+                android:id="@+id/view_status_bar"
+                android:layout_width="match_parent"
+                android:layout_height="118dp"
+                android:background="@drawable/bg_assets_top" />
+
+            <FrameLayout
+                android:id="@+id/realTabContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusableInTouchMode="true"
+                android:paddingTop="20dp" />
+
+        </FrameLayout>
+
+        <com.platon.aton.component.widget.FragmentTabHost
+            android:id="@android:id/tabhost"
+            android:layout_width="match_parent"
+            android:layout_height="49dp" />
+
+    </LinearLayout>
+
+    <!--          android:background="@color/color_f9fbff"
+-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="right">
+
+        <include layout="@layout/include_right_sidebar"/>
     </FrameLayout>
 
 
-    <com.platon.aton.component.widget.FragmentTabHost
-        android:id="@android:id/tabhost"
-        android:layout_width="match_parent"
-        android:layout_height="49dp" />
-
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

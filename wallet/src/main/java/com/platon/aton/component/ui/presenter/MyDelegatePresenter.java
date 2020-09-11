@@ -22,6 +22,7 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ClaimRewardInfo;
 import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.EstimateGasResult;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -59,8 +60,9 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
     @Override
     public void loadMyDelegateData() {
 
+        //WalletManager.getInstance().getAddressList()
         mDisposable = ServerUtils.getCommonApi().getMyDelegateList(ApiRequestBody.newBuilder().
-                put("walletAddrs", WalletManager.getInstance().getAddressList())
+                put("walletAddrs", WalletManager.getInstance().getAddressListFromDB())
                 .build())
                 .map(new Function<Response<ApiResponse<List<DelegateInfo>>>, Optional<List<DelegateInfo>>>() {
                     @Override
@@ -127,6 +129,8 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
     }
 
+
+
     @Override
     public void withdrawDelegateReward(DelegateInfo delegateInfo, int position) {
 
@@ -141,7 +145,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     @Override
                     public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
-                            showClaimRewardsDialogFragment(delegateInfo, estimateGasResult.getGasProvider().toSdkGasProvider(), position, estimateGasResult.getNonce());
+                            showClaimRewardsDialogFragment(delegateInfo, estimateGasResult, position);
                         }
                     }
 
@@ -155,13 +159,17 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 });
     }
 
-    public void showClaimRewardsDialogFragment(DelegateInfo delegateInfo, org.web3j.tx.gas.GasProvider gasProvider, int position, String nonce) {
+    public void showClaimRewardsDialogFragment(DelegateInfo delegateInfo, EstimateGasResult estimateGasResult,int position) {
+
+        org.web3j.tx.gas.GasProvider gasProvider = estimateGasResult.getGasProvider().toSdkGasProvider();
+        String nonce = estimateGasResult.getNonce();
         ClaimRewardInfo claimRewardInfo = new ClaimRewardInfo.Builder()
                 .setFeeAmount(BigDecimalUtil.mul(gasProvider.getGasPrice().toString(10), gasProvider.getGasLimit().toString(10)).toPlainString())
                 .setClaimRewardAmount(delegateInfo.getWithdrawReward())
                 .setFromWalletName(delegateInfo.getWalletName())
                 .setFromWalletAddress(delegateInfo.getWalletAddress())
-                .setAvaliableBalanceAmount(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()).getFreeBalance())
+                //.setAvaliableBalanceAmount(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()).getFreeBalance())
+                .setAvaliableBalanceAmount(estimateGasResult.getFree())
                 .build();
         ClaimRewardsDialogFragment.newInstance(claimRewardInfo).setOnConfirmBtnClickListener(new ClaimRewardsDialogFragment.OnConfirmBtnClickListener() {
             @Override
@@ -169,7 +177,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 if (delegateInfo.isObservedWallet()) {
                     showTransactionAuthorizationDialogFragment(delegateInfo.getWithdrawReward(), delegateInfo.getWalletAddress(), gasProvider, position);
                 } else {
-                    InputWalletPasswordDialogFragment.newInstance(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress())).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                    InputWalletPasswordDialogFragment.newInstance(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()), InputWalletPasswordFromType.TRANSACTION).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                         @Override
                         public void onWalletPasswordCorrect(Credentials credentials) {
                             DelegateManager.getInstance()

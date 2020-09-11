@@ -12,6 +12,7 @@ import com.platon.aton.db.sqlite.TransactionDao;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionStatus;
 import com.platon.aton.entity.Wallet;
@@ -20,6 +21,7 @@ import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 import com.platon.framework.utils.LogUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
@@ -108,6 +110,34 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         }
                     }
                 });
+    }
+
+    @Override
+    public void fetchWalletBalanbceBySelected(String address) {
+        ServerUtils
+                .getCommonApi()
+                .getAccountBalance(ApiRequestBody.newBuilder()
+                        .put("addrs", Arrays.asList(address))
+                        .build())
+                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
+
+                    @Override
+                    public void onApiSuccess(List<AccountBalance> accountBalances) {
+                        if (isViewAttached() && accountBalances != null && !accountBalances.isEmpty()) {
+                            AccountBalance balance = accountBalances.get(0);
+                            getView().showFreeBalance(balance.getFree());
+                            getView().showLockBalance(balance.getLock());
+                        }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+
+                    }
+                });
+
     }
 
     /**
@@ -250,12 +280,14 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             if (transactionList != null) {
                 if (transactionList.contains(transaction)) {
                     //更新
+                    LogUtils.e("-------更新transaction：" + transaction.getValue() + "walletName:" +transaction.getWalletName());
                     newTransactionList = new ArrayList<>(transactionList);
                     int index = newTransactionList.indexOf(transaction);
                     newTransactionList.set(index, transaction);
                     Collections.sort(newTransactionList);
                 } else {
                     //添加
+                    LogUtils.e("-------新增transaction：" + transaction.getValue() + "walletName:" +transaction.getWalletName());
                     newTransactionList = getNewTransactionList(transactionList, Arrays.asList(transaction), true);
                     Collections.sort(newTransactionList);
                 }

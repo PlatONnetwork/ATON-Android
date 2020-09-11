@@ -2,6 +2,7 @@ package com.platon.aton.component.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -33,6 +34,7 @@ public class CommonTipsDialogFragment extends DialogFragment {
 
     private Drawable mDrawable;
     private String mTitle;
+    private String mSubTitle;
     private String mContent;
     private ButtonConfig mLeftButtonConfig;
     private ButtonConfig mRightButtonConfig;
@@ -40,33 +42,34 @@ public class CommonTipsDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return createDialog(getActivity(), mDrawable, mTitle, mContent, mLeftButtonConfig, mRightButtonConfig);
+        return createDialog(getActivity(), mDrawable, mTitle, mSubTitle, mContent, mLeftButtonConfig, mRightButtonConfig);
     }
 
-    public static CommonTipsDialogFragment createDialogWithTitleAndTwoButton(Drawable drawable, String title, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener, boolean cancelable) {
-        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), cancelable);
+    public static CommonTipsDialogFragment createDialogWithTitleAndTwoButton(Drawable drawable, String title, String subTitle, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener, boolean cancelable) {
+        return create(drawable, title, subTitle, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), cancelable);
     }
 
-    public static CommonTipsDialogFragment createDialogWithTitleAndTwoButton(Drawable drawable, String title, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
-        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), false);
+    public static CommonTipsDialogFragment createDialogWithTitleAndTwoButton(Drawable drawable, String title, String subTitle, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
+        return create(drawable, title, subTitle, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), false);
     }
 
     public static CommonTipsDialogFragment createDialogWithTwoButton(Drawable drawable, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
-        return create(drawable, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), true);
+        return create(drawable, null, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), true);
     }
 
     public static CommonTipsDialogFragment createDialogWithOneButton(Drawable drawable, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener) {
-        return create(drawable, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null, true);
+        return create(drawable, null, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null, true);
     }
 
     public static CommonTipsDialogFragment createDialogWithTitleAndOneButton(Drawable drawable, String title, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener) {
-        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null, true);
+        return create(drawable, title, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null, true);
     }
 
-    private static CommonTipsDialogFragment create(Drawable drawable, String title, String content, ButtonConfig leftButtonConfig, ButtonConfig rightButtonConfig, boolean cancelable) {
+    private static CommonTipsDialogFragment create(Drawable drawable, String title, String mSubTitletitle, String content, ButtonConfig leftButtonConfig, ButtonConfig rightButtonConfig, boolean cancelable) {
         CommonTipsDialogFragment dialogFragment = new CommonTipsDialogFragment();
         dialogFragment.mDrawable = drawable;
         dialogFragment.mTitle = title;
+        dialogFragment.mSubTitle = mSubTitletitle;
         dialogFragment.mContent = content;
         dialogFragment.mLeftButtonConfig = leftButtonConfig;
         dialogFragment.mRightButtonConfig = rightButtonConfig;
@@ -93,9 +96,10 @@ public class CommonTipsDialogFragment extends DialogFragment {
      *
      * @param context
      * @param title   正文消息
+     * @param subTitle   //主要版本更新使用
      * @return
      */
-    private FixedDialog createDialog(Context context, Drawable drawable, CharSequence title, CharSequence content,
+    private FixedDialog createDialog(Context context, Drawable drawable, CharSequence title, CharSequence subTitle, CharSequence content,
                                      final ButtonConfig leftButton,
                                      final ButtonConfig rightButton) {
 
@@ -110,6 +114,7 @@ public class CommonTipsDialogFragment extends DialogFragment {
                 DensityUtil.dp2px(context, 2f));
 
         dialog.textTitle.setVisibility(TextUtils.isEmpty(title) ? View.GONE : View.VISIBLE);
+        dialog.textSubTitle.setVisibility(TextUtils.isEmpty(subTitle) ? View.GONE : View.VISIBLE);
 
         dialog.image.setImageDrawable(drawable);
 
@@ -153,6 +158,11 @@ public class CommonTipsDialogFragment extends DialogFragment {
             dialog.textTitle.setText(title);
         }
 
+        if(!TextUtils.isEmpty(subTitle)){
+            dialog.textSubTitle.setText(subTitle);
+            dialog.textTitle.setTextColor(getResources().getColor(R.color.black));
+        }
+
         if (!TextUtils.isEmpty(content)) {
             dialog.textContent.setText(content);
         }
@@ -184,6 +194,8 @@ public class CommonTipsDialogFragment extends DialogFragment {
         ImageView image;
         @BindView(R.id.text_title)
         TextView textTitle;
+        @BindView(R.id.text_sub_title)
+        TextView textSubTitle;
         @BindView(R.id.text_content)
         TextView textContent;
         @BindView(R.id.button_confirm)

@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -34,6 +35,10 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
     ShadowButton sbtn_finish;
     @BindView(R.id.btn_paste)
     Button mBtnPaste;
+    @BindView(R.id.tv_wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
+    private boolean isEnableCreate = false;
+
 
     @Override
     public int getLayoutId() {
@@ -64,7 +69,7 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
         unbinder = ButterKnife.bind(this, rootView);
         addListener();
         getPresenter().init();
-
+        getPresenter().loadDBWalletNumber();
     }
 
     @Override
@@ -73,9 +78,20 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
         getPresenter().checkPaste();
     }
 
+    @Override
+    public void showWalletNumber(int walletNum) {
+        int sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+            isEnableCreate = false;
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+            isEnableCreate = true;
+        }
+    }
+
 
     private void addListener() {
-
         RxView.clicks(sbtn_finish)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
@@ -104,7 +120,7 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
                     public void accept(CharSequence charSequence) {
-                        getPresenter().IsImportObservedWallet(charSequence.toString());
+                        getPresenter().IsImportObservedWallet(charSequence.toString(),isEnableCreate);
                     }
                 });
     }
@@ -126,7 +142,7 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
             String unzip = GZipUtil.unCompress(scanResult);
             getPresenter().parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
-            getPresenter().IsImportObservedWallet(TextUtils.isEmpty(unzip) ? scanResult : unzip);
+            getPresenter().IsImportObservedWallet(TextUtils.isEmpty(unzip) ? scanResult : unzip,isEnableCreate);
         }
     }
 

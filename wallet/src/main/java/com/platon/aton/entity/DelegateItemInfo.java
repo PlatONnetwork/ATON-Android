@@ -3,8 +3,6 @@ package com.platon.aton.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.platon.aton.R;
-
 public class DelegateItemInfo implements Parcelable {
 
     /**
@@ -30,6 +28,7 @@ public class DelegateItemInfo implements Parcelable {
      * Candidate —— 候选中
      * Exiting —— 退出中
      * Exited —— 已退出
+     * Locked —— 锁定中
      */
     private @NodeStatus
     String nodeStatus;
@@ -196,18 +195,20 @@ public class DelegateItemInfo implements Parcelable {
         dest.writeString(withdrawReward);
     }
 
-
-    public int getNodeStatusDescRes() {
-
-        switch (nodeStatus) {
-            case NodeStatus.CANDIDATE:
-                return R.string.validators_candidate;
-            case NodeStatus.EXITING:
-                return R.string.validators_state_exiting;
-            case NodeStatus.EXITED:
-                return R.string.validators_state_exited;
-            default:
-                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
-        }
+    @Override
+    public String toString() {
+        return "DelegateItemInfo{" +
+                "nodeId='" + nodeId + '\'' +
+                ", nodeName='" + nodeName + '\'' +
+                ", website='" + website + '\'' +
+                ", url='" + url + '\'' +
+                ", nodeStatus='" + nodeStatus + '\'' +
+                ", released='" + released + '\'' +
+                ", walletAddress='" + walletAddress + '\'' +
+                ", isInit=" + isInit +
+                ", delegated='" + delegated + '\'' +
+                ", isConsensus=" + isConsensus +
+                ", withdrawReward='" + withdrawReward + '\'' +
+                '}';
     }
 }

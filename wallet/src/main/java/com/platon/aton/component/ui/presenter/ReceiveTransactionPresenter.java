@@ -41,6 +41,22 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
     private Wallet walletEntity;
     private Bitmap mQRCodeBitmap;
 
+    public Wallet getWalletEntity() {
+        return walletEntity;
+    }
+
+    public void setWalletEntity(Wallet walletEntity) {
+        this.walletEntity = walletEntity;
+    }
+
+    public Bitmap getmQRCodeBitmap() {
+        return mQRCodeBitmap;
+    }
+
+    public void setmQRCodeBitmap(Bitmap mQRCodeBitmap) {
+        this.mQRCodeBitmap = mQRCodeBitmap;
+    }
+
     @Override
     public void loadData() {
         walletEntity = WalletManager.getInstance().getSelectedWallet();

@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.WalletSelectedIndex;
+import com.platon.aton.entity.WalletTypeSearch;
 import com.platon.framework.utils.LogUtils;
 
 import org.web3j.crypto.bech32.AddressBech32;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -27,7 +30,6 @@ public class WalletDao {
     /**
      * 获取钱包列表，根据updateTime升序
      * updateTime是指钱更新信息的时间
-     *
      * @return
      */
     public static List<WalletEntity> getWalletInfoList() {
@@ -37,7 +39,9 @@ public class WalletDao {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
-                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .equalTo("isHD",false)
+                    .or()
+                    .equalTo("isShow",true)
                     .sort("updateTime", Sort.ASCENDING)
                     .findAll();
             if (results != null) {
@@ -52,6 +56,280 @@ public class WalletDao {
         }
         return list;
     }
+
+    /**
+     * 查询所有钱包中普通及HD钱包中子钱包
+     * @return
+     */
+    public static List<WalletEntity> getWalletInfoListByOrdinaryAndSubWallet() {
+        List<WalletEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                    .equalTo("isHD",false)
+                    .or()
+                    .equalTo("isHD",true)
+                    .and()
+                    .equalTo("depth",1)
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 查询所有钱包中普通及HD母钱包
+     * @return
+     */
+    public static List<WalletEntity> getWalletInfoListByOrdinaryAndHD() {
+        List<WalletEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                    .equalTo("depth",0)
+                    .sort("updateTime", Sort.ASCENDING)
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * 查询所有HD钱包之(子钱包)根据prendId
+     * @return
+     */
+    public static List<WalletEntity> getHDWalletListByParentId(String parentId) {
+        List<WalletEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                    .equalTo("parentId",parentId)
+                    .and()
+                    .equalTo("isHD",true)
+                    .sort("updateTime", Sort.ASCENDING)
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 查询wallet根据Uuid
+     * @param uuid
+     * @return
+     */
+    public static WalletEntity getWalletByUuid(String uuid){
+
+        WalletEntity walletEntity = new WalletEntity();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            WalletEntity result = realm.where(WalletEntity.class)
+                                .equalTo("uuid",uuid)
+                                .findFirst();
+            if(result != null){
+                walletEntity = realm.copyFromRealm(result);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return walletEntity;
+    }
+
+
+
+    /**
+     * 查询wallet根据wallet name
+     * @param name
+     * @return
+     */
+    public static WalletEntity getWalletByName(String name){
+
+        WalletEntity walletEntity = new WalletEntity();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            WalletEntity result = realm.where(WalletEntity.class)
+                    .equalTo("name",name)
+                    .findFirst();
+            if(result != null){
+                walletEntity = realm.copyFromRealm(result);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return walletEntity;
+    }
+
+
+    /**
+     * 查询所有HD钱包之(母钱包)
+     * @return
+     */
+    public static List<WalletEntity> getHDParentWalletList() {
+        List<WalletEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                    .equalTo("depth",0)
+                    .and()
+                    .equalTo("isHD",true)
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
+
+
+    /**
+     * 查询所有钱包
+     * @return
+     */
+    public static List<WalletEntity> getAllWalletList() {
+        List<WalletEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * 查询钱包集合，根据(walletType、walletAddress、WalletName)
+     * @return
+     */
+    public static List<WalletEntity> getWalletListByAddressAndNameAndType(@WalletTypeSearch int walletType,String walletName,String walletAddress) {
+        List<WalletEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> results = null;
+            RealmQuery<WalletEntity> realmQuery = realm.where(WalletEntity.class);
+
+            if(walletType == WalletTypeSearch.WALLET_ALL){
+
+                //条件检索普通钱包
+                realmQuery.equalTo("isHD",false)
+                          .and();
+                //关键字搜索
+                if(!TextUtils.isEmpty(walletName)){
+                    //realmQuery.like("name",walletName);
+                    realmQuery.contains("name",walletName);
+                }
+                if(!TextUtils.isEmpty(walletAddress)){
+
+                    if(WalletManager.getInstance().isMainNetWalletAddress()){
+                        realmQuery.equalTo("mainNetAddress",walletAddress);
+                    }else{
+                        realmQuery.equalTo("testNetAddress",walletAddress);
+                    }
+                }
+                //条件检索HD钱包
+                realmQuery.or()
+                  .equalTo("isHD",true)
+                  .and()
+                  .equalTo("depth",1)
+                  .and();
+            }else if(walletType == WalletTypeSearch.HD_WALLET){
+
+                realmQuery.equalTo("isHD",true)
+                          .and()
+                          .equalTo("depth",1)
+                          .and();
+            }else if(walletType == WalletTypeSearch.ORDINARY_WALLET){
+
+                realmQuery.equalTo("isHD",false)
+                          .and();
+            }
+
+            //关键字搜索
+            if(!TextUtils.isEmpty(walletName)){
+                //realmQuery.like("name",walletName);
+                realmQuery.contains("name",walletName);
+            }
+            if(!TextUtils.isEmpty(walletAddress)){
+
+                if(WalletManager.getInstance().isMainNetWalletAddress()){
+                    realmQuery.equalTo("mainNetAddress",walletAddress);
+                }else{
+                    realmQuery.equalTo("testNetAddress",walletAddress);
+                }
+            }
+            results = realmQuery.findAll();
+
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
+
+
 
     public static String getWalletNameByAddress(String prefixAddress) {
 
@@ -113,6 +391,36 @@ public class WalletDao {
         return walletAvatar;
     }
 
+    public static WalletEntity getWalletInfoByAddress(String prefixAddress) {
+
+        String fieldName = "";
+        if(WalletManager.getInstance().isMainNetWalletAddress()){
+            fieldName = "mainNetAddress";
+        }else{
+            fieldName = "testNetAddress";
+        }
+
+        WalletEntity walletEntity = new WalletEntity();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            WalletEntity result = realm.where(WalletEntity.class)
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .equalTo(fieldName, prefixAddress, Case.INSENSITIVE)
+                    .findFirst();
+            if(result != null){
+                  walletEntity = realm.copyFromRealm(result);
+            }
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return walletEntity;
+    }
+
 
 
     public static boolean insertWalletInfo(WalletEntity entity) {
@@ -134,6 +442,183 @@ public class WalletDao {
         }
         return false;
     }
+
+
+    public static boolean insertWalletInfoList(List<WalletEntity> walletEntities) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.insertOrUpdate(walletEntities);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception exp) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 重置所有钱包选中索引selectedIndex=0
+     * @return
+     */
+    public static boolean resetAllWalletSelectedIndex() {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<WalletEntity> WalletEntitys = realm.where(WalletEntity.class)
+                                                            .findAll();
+            realm.beginTransaction();
+            for (int i = 0; i < WalletEntitys.size(); i++) {
+                WalletEntitys.get(i).setSelectedIndex(WalletSelectedIndex.UNSELECTED);
+            }
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 更新钱包选中钱包的selectedIndex
+     * @param uuid
+     * @param selectedIndex
+     * @return
+     */
+    public static boolean updateSubWalletSelectedIndexByUuid(String uuid,@WalletSelectedIndex int selectedIndex) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            WalletEntity walletEntity = realm.where(WalletEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst();
+            realm.beginTransaction();
+            walletEntity.setSelectedIndex(selectedIndex);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 更新钱包是否首页显示isShow
+     * @param uuid
+     * @return
+     */
+    public static boolean updateSubWalletIsShowByUuid(String uuid,boolean isShow) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            WalletEntity walletEntity = realm.where(WalletEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst();
+            realm.beginTransaction();
+            walletEntity.setShow(isShow);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 修改单个钱包排序根据uuid
+     * @param uuid
+     * @param sortIndex
+     * @return
+     */
+    public static boolean updateWalletSortIndexWithUuid(String uuid, int sortIndex) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("uuid", uuid)
+                    .and()
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .endGroup()
+                    .findFirst()
+                    .setSortIndex(sortIndex);
+
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+
+
+    /**
+     * 批量修改子钱包钱包排序根据parentId
+     * @param parentId
+     * @param sortIndex
+     * @return
+     */
+    public static boolean updateBatchWalletSortIndexWithParentId(String parentId, int sortIndex) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("parentId", parentId)
+                    .endGroup()
+                    .findAll()
+                    .setInt("sortIndex",sortIndex);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
 
     public static boolean updateNameWithUuid(String uuid, String name) {
         Realm realm = null;
@@ -162,6 +647,12 @@ public class WalletDao {
         return false;
     }
 
+    /**
+     * 更新钱包备份状态【根据uuid】
+     * @param uuid
+     * @param backedUp
+     * @return
+     */
     public static boolean updateBackedUpWithUuid(String uuid, boolean backedUp) {
         Realm realm = null;
         try {
@@ -256,15 +747,22 @@ public class WalletDao {
             String mainNetAddress = walletEntity.getMainNetAddress();
             String testNetAddress = walletEntity.getTestNetAddress();
             String keyJson = walletEntity.getKeyJson();
+            boolean isHD = walletEntity.isHD();
+            LogUtils.e("---walletEntities  isHD:"  + isHD + ",id:" + i);
             LogUtils.e("---walletEntities  walletAddress:"  + walletAddress + ",id:" + i);
             LogUtils.e("---walletEntities  mainNetAddress:" + mainNetAddress + ",id:" + i);
             LogUtils.e("---walletEntities  testNetAddress:" + testNetAddress +",id:" + i);
             LogUtils.e("---walletEntities  keyJson:" + keyJson + ",id:" + i);
 
-            //判断是否需要转换地址
-            if((mainNetAddress != null && !mainNetAddress.equals("")) && (testNetAddress != null && !testNetAddress.equals(""))){
-               continue;
+
+            if(!isHD){//判断(普通钱包)是否需要转换地址
+                if((mainNetAddress != null && !mainNetAddress.equals("")) && (testNetAddress != null && !testNetAddress.equals(""))){
+                    continue;
+                }
+            }else{
+                continue;
             }
+
             LogUtils.e("-------walletEntities  开始转换-------");
             //1、转换address
             AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(walletAddress);
@@ -289,7 +787,7 @@ public class WalletDao {
         }
 
         if((walletEntities == null || walletEntities.size() == 0) || !updateWalletFlag){
-            LogUtils.e("---walletEntities 钱包为空/钱包未过转换，无需更新DB");
+            LogUtils.e("---walletEntities 钱包为空/钱包未做转换，无需更新DB");
             return false;
         }
 
@@ -333,6 +831,31 @@ public class WalletDao {
                     .endGroup()
                     .findAll()
                     .deleteFirstFromRealm();
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+    public static boolean deleteBatchWalletInfoByParentId(String parentId) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                 .beginGroup()
+                 .equalTo("parentId", parentId)
+                 .endGroup()
+                 .findAll()
+                 .deleteAllFromRealm();
             realm.commitTransaction();
             return true;
         } catch (Exception e) {

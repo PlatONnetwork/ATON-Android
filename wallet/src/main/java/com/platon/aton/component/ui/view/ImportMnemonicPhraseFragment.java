@@ -17,12 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
 import com.platon.aton.component.ui.contract.ImportMnemonicPhraseContract;
 import com.platon.aton.component.ui.presenter.ImportMnemonicPhrasePresenter;
 import com.platon.aton.component.widget.ShadowButton;
+import com.platon.aton.entity.WalletType;
 import com.platon.aton.utils.CheckStrength;
+import com.platon.aton.utils.DefParserStrUtil;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseLazyFragment;
 
@@ -31,10 +32,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 
 public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemonicPhraseContract.View, ImportMnemonicPhrasePresenter> implements ImportMnemonicPhraseContract.View {
     Unbinder unbinder;
@@ -94,9 +92,21 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
     TextView mTvPasswordError;
     @BindView(R.id.layout_password_strength)
     LinearLayout mPasswordStrengthLayout;
+    @BindView(R.id.tv_wallet_type)
+    TextView mTvWalletType;
+    @BindView(R.id.tv_wallet_num_over_limit)
+    TextView tvWalletNumOverLimit;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
+    @WalletType
+    int walletType = WalletType.ORDINARY_WALLET;//默认普通钱包类型
+    private int walletNum = 0;
+    private boolean isEnableCreate = false;
+    private boolean isEnableName = true;
+    private boolean isEnablePassword = true;
+    private boolean isMnemonicPhrase = true;
+
 
     @Override
     public int getLayoutId() {
@@ -121,12 +131,25 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
         initDatas();
     }
 
+    @Override
+    public void showWalletNumber(int walletNum) {
+        this.walletNum = walletNum;
+        checkWalletLimit();
+    }
+
     private void addListeners() {
 
         mEtPassword.setTypeface(Typeface.DEFAULT);
         mEtRepeatPassword.setTypeface(Typeface.DEFAULT);
 
-
+        RxView.clicks(mTvWalletType).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                String walletType = mTvWalletType.getText().toString();
+                int type = DefParserStrUtil.transforInverseWalletType(walletType, getActivity());
+                SwitchWalletTypeActivity.actionStartForResult(getActivity(), type, CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE);
+            }
+        });
         RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object object) throws Exception {
@@ -182,48 +205,17 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
                 getPresenter().importMnemonic(builder.toString(),
                         mEtWalletName.getText().toString(),
                         mEtPassword.getText().toString(),
-                        mEtRepeatPassword.getText().toString());
+                        mEtRepeatPassword.getText().toString(),
+                        walletType);
             }
         });
 
-        Observable<CharSequence> walletNamePhraseObservable = RxTextView.textChanges(mEtWalletName).skipInitialValue();
-        Observable<CharSequence> passwordPhraseObservable = RxTextView.textChanges(mEtPassword).skipInitialValue();
-        Observable<CharSequence> repeatPasswordPhraseObservable = RxTextView.textChanges(mEtRepeatPassword).skipInitialValue();
-
-        Observable<Boolean> observable1 = walletNamePhraseObservable.map(new Function<CharSequence, Boolean>() {
+        mEtWalletName.addTextChangedListener(new TextWatcher() {
             @Override
-            public Boolean apply(CharSequence charSequence) throws Exception {
-                String walletName = charSequence.toString().trim();
-                return !TextUtils.isEmpty(walletName) && walletName.length() <= 20;
-            }
-        });
-
-        Observable<Boolean> observable2 = Observable.combineLatest(passwordPhraseObservable, repeatPasswordPhraseObservable, new BiFunction<CharSequence, CharSequence, Boolean>() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
-            public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                checkPwdStreng(charSequence.toString());
-                return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2) && charSequence.length() >= 6;
-            }
-        });
-
-        Observable.combineLatest(observable1, observable2, new BiFunction<Boolean, Boolean, Boolean>() {
-
-            @Override
-            public Boolean apply(Boolean aBoolean, Boolean aBoolean2) throws Exception {
-                return aBoolean && aBoolean2;
-            }
-        }).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                enableImport(aBoolean);
-            }
-        });
-
-        RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String name = mEtWalletName.getText().toString().trim();
-                if (!hasFocus) {
                     if (TextUtils.isEmpty(name)) {
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (name.length() > 20) {
@@ -233,35 +225,44 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
                     } else {
                         showNameError("", false);
                     }
-                }
             }
+            @Override
+            public void afterTextChanged(Editable s) { }
         });
 
-        RxView.focusChanges(mEtPassword).skipInitialValue().subscribe(new Consumer<Boolean>() {
+        mEtPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void accept(Boolean hasFocus) throws Exception {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String password = mEtPassword.getText().toString().trim();
                 String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                if (!hasFocus) {
                     if (TextUtils.isEmpty(password)) {
                         showPasswordError(string(R.string.validPasswordEmptyTips), true);
                     } else if (password.length() < 6) {
                         showPasswordError(string(R.string.validPasswordTips), true);
+                    } else if (!repeatPassword.equals(password)) {
+                        showPasswordError(string(R.string.passwordTips), true);
                     } else {
                         if (password.equals(repeatPassword)) {
                             showPasswordError("", false);
                         }
                     }
-                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                String password = mEtPassword.getText().toString().trim();
+                checkPwdStreng(password);
             }
         });
 
-        RxView.focusChanges(mEtRepeatPassword).skipInitialValue().subscribe(new Consumer<Boolean>() {
+        mEtRepeatPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void accept(Boolean hasFocus) throws Exception {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String password = mEtPassword.getText().toString().trim();
                 String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                if (!hasFocus) {
                     if (TextUtils.isEmpty(repeatPassword)) {
                         showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
                     } else if (!repeatPassword.equals(password)) {
@@ -271,9 +272,11 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
                             showPasswordError("", false);
                         }
                     }
-                }
             }
+            @Override
+            public void afterTextChanged(Editable s) { }
         });
+
     }
 
     private void addTextWatcher() {
@@ -300,7 +303,37 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String mnemonic1 = mEtMnemonicPhrase1.getText().toString().trim();
+                String mnemonic2 = mEtMnemonicPhrase2.getText().toString().trim();
+                String mnemonic3 = mEtMnemonicPhrase3.getText().toString().trim();
+                String mnemonic4 = mEtMnemonicPhrase4.getText().toString().trim();
+                String mnemonic5 = mEtMnemonicPhrase5.getText().toString().trim();
+                String mnemonic6 = mEtMnemonicPhrase6.getText().toString().trim();
+                String mnemonic7 = mEtMnemonicPhrase7.getText().toString().trim();
+                String mnemonic8 = mEtMnemonicPhrase8.getText().toString().trim();
+                String mnemonic9 = mEtMnemonicPhrase9.getText().toString().trim();
+                String mnemonic10 = mEtMnemonicPhrase10.getText().toString().trim();
+                String mnemonic11 = mEtMnemonicPhrase11.getText().toString().trim();
+                String mnemonic12 = mEtMnemonicPhrase12.getText().toString().trim();
+                if (TextUtils.isEmpty(mnemonic1) || TextUtils.isEmpty(mnemonic2) || TextUtils.isEmpty(mnemonic3) || TextUtils.isEmpty(mnemonic4)
+                        || TextUtils.isEmpty(mnemonic5) || TextUtils.isEmpty(mnemonic6) || TextUtils.isEmpty(mnemonic7) || TextUtils.isEmpty(mnemonic8)
+                        || TextUtils.isEmpty(mnemonic9) || TextUtils.isEmpty(mnemonic10) || TextUtils.isEmpty(mnemonic11) || TextUtils.isEmpty(mnemonic12)) {
 
+                    showMnemonicPhraseError(string(R.string.validMnenonicEmptyTips),true);
+                    return;
+                }
+                if (TextUtils.isEmpty(mnemonic1) && TextUtils.isEmpty(mnemonic2) && TextUtils.isEmpty(mnemonic3) && TextUtils.isEmpty(mnemonic4)
+                        && TextUtils.isEmpty(mnemonic5) && TextUtils.isEmpty(mnemonic6) && TextUtils.isEmpty(mnemonic7) && TextUtils.isEmpty(mnemonic8)
+                        && TextUtils.isEmpty(mnemonic9) && TextUtils.isEmpty(mnemonic10) && TextUtils.isEmpty(mnemonic11) && TextUtils.isEmpty(mnemonic12)) {
+                    showMnemonicPhraseError(string(R.string.validMnenonicEmptyTips),true);
+                    return;
+                }
+                if (!TextUtils.isEmpty(mnemonic1) && !TextUtils.isEmpty(mnemonic2) && !TextUtils.isEmpty(mnemonic3) && !TextUtils.isEmpty(mnemonic4)
+                        && !TextUtils.isEmpty(mnemonic5) && !TextUtils.isEmpty(mnemonic6) && !TextUtils.isEmpty(mnemonic7) && !TextUtils.isEmpty(mnemonic8)
+                        && !TextUtils.isEmpty(mnemonic9) && !TextUtils.isEmpty(mnemonic10) && !TextUtils.isEmpty(mnemonic11) && !TextUtils.isEmpty(mnemonic12)) {
+                    showMnemonicPhraseError(string(R.string.validMnenonicEmptyTips),false);
+                    return;
+                }
             }
 
             @Override
@@ -312,19 +345,22 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
                         dst.requestFocus();
                         dst.setSelection(dst.getText().length());
                     }
+
                 }
             }
         });
     }
 
     private void initDatas() {
-        enableImport(false);
+
         showPassword();
         showRepeatPassword();
-        showMnemonicPhraseError("", false);
+  /*      showMnemonicPhraseError("", false);
         showNameError("", false);
-        showPasswordError("", false);
+        showPasswordError("", false);*/
+        enableImport(false);
         getPresenter().init();
+        getPresenter().loadDBWalletNumber();
     }
 
     @Override
@@ -337,7 +373,31 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
             getPresenter().parseQRCode(scanResult);
+        } else if (requestCode == CreateWalletActivity.REQ_WALLET_TYPE_QR_CODE) {
+            walletType = data.getIntExtra(Constants.Extra.EXTRA_WALLET_TYPE, 0);
+            mTvWalletType.setText(DefParserStrUtil.transformWalletType(walletType, getActivity()));
+            checkWalletLimit();
         }
+    }
+
+    //控制钱包数量上限
+    private void checkWalletLimit(){
+
+        int sumWalletNum = 0;
+        if (walletType == WalletType.ORDINARY_WALLET) {
+            sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_ORDINARY;
+        } else {
+            sumWalletNum = walletNum + Constants.WalletConstants.WALLET_ADD_HD;
+        }
+        if(sumWalletNum > Constants.WalletConstants.WALLET_LIMIT){
+            tvWalletNumOverLimit.setVisibility(View.VISIBLE);
+            isEnableCreate = false;
+        }else{
+            tvWalletNumOverLimit.setVisibility(View.GONE);
+            isEnableCreate = true;
+        }
+
+        enableImport(!isEnableName && !isEnablePassword && !isMnemonicPhrase  && isEnableCreate);
     }
 
     @Override
@@ -452,16 +512,21 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
         }
     }
 
+
     @Override
     public void showMnemonicPhraseError(String text, boolean isVisible) {
         mTvMnemonicError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvMnemonicError.setText(text);
+        this.isMnemonicPhrase = isVisible;
+        enableImport(!isEnableName && !isEnablePassword && !isMnemonicPhrase  && isEnableCreate);
     }
 
     @Override
     public void showNameError(String text, boolean isVisible) {
         mTvNameError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvNameError.setText(text);
+        this.isEnableName = isVisible;
+        enableImport(!isEnableName && !isEnablePassword && !isMnemonicPhrase  && isEnableCreate);
     }
 
     @Override
@@ -469,5 +534,8 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        this.isEnablePassword = isVisible;
+        enableImport(!isEnableName && !isEnablePassword && !isMnemonicPhrase  && isEnableCreate);
     }
+
 }

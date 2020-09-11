@@ -11,6 +11,7 @@ public class AddressFormatUtil {
 
     }
 
+
     public static String formatAddress(String address) {
 
         String text = "";
@@ -20,7 +21,7 @@ public class AddressFormatUtil {
             String regex = "(\\w{10})(\\w*)(\\w{10})";
 
             try {
-                text = address.replaceAll(regex, "$1...$3");
+                text = address.replaceAll(regex, "$1....$3");
             } catch (Exception e) {
                 LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
@@ -34,10 +35,10 @@ public class AddressFormatUtil {
 
         if (address != null) {
 
-            String regex = "(\\w{4})(\\w*)(\\w{4})";
+            String regex = "(\\w{6})(\\w*)(\\w{6})";
 
             try {
-                text = address.replaceAll(regex, "$1...$3");
+                text = address.replaceAll(regex, "$1....$3");
             } catch (Exception e) {
                 LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
@@ -51,10 +52,10 @@ public class AddressFormatUtil {
 
         if (address != null) {
 
-            String regex = "(\\w{6})(\\w*)(\\w{8})";
+            String regex = "(\\w{6})(\\w*)(\\w{6})";
 
             try {
-                text = address.replaceAll(regex, "$1...$3");
+                text = address.replaceAll(regex, "$1....$3");
             } catch (Exception e) {
                 LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }

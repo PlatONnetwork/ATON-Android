@@ -9,6 +9,7 @@ import com.platon.aton.component.ui.view.ExportKeystoreActivity;
 import com.platon.aton.component.ui.view.ExportPrivateKeyActivity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
@@ -31,20 +32,39 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
 
     private Wallet mWalletEntity;
 
+
     @Override
     public void init(Wallet wallet) {
         this.mWalletEntity = wallet;
     }
 
     @Override
+    public Wallet getWalletData() {
+        return this.mWalletEntity;
+    }
+
+
+    @Override
     public void showWalletInfo() {
         if (mWalletEntity != null && isViewAttached()) {
-            List<Wallet> walletList = WalletManager.getInstance().getWalletList();
-            for (Wallet walletEntity : walletList) {
-                if (mWalletEntity.getUuid().equals(walletEntity.getUuid())) {
-                    mWalletEntity = walletEntity;
+
+            if(!mWalletEntity.isHD()){//普通钱包
+                List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+                for (Wallet walletEntity : walletList) {
+                    if (mWalletEntity.getUuid().equals(walletEntity.getUuid())) {
+                        mWalletEntity = walletEntity;
+                        break;
+                    }
                 }
             }
+            /*else{//HD钱包
+
+                //查询HD母钱包信息组装到子钱包
+                Wallet rootWallet = WalletManager.getInstance().getWalletInfoByUuid(mWalletEntity.getParentId());
+                mWalletEntity.setMnemonic(rootWallet.getMnemonic());
+                mWalletEntity.setKey(rootWallet.getKey());
+            }*/
+
             getView().showWalletInfo(mWalletEntity);
         }
     }
@@ -139,10 +159,40 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
     }
 
     @Override
+    public void modifyHDName(String name) {
+        Single
+                .fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return WalletDao.updateNameWithUuid(mWalletEntity.getUuid(), name);
+                    }
+                })
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean success) throws Exception {
+                        return success;
+                    }
+                })
+                .toSingle()
+                .compose(new SchedulersTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isSuccess) throws Exception {
+                        if (isSuccess && isViewAttached()) {
+                            getView().showWalletName(name);
+                            EventPublisher.getInstance().sendWalletNumberChangeEvent();
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void backup() {
-        InputWalletPasswordDialogFragment.newInstance(mWalletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(mWalletEntity, InputWalletPasswordFromType.BACKUPS).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
-            public void onCorrect(Credentials credentials, String password) {
+            public void onCorrect(Credentials credentials, String password, Wallet wallet) {
                 BackupMnemonicPhraseActivity.actionStart(getContext(), password, mWalletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
@@ -150,7 +200,9 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
 
     @Override
     public boolean isExists(String walletName) {
-        return WalletManager.getInstance().isWalletNameExists(walletName);
+        return WalletManager.getInstance().isWalletNameExistsFromDB(walletName);
     }
+
+
 
 }

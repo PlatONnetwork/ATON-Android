@@ -23,7 +23,6 @@ import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.entity.TransactionRecordEntity;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.db.sqlite.TransactionRecordDao;
-import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.AppConfigManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
@@ -34,6 +33,8 @@ import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.AddressMatchingResultType;
 import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GasProvider;
+import com.platon.aton.entity.InputWalletPasswordFromType;
+import com.platon.aton.entity.MainTab;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -77,13 +78,10 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
-import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -646,7 +644,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
                             getView().resetView(feeAmount);
-                            MainActivity.actionStart(getContext(), MainActivity.MainTab.TAB_ASSETS);
+                            MainActivity.actionStart(getContext(), MainTab.TAB_ASSETS);
                         }
                     }
                 });
@@ -669,7 +667,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
 
     private void showInputWalletPasswordDialogFragment(TransactionRecordEntity transactionRecordEntity, String feeAmount, String remark) {
-        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity, InputWalletPasswordFromType.TRANSACTION).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
                 sendTransaction(transactionRecordEntity, credentials.getEcKeyPair(), feeAmount, remark);

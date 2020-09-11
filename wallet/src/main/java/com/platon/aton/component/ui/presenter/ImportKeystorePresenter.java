@@ -79,6 +79,11 @@ public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContrac
         return WalletManager.getInstance().isWalletNameExists(walletName);
     }
 
+    @Override
+    public void loadDBWalletNumber() {
+        getView().showWalletNumber(WalletManager.getInstance().getWalletInfoListByOrdinaryAndSubWalletNum());
+    }
+
     private static final int MSG_OK = 1;
     private static final int MSG_PASSWORD_FAILED = -1;
     private static final int MSG_KEYSTORE_ERROR = -2;

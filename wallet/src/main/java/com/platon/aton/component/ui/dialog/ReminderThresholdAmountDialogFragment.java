@@ -6,14 +6,15 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.CommonAdapter;
 import com.platon.aton.component.adapter.base.ViewHolder;
-import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
 import com.platon.framework.app.Constants;
@@ -32,6 +33,9 @@ public class ReminderThresholdAmountDialogFragment extends BaseDialogFragment {
     ListView listReminderThresholdAmount;
     @BindArray(R.array.reminder_threshold_amount)
     String[] reminderThresholdAmountArray;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
+
 
     private Unbinder unbinder;
     private OnReminderThresholdAmountItemClickListener reminderThresholdAmountItemClickListener;
@@ -56,8 +60,8 @@ public class ReminderThresholdAmountDialogFragment extends BaseDialogFragment {
         setFullWidthEnable(true);
         setGravity(Gravity.BOTTOM);
         setAnimation(R.style.Animation_slide_in_bottom);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 24));
-        setyOffset(DensityUtil.dp2px(getContext(), 16));
+        //setHorizontalMargin(DensityUtil.dp2px(getContext(), 24));
+        //setyOffset(DensityUtil.dp2px(getContext(), 16));
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;
@@ -91,6 +95,13 @@ public class ReminderThresholdAmountDialogFragment extends BaseDialogFragment {
                         }
                     }
                 });
+        RxView
+            .clicks(ivClose).subscribe(new CustomObserver<Object>() {
+                @Override
+                public void accept(Object o) {
+                    dismiss();
+                }
+            });
     }
 
     @Override
@@ -100,6 +111,8 @@ public class ReminderThresholdAmountDialogFragment extends BaseDialogFragment {
             unbinder.unbind();
         }
     }
+
+
 
     static class ReminderThresholdAmountAdapter extends CommonAdapter<String> {
 

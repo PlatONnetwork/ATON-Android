@@ -22,6 +22,8 @@ public class AssetsMoreDialogFragment extends BaseDialogFragment {
     LinearLayout llCreateWallet;
     @BindView(R.id.ll_import_wallet)
     LinearLayout llImportWallet;
+    @BindView(R.id.ll_hd_wallet)
+    LinearLayout llHDWallet;
 
     private Unbinder unbinder;
     private OnAssetMoreClickListener mOnAssetMoreClickListener;
@@ -79,6 +81,25 @@ public class AssetsMoreDialogFragment extends BaseDialogFragment {
                         }
                     }
                 });
+
+        RxView
+                .clicks(llHDWallet)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        if (mOnAssetMoreClickListener != null) {
+                            mOnAssetMoreClickListener.onHDWalletClick();
+                            dismiss();
+                        }
+                    }
+                });
+
+
+
+
+
     }
 
     @Override
@@ -94,5 +115,7 @@ public class AssetsMoreDialogFragment extends BaseDialogFragment {
         void onCreateWalletClick();
 
         void onImportWalletClick();
+
+        void onHDWalletClick();
     }
 }

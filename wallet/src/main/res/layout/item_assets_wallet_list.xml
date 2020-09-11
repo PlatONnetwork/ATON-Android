@@ -21,10 +21,20 @@
         android:id="@+id/tv_wallet_name"
         style="@style/Text.fff.14"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="1"
+        android:gravity="left"
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/color_item_assets_wallet_name"
         android:textStyle="bold"
         tools:text="BIGANXING_WalletBIGANXING_Wallet" />
+
+    <ImageView
+        android:id="@+id/iv_subwallet_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/layout_space_07"
+        android:background="@drawable/selector_item_assets_sub_wallet_tag" />
 
 </LinearLayout>

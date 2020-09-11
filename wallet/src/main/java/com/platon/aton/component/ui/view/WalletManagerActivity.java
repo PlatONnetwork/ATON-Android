@@ -121,6 +121,8 @@ public class WalletManagerActivity extends BaseActivity<WalletManagerContract.Vi
     }
 
     private void initView() {
+
+        commonTitleBar.findViewById(R.id.iv_right).setVisibility(View.GONE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvWallet.setLayoutManager(linearLayoutManager);

@@ -22,7 +22,9 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegationValue;
+import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GasProvider;
+import com.platon.aton.entity.InputWalletPasswordFromType;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -49,7 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.functions.Function;
+import retrofit2.Response;
 
 /**
  * @author ziv
@@ -62,6 +66,39 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private List<WithDrawBalance> list = new ArrayList<>();
     private WithDrawBalance mWithDrawBalance = null;
 
+
+    public WithDrawBalance getmWithDrawBalance() {
+        return mWithDrawBalance;
+    }
+
+    public void setmWithDrawBalance(WithDrawBalance mWithDrawBalance) {
+        this.mWithDrawBalance = mWithDrawBalance;
+    }
+
+    public DelegateItemInfo getmDelegateDetail() {
+        return mDelegateDetail;
+    }
+
+    public void setmDelegateDetail(DelegateItemInfo mDelegateDetail) {
+        this.mDelegateDetail = mDelegateDetail;
+    }
+
+    public DelegationValue getmDelegationValue() {
+        return mDelegationValue;
+    }
+
+    public void setmDelegationValue(DelegationValue mDelegationValue) {
+        this.mDelegationValue = mDelegationValue;
+    }
+
+    public Wallet getmWallet() {
+        return mWallet;
+    }
+
+    public void setmWallet(Wallet mWallet) {
+        this.mWallet = mWallet;
+    }
+
     @Override
     public void init(DelegateItemInfo delegateItemInfo) {
         mDelegateDetail = delegateItemInfo;
@@ -72,6 +109,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 mWallet = WalletManager.getInstance().getWalletByAddress(mDelegateDetail.getWalletAddress());
             }
         }
+
     }
 
     public String getWalletAddress() {
@@ -96,14 +134,64 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     @Override
     public void showWalletInfo() {
         if (isViewAttached()) {
-            if (mWallet != null) {
-                getView().showSelectedWalletInfo(mWallet);
-            }
+
             if (mDelegateDetail != null) {
                 getView().showNodeInfo(mDelegateDetail);
             }
+            if (mWallet != null) {
+                getView().showSelectedWalletInfo(mWallet);
+            }
+            if (mDelegateDetail != null && mWallet != null) {
+                getEstimateGas(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId());
+            }
         }
     }
+
+
+    public void getEstimateGas(String prefixAddress, String nodeId) {
+
+        estimateGas(prefixAddress, nodeId)
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
+                    @Override
+                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
+                        if (isViewAttached()) {
+
+                            //mWallet = getWalletByAddress(prefixAddress);
+                            if(mWallet != null){
+                                mWallet.setAccountBalance(new AccountBalance(prefixAddress, estimateGasResult.getFree(), estimateGasResult.getLock()));
+                                getView().showSelectedWalletInfo(mWallet);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+                        super.onApiFailure(response);
+                        if (isViewAttached()) {
+
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 估算gas
+     *
+     * @param from
+     * @param nodeId
+     * @return
+     */
+    private Single<Response<ApiResponse<EstimateGasResult>>> estimateGas(String from, String nodeId) {
+        return ServerUtils.getCommonApi().estimateGas(ApiRequestBody.newBuilder()
+                .put("from", from)
+                .put("nodeId", nodeId)
+                .put("txType", TransactionType.DELEGATE.getTxTypeValue())
+                .build());
+    }
+
 
 
     @Override
@@ -262,7 +350,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 showTransactionAuthorizationDialogFragment(gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), toAddress, mDelegationValue.getNonce());
             } else {
                 InputWalletPasswordDialogFragment
-                        .newInstance(mWallet)
+                        .newInstance(mWallet, InputWalletPasswordFromType.TRANSACTION)
                         .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                             @Override
                             public void onWalletPasswordCorrect(Credentials credentials) {

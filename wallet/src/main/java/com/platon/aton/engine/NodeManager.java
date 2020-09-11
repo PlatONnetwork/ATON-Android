@@ -3,7 +3,9 @@ package com.platon.aton.engine;
 import android.text.TextUtils;
 
 import com.platon.aton.BuildConfig;
+import com.platon.aton.R;
 import com.platon.aton.entity.Node;
+import com.platon.aton.entity.NodeStatus;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
@@ -155,7 +157,7 @@ public class NodeManager {
 
         List<Node> nodeInfoEntityList = new ArrayList<>();
 
-        if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {//公网测试环境 + 开发环境
+        if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {//内网测试环境 + 开发环境
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_OUTER_INNERTEST_NET)
@@ -179,13 +181,21 @@ public class NodeManager {
                     .isChecked(true)
                     .chainId(BuildConfig.ID_TEST_NET)
                     .build());
-        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试环境
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试环境 + 开发环境
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_OUTER_INNERTEST_NET)
                     .isDefaultNode(true)
                     .isChecked(true)
                     .chainId(BuildConfig.ID_INNERTEST_NET)
+                    .build());
+
+            nodeInfoEntityList.add(new Node.Builder()
+                    .id(UUID.randomUUID().hashCode())
+                    .nodeAddress(BuildConfig.URL_DEVELOP_NET)
+                    .isDefaultNode(false)
+                    .isChecked(false)
+                    .chainId(BuildConfig.ID_DEVELOP_NET)
                     .build());
         } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {//平行网
             nodeInfoEntityList.add(new Node.Builder()
@@ -212,6 +222,30 @@ public class NodeManager {
                 }
             }
         });
+    }
+
+    /**
+     * 节点状态
+     * @param nodeStatus
+     * @param isConsensus
+     * @return
+     */
+    public int getNodeStatusDescRes(@NodeStatus String nodeStatus, boolean isConsensus) {
+
+        switch (nodeStatus) {
+            case NodeStatus.ACTIVE:
+                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
+            case NodeStatus.CANDIDATE:
+                return R.string.validators_candidate;
+            case NodeStatus.LOCKED:
+                return R.string.validators_locked;
+            case NodeStatus.EXITING:
+                return R.string.validators_state_exiting;
+            case NodeStatus.EXITED:
+                return R.string.validators_state_exited;
+            default:
+                return R.string.unknown;
+        }
     }
 
 }
