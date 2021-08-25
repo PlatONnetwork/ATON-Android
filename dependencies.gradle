@@ -96,8 +96,11 @@ project.ext {
             //图片选择器 支持单图 多图 视屏 音屏选择
             "flexbox"                         : 'com.google.android:flexbox:1.0.0',
             //第三方服务
-            "umeng_common"                    : 'com.umeng.umsdk:common:2.0.2',
-            "umeng_analytics"                 : 'com.umeng.umsdk:analytics:8.0.2',
+            //"umeng_common"                    : 'com.umeng.umsdk:common:2.0.2',
+            //"umeng_analytics"                 : 'com.umeng.umsdk:analytics:8.0.2',
+            "umeng_common"                    : 'com.umeng.umsdk:common:9.4.0',
+            "umeng_asms"                      : 'com.umeng.umsdk:asms:1.2.3',
+            "umeng_apm"                       : 'com.umeng.umsdk:apm:1.3.1', // 错误分析升级为独立产品U-APM可按需集成
             "twitter-core"                    : 'com.twitter.sdk.android:twitter-core:3.1.1',
             "twitter-composer"                : 'com.twitter.sdk.android:tweet-composer:3.1.1',
             "glide"                           : 'com.github.bumptech.glide:glide:4.9.0',

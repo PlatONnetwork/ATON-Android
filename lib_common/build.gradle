@@ -110,7 +110,8 @@ dependencies {
     api rootProject.ext.dependencies["immersionbar-components"]
     api rootProject.ext.dependencies["smarttablayout"]
     api rootProject.ext.dependencies["umeng_common"]
-    api rootProject.ext.dependencies["umeng_analytics"]
+    api rootProject.ext.dependencies["umeng_asms"]
+    api rootProject.ext.dependencies["umeng_apm"]
     api rootProject.ext.dependencies["SmartRefreshLayout"]
     api rootProject.ext.dependencies["SmartRefreshHeader"]
     //引入glide
