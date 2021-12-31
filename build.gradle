@@ -26,8 +26,12 @@ allprojects {
         google()
         jcenter()
 //        maven{url "http://192.168.9.39:8081/repository/maven-releases/"}
-        maven { url "https://sdk.platon.network/nexus/content/groups/public/" }
-        maven { url 'https://dl.bintray.com/umsdk/release' }
+//        maven { url "https://sdk.platon.network/nexus/content/groups/public/" }
+//        maven { url 'https://dl.bintray.com/umsdk/release' }
+//        maven { url 'https://jitpack.io' }
+        
+        maven { url "http://192.168.9.39:8081/repository/maven-releases/" }
+        maven { url 'https://repo1.maven.org/maven2/' }
         maven { url 'https://jitpack.io' }
 
     }
